@@ -1122,9 +1122,11 @@ function deleteRow(obj) {
 
 }
 var currentScanned = {};
+
 function scanResult(code) {
 //  $("#interactive").hide();
 $("#scanbutton").popover('hide');
+
   var obj = {
       SerialNo: code
   }
