@@ -1,0 +1,64 @@
+<div class="container" style="padding:0;min-width:100%;display:inline-block;visibility: hidden;">
+   <div class="row" style="height:70px;">
+     <table style="width:100%;">
+       <tr><td style="width:50%;text-align:left;">
+          <div class="col-md-6" id="crown">
+             <img src="https://costercatalog.com/catalog/images/crown.png" style="width:40px;"" />
+          </div>
+        </td><td style="width:50%;text-align:right;">
+             <div  id="commands" onclick="window.history.back();" style="float:right;cursor:pointer;background-color:#F8F8F8;min-height: 49px;width:140px;background-repeat: no-repeat;background-image:url(/images/roundBack.png);float:right;">
+                <span style="background:transparent;font-family: Montserrat;font-size: 16px;position:absolute;position:relative;left:-30px;line-height:45px;height:45px;">BACK</span>
+             </div>
+
+        </td></tr>
+        <tr><td style="text-align:left;padding-top:70px;" id="www" colspan="2"><span style="font-family: Canela;font-style: normal;font-weight: bold;font-size: 20px;line-height: 24px;">Welcome Back</span></td>
+        <tr><td style="text-align:left;padding-top:20px;" colspan="2"><span id="spn" style="font-family: Canela;font-style: normal;font-weight: bold;font-size: 72px;line-height: 72px;"></span></td>
+        <tr><td id="ttt" style="text-align:left;padding-top:70px;" colspan="2"><span style="font-family: Montserrat;font-style: normal;font-weight: normal;font-size: 16px;line-height: 16px;">ENTER PASSWORD</span></td></tr>
+        <tr><td style="text-align:left;padding-top:20px;" colspan="2">
+          <div style="position:absolute;">
+            <form>
+              <input id="password1" type="password"  placeholder="password" />
+              <span toggle="#password1" style="font-size:25px;" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+              </form>
+              <button class="btn btn-blue" onclick="loadedPages.login.login();" style="margin-top:50px;width:250px;"><span>LOGIN</span></button>
+
+          </div>
+
+        </td></tr>
+        <tr><td>
+          <div id="ddd" style="float:right;position: absolute;bottom:20px;width:100%;padding-right:200px;">
+              <button class="btn btn-grey" style="float:right;margin-top:50px;width:250px;"><span>REQUEST ACCOUNT</span></button>
+              <button class="btn btn-grey" onclick="loadedPages.login.rPass();" style="float:right;margin-top:50px;width:250px;"><span>FORGET PASSWORD</span></button>
+
+          </div>
+          </td></tr>
+      </table>
+   </div>
+ </div>
+
+<style>
+  .field-icon {
+  float: right;
+  left: -65px;
+  margin-top: 14px;
+  position: relative;
+  z-index: 2;
+  opacity: 0.5;
+}
+#password1 {
+  width: 450px;
+  outline: none;
+  background-color : white !important;
+  z-index: 100;
+  line-height: 50px;
+  font-size:20px;
+  font-family: "Canela";
+  border-radius: 12px;
+  border: 0.7px solid #000000;;
+  padding-left: 20px;
+}
+input[type="password"] {
+
+    background: red !important;
+}
+</style>

@@ -1,0 +1,906 @@
+<div id="cnt">
+
+    <div class="row">
+      <div class="col-md-3 col-sm-3" style="font-family: 'Canela';margin-top: 5px;font-size:22px;" >
+        <b>Checkout
+        <br /><span id="itemsinfo" style="font-size:20px;font-weight: normal;"></span></b>
+      </div>
+      <div class="col-md-9 col-sm-9" style="padding-left:30px;">
+        <div class="progress">
+          <ul class="progressbar">
+            <li class="circles active" tg="1" onclick="loadedPages.checkout.loadPart(1);">SALE LOCATION></li>
+            <li class="circles" tg="2" onclick="loadedPages.checkout.loadPart(2);">TOUR INFO</li>
+            <li class="circles" tg="3" onclick="loadedPages.checkout.loadPart(3);">CUSTOMER DETAILS</li>
+            <li class="circles" tg="4" onclick="loadedPages.checkout.loadPart(4);">PAYMENT</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  <div id="1" parts>
+    <div class="row" id="sRow" style="height: 115px;">
+       <div class="col-md-6 col-sm-12">
+          <span id="select_acc" style="margin-bottom:20px;margin-top:20px;float:left;height: 45px;font-family: Canela;font-style: normal;font-weight: bold;font-size: 45px;line-height: 45px;">Showrooms</span>
+       </div>
+       <div class="col-md-6 col-sm-12" style="padding: 0;">
+          <div id="dfs" style="min-width: 282px;min-height: 50px;background: #F6F6F6;float:right;border-radius: 12px;margin-top:25px;background-image:url(/images/magnifying_glass.svg);background-repeat:no-repeat;background-position:20px 15px;padding-left:55px;padding-top:15px;">
+             <input id="findSP" style="font-family: Raleway;font-style: normal;font-weight: normal;font-size: 17px;line-height: 20px;border:none;background: transparent;" placeholder="Find showroom" type="text">
+          </div>
+       </div>
+    </div>
+    <div class="container-fluid" style="padding:0;width:1440px;max-width:1440px;display:inline-block;position:relative;overflow-y: auto;overflow-x:hidden;">
+       <div class="row"  id="showrooms" style="padding-right: 65px;overflow: hidden;">
+       </div>
+       <div class="row">
+         <div class="col-md-6 col-xs-12">
+           <img src="/images/backtocart.svg" style="float:left;" onclick="loadPage('shoppingCart');" />
+         </div>
+         <div class="col-md-6 col-xs-12" style="padding-right:80px;">
+           <img src="/images/nextstep.svg" style="float:right;" onclick="loadedPages.checkout.checkShowrooms();" />
+           </div>
+       </div>
+    </div>
+  </div>
+<div id="2" parts style="display:none;">
+   <div class="div-black" style="margin-top:20px;" id="tours_div" step>Select Tour <br />
+     <div style="padding-left:10px;padding-top:-5px;">
+       <img src="/images/addtour.svg" onclick="loadedPages.checkout.addTour();" />
+     <select id="stour" name="stour" class="form-control" style="margin-left:20px;margin-top:-5px;">
+        <option value="-1">Select tour</option>
+        <option value="021100">Tourleaders/guides/drivers</option>
+        <option value="021200">VIP Educationals = staff</option>
+        <option value="021300">Champagne tours</option>
+        <option value="021400">Relations</option>
+        <option value="021500">Internet</option>
+     </select>
+     <span>&nbsp;(<span id="tnmbup">No Tour selected</span>)</span>
+     <div id="dfs1" style="border:1px solid black;position:absolute;top:35px;right:40px;min-width: 450px;min-height: 36px;height: 36px;background: white;float:right;border-radius: 9px;background-image:url(/images/magnifying_glass.svg);background-repeat:no-repeat;background-position:20px 8px;padding-left:55px;">
+             <input id="findTour" style="outline:none;position:absolute;top:8px;background-image:url(/images/signal.svg);background-repeat:no-repeat;background-position:right center;width:370px;font-family: Raleway;font-style: normal;font-weight: normal;font-size: 15px;line-height: 20px;border:none;" placeholder="Search by Tour No. , Operator Name.." type="text">
+
+    </div>
+  </div>
+
+   <span  style="position:absolute;right:0px;"></span></div>
+   <div style="max-width:99%;overflow-x:hidden;overflow-y:hidden;">
+     <div style="max-height:100vh;overflow-y:hidden;" id="tdiv">
+         <table id="tours" class="display nowrap" style="table-layout: fixed;width:100%;max-width:100%;margin-top:-32px;">
+            <thead>
+               <tr>
+                  <th>Date</th>
+                  <th>TourNo</th>
+                  <th>Name</th>
+                  <th>PAX</th>
+                  <th>Tour Operator</th>
+                  <th style="display:none;">Tour Operator</th>
+               </tr>
+            </thead>
+            <tbody>
+            </tbody>
+         </table>
+      </div>
+
+      <div style="padding-left:20px;padding-right:65px;width:1440px;position:fixed;bottom: 5px;">
+          <img src="/images/nextstep.svg" style="margin-top:5px;float:right;" onclick="loadedPages.checkout.setCName();" />
+      </div>
+   </div>
+</div>
+<div class="modal" tabindex="-1" role="dialog" id="filters">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title"><strong id="title">Filters</strong></h5>
+         </div>
+         <div class="modal-body" id="filters_body">
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary" style="margin-top:10px;" data-dismiss="modal">Set</button>
+         </div>
+      </div>
+   </div>
+</div>
+<div id="filters_temp" style="visibility:hidden;">
+   <form>
+      <div class="filter-div" style="float:left;">
+         <strong>Date</strong>
+         <div id="filter_date"></div>
+      </div>
+      <div class="filter-div" style="float:left;">
+         <strong>Nationality</strong>
+         <div id="filter_nationality"></div>
+      </div>
+      <div class="filter-div" style="float:left;">
+         <strong>Tour Operator</strong>
+         <div id="filter_operator"></div>
+      </div>
+   </form>
+</div>
+<div id="3" style="display:none;" parts>
+   <div  class="div-black" style="margin-top:10px;width:100%;tex-align:center;" id="customer_div" step>Customer Info<br />
+     <div id="sc" style="margin:0 auto;">
+       <input id="searchCustomer" style="margin: 0 auto;outline:none;background-image:url(/images/man.svg);background-repeat:no-repeat;background-position:15px center;padding-left:50px;width:370px;font-family: Raleway;font-style: normal;font-weight: normal;font-size: 15px;line-height: 35px;border:none;" placeholder="Search customer" type="text">
+
+     </div>
+     <img src="/images/clear.svg" style="position:absolute;right:10px;" onclick="$('#searchCustomer').val('');$('#customerForm')[0].reset();" />
+    </div><br />
+      <div style="max-width:100%;overflow-x:hidden;padding:10px;max-height:100%;overflow-y:auto;">
+      <form id="customerForm" confirmed="no" style="font-weight:normal;font-size:12px;max-height:calc(100vh - 260px);">
+
+         <input type="hidden" id="customerid" value="-1" />
+         <input type="hidden" id="tourNo" name="tourNo" value="1" />
+         <input type="hidden" id="cshowroom" value="1" />
+         <input type="hidden" id="salesPerson" value="1" />
+           <div class="row">
+             <div class="col-xs-4 col-lg-4" style="padding-bottom:5px;">
+               <label>CUSTOMER NAME</label>
+             </div>
+             <div class="col-xs-4 col-lg-4" style="padding-bottom:5px;">
+               <label>EMAIL ADDRESS</label>
+             </div>
+             <div class="col-xs-4 col-lg-4" style="padding-bottom:5px;">
+               <label>PHONE NUMBER</label>
+             </div>
+           </div>
+           <div class="row">
+             <div class="form-group">
+                <div class="col-xs-1 col-lg-1">
+                  <select placeholder="Title" id="ptitle"  name="ptitle" class="form-control">
+                      <option  value="Nvt.">Nvt.</option>
+                    <option value="Mr.">Mr.</option>
+                    <option value="Mrs.">Mrs.</option>
+
+                  </select>
+                </div>
+                <div class="col-xs-3 col-lg-3">
+                  <input placeholder="Name" id="name" type="text" name="name" class="form-control" />
+                </div>
+                <div class="col-xs-4 col-lg-4">
+                  <input style="background-image:url(/images/envelope.svg);background-repeat:no-repeat;background-position:20px center;padding-left:50px;" placeholder="Email" id="email" type="text" name="email" class="form-control" />
+                </div>
+                <div class="col-xs-4 col-lg-4">
+                  <input style="background-image:url(/images/phone.svg);background-repeat:no-repeat;background-position:20px center;padding-left:50px;" placeholder="Telephone" id="telephone" type="text" name="telephone" class="form-control" />
+                </div>
+            </div>
+         </div>
+         <div class="row labels" stle="padding-top:15px;">
+           <div class="col-xs-4 col-lg-4" style="padding-bottom:5px;">
+             <label>COUNTRY</label>
+           </div>
+           <div class="col-xs-4 col-lg-4" style="padding-bottom:5px;">
+             <label>CITY</label>
+           </div>
+           <div class="col-xs-4 col-lg-4" style="padding-bottom:5px;">
+             <label>ZIP CODE</label>
+           </div>
+         </div>
+         <div class="row">
+           <div class="col-xs-4 col-lg-4">
+             <select id="countries" name="countries" class="form-control" style="margin-left:10px;min-width:100%;margin-right:10px;">
+                <option></option>
+             </select>
+             <input id="cstc" class="form-control" readonly />
+           </div>
+           <div class="col-xs-4 col-lg-4">
+             <input placeholder="City" id="city" type="text" name="city" class="form-control" />
+           </div>
+           <div class="col-xs-4 col-lg-4">
+             <input placeholder="Ex. 0326" id="zip" type="text" name="zip" class="form-control" style="min-height: 40px;">
+           </div>
+         </div>
+
+         <div class="row labels" stle="padding-top:15px;">
+           <div class="col-xs-12 col-lg-12" style="padding-bottom:5px;">
+             <label>ADDRESS 1</label>
+           </div>
+         </div>
+         <div class="row">
+           <div class="col-xs-12 col-lg-12">
+             <input placeholder="Address line 1" id="address1" type="text" name="address1" class="form-control" />
+
+           </div>
+         </div>
+         <div class="row labels" stle="margin-top:10px;">
+           <div class="col-xs-12 col-lg-12" style="padding-bottom:5px;">
+             <label>ADDRESS 2</label>
+           </div>
+         </div>
+         <div class="row">
+           <div class="col-xs-12 col-lg-12">
+             <input placeholder="Address line 2" id="address2" type="text" name="address2" class="form-control" />
+
+           </div>
+         </div>
+         <div class="row labels" stle="padding-top:15px;">
+           <div class="col-xs-4 col-lg-4" style="padding-bottom:5px;">
+             <label>HOTEL</label>
+           </div>
+           <div class="col-xs-4 col-lg-4" style="padding-bottom:5px;">
+             <label>RING SIZE</label>
+           </div>
+
+         </div>
+         <div class="row">
+           <div class="col-xs-4 col-lg-4">
+               <input placeholder="Hotel" id="hotel" type="text" name="hotel" class="form-control" />
+           </div>
+           <div class="col-xs-4 col-lg-4">
+               <input placeholder="Ring size" id="ringsize" type="text" name="ringsize" class="form-control" />
+           </div>
+         </div>
+      </form>
+      <div style="padding-left:20px;padding-right:65px;width:1440px;position:fixed;bottom: 5px;">
+          <img src="/images/nextstep.svg" style="margin-top:5px;float:right;" onclick="$('#customerForm').submit();" />
+      </div>
+
+   </div>
+</div>
+<div id="4" style="display:none;" parts >
+  <div class="div-black">
+      <table style="width:100%">
+      <tr><td><div  class="div-black" style="margin-top:10px;width:100%;tex-align:center;" id="customer_div" step>Payment</div></td>
+       <td rowspan="2" onclick="loadedPages.checkout.addPayment();" style="text-align:right;width:100%;vertical-align:middle;background-image:url(images/addpayment.svg);background-repeat:no-repeat;background-position:right center;padding-right:60px;">Add Payment</td></tr>
+       <tr><td><div  style="font-size: 14px;white-space: nowrap;">Payment Details</div></td>
+        </tr></table>
+      </div>
+     <div style="max-width:100%;overflow-x:hidden;width:100%;font-size:14px;">
+        <table id="paymentsTable" class="table-striped table-bordered" style="margin-top:10px;width:100%;font-size:14px;">
+          <thead>
+            <th>PAYMENT METHOD</th>
+            <th>CURRENCY</th>
+            <th>AMOUNT</th>
+            <th>DATE</th>
+            <th>EURO</th>
+            <th>DELETE</th>
+          </thead>
+           <tbody>
+
+
+           </tbody>
+        </table>
+     </div>
+     <div style="float:right;">
+       <table class="paymentSummary">
+
+         <tbody>
+           <tr>
+             <td>Total Amount:</td>
+             <td id="toPay">€145,159.00</td>
+           </tr>
+           <tr style="border-bottom:2px solid black;">
+             <td>Total Amount Paid: </td>
+             <td id="paid">€145,159.00</td>
+           </tr>
+           <tr>
+             <td>Amount Due:</td>
+             <td id="due">€0.00</td>
+           </tr>
+         </tbody>
+       </table>
+     </div>
+   <div style="padding-left:20px;padding-right:65px;width:1440px;position:fixed;bottom: 5px;">
+       <img src="/images/nextstep.svg" onclick="$('#4').hide();loadedPages.checkout.prepareOverview();" id='confirmPayments' style="margin-top:5px;float:right;"  />
+   </div>
+
+</div>
+<div id="5" style="display:none;" parts>
+   <div class="div-black" style="margin-top:10px;padding-left:10px;" id="overview_div" step>
+      Overview<span onclick="$('#4').hide();$('#3').show();" style="position:absolute;right:10px;">Back to payments</span>
+   </div>
+   <!--  <div style="padding:5px;width:100%;text-align:center;">
+      <img onclick="loadedPages.checkout.shareOverview();" class='share' onclick="shareItem(this);" style='width:30px;margin-left:3px;margin-top:-3px;' src='https://costercatalog.com/coster/www/images/share.png' />
+      </div>-->
+   <div id="share" style="max-width:100%;background:white;overflow-x:hidden;padding:10px;">
+      <div id="served" style="text-align:center;"></div>
+      <div id="tour" style="text-align:center;"></div>
+      <div id="customerInfo">
+         <div class="row">
+            <div class="col-xs-12 col-lg-6" firstName></div>
+         </div>
+         <div class="row">
+            <div class="col-xs-12 col-lg-6" address1></div>
+         </div>
+         <div class="row">
+            <div class="col-xs-12 col-lg-12" address2></div>
+         </div>
+         <div class="row">
+            <div class="col-xs-12 col-lg-12" city></div>
+         </div>
+         <div class="row">
+            <div class="col-xs-12 col-lg-12" country></div>
+         </div>
+         <br />
+         <div class="row">
+            <div class="col-xs-12 col-lg-12" email></div>
+         </div>
+         <div class="row">
+            <div class="col-xs-6 col-lg-6" ringsize></div>
+         </div>
+         <div class="row">
+            <div class="col-xs-12 col-lg-12" telephone></div>
+         </div>
+         <div class="row">
+            <div class="col-xs-6 col-lg-6" hotel></div>
+         </div>
+      </div>
+      <div id="items"></div>
+      <div id="total_div" style="border-bottom:1px solid #e2e2e2;width:100px;min-width:100%;float:right;text-align:right;background:white;padding:10px;font-size:15px;"></div>
+      <div id="payments_div" style="width:100px;min-width:100%;float:right;text-align:right;background:white;padding:10px;font-size:15px;">
+         <table id="pt" style="table-layout:auto;width:200px;float:right;"></table>
+      </div>
+      <div style="max-width:100%;overflow-x:hidden;padding:10px;max-height:100%;overflow-y:auto;">
+        <h6>Optional: additional info</h6>
+         <form id="additionalInfo" confirmed="no" style="font-weight:normal;font-size:12px;max-height:calc(100vh - 260px);">
+           <div class="row">
+              <div class="col-xs-3 col-lg-3">
+                 <div class="form-group">
+                     <input f placeholder="Sale date" id="saledate" type="text" name="saledate" class="form-control" />
+                 </div>
+              </div>
+              <div class="col-xs-6 col-lg-6">
+                 <div class="form-group">
+                     <input f placeholder="Reference" id="reference" type="text" name="reference" class="form-control" />
+                 </div>
+              </div>
+              <div class="col-xs-3 col-lg-3" style="display:none;">
+                 <div class="form-group">
+                    <select  f id="proforma" name="proforma" class="form-control">
+                      <option value="0">Not Proforma</option>
+                      <option value="1">Proforma</option>
+                      </select>
+                 </div>
+              </div>
+           </div>
+
+            <div class="form-group">
+               <textarea f row="5" class="form-control" placeholder="Remark" id="remark" type="text" name="remark" class="form-control" />
+            </div>
+
+
+         </form>
+
+      </div>
+      <div style="text-align:center;display:none;" id="notice"></div>
+      <div id="cache" style="text-align:center;font-weight:bold;display:none;" id="notice"></div>
+   </div>
+   <div style="padding-left:20px;padding-right:20px;">
+      <button id='emailInvoice' onclick="loadedPages.checkout.signature(1);" style="margin-top:5px;float:right;" class="btn-green">EMAIL INVOICE</button>
+      <button id='printInvoice' onclick="loadedPages.checkout.signature(2);" style="margin-top:20px;float:right;" class="btn-black">PRINT INVOICE</button>
+      <button id='printEmailInvoice' onclick="loadedPages.checkout.signature(3);" style="margin-top:20px;float:right;" class="btn-green">PRINT & EMAIL INVOICE</button>
+   </div>
+</div>
+<div id="6" style="display:none;" parts>
+  <table style="width:100%">
+    <tr><td><div  class="div-black" style="margin-top:10px;width:100%;tex-align:center;" id="customer_div" step>Overview</div></td>
+    <tr><td><div  style="font-size: 14px;white-space: nowrap;">Invoice Details</div></td>
+    </tr>
+  </table>
+
+
+  <div class="row equal" style="background-color: transparent !important;margin-top:10px;">
+     <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12" style="padding-right: 10px;background-color: white;">
+       <div id="shoppingCart" style="width:100%;padding-right:10px;"></div>
+     </div>
+
+     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style="padding-left: 60px;background-color: transparent;">
+       <div>
+         right
+       </div>
+     </div>
+  </div>
+
+    <div style="padding-left:20px;padding-right:65px;width:1440px;position:fixed;bottom: 5px;">
+       <img src="/images/generateInvoice.svg" onclick="loadedPages.checkout.signature(2);" id='confirmPayments' style="margin-top:5px;float:right;" onclick="loadedPages.checkout.prepareOverview();$('#payment_div').addClass('checked');" />
+   </div>
+
+</div>
+<table style="display:none;">
+  <tr id="master">
+     <td style="text-align: right;width:290px;min-width:290px;">
+        <select class="form-control" onchange="loadedPages.checkout.paymentMethodChanged(this);" id="paymentMethods" currency>
+        </select>
+     </td>
+     <td style="text-align: right;width:270px;min-width:270px;">
+       <select class="form-control"  onchange="loadedPages.checkout.changeCurrency(this);" id="pay_currency" class="pay_currency" style="width:100%;">
+          <option value="EUR" rate="1">EUR</option>
+       </select>
+
+     </td>
+     <td style="text-align: right;width:210px;min-width:270px;">
+        <input type="text" class="form-control" />
+     </td>
+     <td style="text-align: left;width:160px;min-width:300px;">
+        <input readonly type="text" class="form-control" />
+     </td>
+     <td style="text-align: left;width:160px;min-width:250px;">
+        <input readonly type="text" class="form-control" />
+     </td>
+     <td onclick='loadedPages.checkout.deletePayment(this);return false;' style="max-width:100%;background-image:url(images/deletepayment.svg);background-repeat:no-repeat;background-size:contain;background-position:center center;"></td>
+  <tr>
+  <!-- <tr id="master" style="min-width:100px;">
+      <td style="text-align: right;min-width:80px;">
+         <select class="form-control" onchange="loadedPages.checkout.paymentMethodChanged(this);" id="paymentMethods" currency>
+         </select>
+      </td>
+      <td style="text-align: right;min-width:80px;">
+         <select class="form-control"  onchange="loadedPages.checkout.changeCurrency(this);" id="pay_currency" class="pay_currency" style="width:100%;">
+            <option value="EUR" rate="1">EUR</option>
+         </select>
+      </td>
+      <td style="text-align: right;width:100%;">
+         <input type="text" class="form-control" />
+      </td>
+      <td style="text-align: left;min-width:70px;display:none;">
+         <input type="text" class="form-control" />
+      </td>
+      <td style="text-align: left;min-width:70px;display:none;">
+         <input type="text" class="form-control" />
+      </td>
+      <td onclick='loadedPages.checkout.deletePayment(this);'><img src="images/delete.png" style="width:25px;" /></td>
+   <tr>-->
+</table>
+<div id="invoice" style="font-family:'Calibri Light';background-color: white;border:none;height:561px;width:400px;padding-bottom:20px;">
+<style>
+   #footerdata td {
+   vertical-align: bottom;
+   white-space:nowrap;
+   font-size:6pt;
+   }
+   #master td select {
+   font-size: 16x;
+   }
+   #master td input, #master td  {
+   font-size: 16px;
+   }
+   #iit td {
+   vertical-align:bottom;
+   border:none;
+   }
+   #pTable td, #summary td {
+   font-size: 5pt;
+   white-space:nowrap;
+   padding: 0px;
+   }
+   #mTable td {
+   white-space:nowrap;
+   min-height:30px;
+   background: transparent;
+   }
+   #mTable th {
+   background-color: #e5e5e5;
+   }
+   #invoice {
+   padding:5px;
+   font-size: 5pt;
+   min-width:400px;
+   max-width:400px;
+   height:553px;
+   max-height:553px;
+   min-height:553px;
+   min-width:400px;
+   display:none;
+   }
+   #invoice_header {
+   height: 50px;
+   min-height: 50px;
+   width: 400px;
+   max-width: 400px;
+   background: url(https://costercatalog.com/coster/www/images/logo.png);
+   background-repeat: no-repeat;
+   background-size: contain;
+   background-position: top center;
+   }
+</style>
+<div id="invoice_header">
+   <img id="bar_image" style="height:40px;float:right;" src="" style="height: 10px;max-height:10px;width:auto;" />
+</div>
+<div>
+<div style="width:50%;float:left;text-align:left;">
+   <span style="font-size: 20px;color:#8E8952;font-weight:bold;">INVOICE</span><br />
+   <div style="margin-top: 0px;">
+      <strong style="margin-top:5px;font-size:7pt;font-weight:bold;">CUSTOMER INFORMATION</strong>
+      <div id="cinf" style="font-size:5pt;color:color:#323232;line-height:5.5pt;"></div>
+   </div>
+</div>
+<div id="info" style="width:50%;float:right;margin-top:40px;text-align:right;"">
+   <span id="discountApproved"></span><br />
+   <span saledate>Sales date: <span id="sld"></span></span><br />
+   <span reference style="display:none;">Reference Number: <span id="rnm"></span></span><br />
+   <span>Invoice Number: <span id="inm"></span></span>
+   <br /><span>Tour number: <span><span id="tnmbr"></span>
+   <br />
+   <br />
+   Questions? Email your <br />
+   diamond consultant<br />
+   <span id="consultant"></span>
+</div>
+<div>
+<div style="margin-top:20px;width:400px;float:left;border-bottom: 1px solid #F2F2F2;">
+   <span style="color:grey;" id="invoiceDate"></span><span style="float:right" id="servedby"></span>
+</div>
+<table id="mTable" style="border-collapse: collapse;font-size:6pt;display: table;position: releative;bottom: 0px;width:400px;max-width:400px;">
+   <tbody id="mTableBody">
+   </tbody>
+</table>
+<table id="pTable"  tableborder="0" style="width:50%;float:right;margin-right:6px;margin-top:20px;border-collapse:collapse;display: table;font-size:5pt;background-color:transparent;">
+</table>
+<table id="iit" tableborder="0" style="width:400px;min-width:400px;font-size:6pt;position:absolute;bottom:110px;">
+   <tr>
+      <td style="width: 45%;min-width:45%;text-align:left;vertical-align:bottom;">
+         <img src="" id="customerSignature" style="margin-left:44px;width:100px;" /><br />
+         <img src="https://costercatalog.com.com/catalog/images/signature.png" style="margin-top:-12px;width:150px;float:left" /><br />
+         <p refund style="display:none;font-size: 5pt;color:#323232;text-align:left;line-height:5.5pt;width:150px;">
+            Important to non-EU visitors: If you do not comply with EU regulations concerning VAT refunds,
+            we have the right to charge you within 3 months: <span id="dfamount"></span>.
+         </p>
+         <p norefund style="display:none;font-size: 5pt;color:#323232;text-align:left;line-height:5.5pt;width:150px;">
+            We provided you with a VAT refund <br />cheque for VAT refund purposes.
+         </p>
+      </td>
+      <td style="width: 10%;min-width:10%;"></td>
+      <td style="vertical-align:top;width: 45%;min-width:45%;text-align:right;vertical-align:bottom;">
+         <table id="summary" style="display: table;font-size:5pt;background-color:#e2e2e2;">
+         </table>
+      </td>
+   </tr>
+</table>
+<table  tableborder="0"  border="0" style="width:100%;min-width:100%;margin-top:10px;font-size:6pt;">
+   <tr>
+      <td style="width: 45%;min-width:45%;">
+         <table id="pTable" style="display: table;font-size:5pt;background-color:#e2e2e2;">
+         </table>
+      </td>
+      <td style="width: 10%;min-width:10%;"></td>
+      <td style="vertical-align:top;width: 45%;min-width:45%;text-align:right;">
+         <table id="summary" style="display: table;font-size:6pt;background-color:#e2e2e2;">
+         </table>
+      </td>
+   </tr>
+</table>
+<div id="rmrk" style="width:100%;min-width:100%"></div>
+<!--  <div style="font-size:8px;width:400px;position:absolute;bottom:150px;display:none;" id="dfund">
+   <img src="https://costercatalog.com/costerdemo/coster/www/images/signature.png" style="width:150px;float:left" /><br />
+   <p style="font-size: 5pt;color:#323232;text-align:left;line-height:5.5pt;width:150px;">
+     Important to non-EU visitors: If you do not comply with EU regulations concerning VAT refunds,
+      we have the right to charge you within 3 months: <span id="dfamount"></span>.
+   </p>
+   </div> -->
+<div style="font-size:8px;width:400px;position:absolute;bottom:20px;">
+   <table tableborder="0" id="footerdata" style="font-size:8px;table-layout:fixed;width:400px;">
+   <!--  <tr>
+      <td style="width:100%;vertical-align:top;">
+           <img src="https://costercatalog.com/costerdemo/coster/www/images/separatr.jpeg" style="width:100%;"/>
+         </td>
+      </tr>
+
+      <tr>
+       <td  style="vertical-align:top;text-align:center;white-space: normal;max-width:100%;font-size: 5pt;">
+
+             <img src="https://costercatalog.com/costerdemo/coster/www/images/greendiamond.jpeg" style= "margin-top:-6px;width:125px;float:left;" />
+              <p style="padding-right:20px;font-size: 5pt;top: 5pt;position:absolute;left:149px;color:#323232;text-align:left;line-height:5.5pt;">At Royal Coster Diamonds we realize we have a responsibility to the planet and believe in giving back to the planet. We therefore commited ourselves to donating 1% of our turnover of our Green collection to the Green Diamond Initiative. (GDI)
+             <br /><span style="position:relative;top:10px;"><i>Read more about the initiative at www.greendiamondinitiative.org</i></span> </p>
+
+       </td>
+
+      </tr>
+      <tr>
+       <td>
+           <img src="https://costercatalog.com/costerdemo/coster/www/images/separatr.jpeg" style="width:100%;"/>
+       </td>
+      </tr>
+      </table> -->
+   <table style="table-layout:fixed;width:400px;">
+      <tr>
+         <td style="width:33%;min-width:33%;max-width:33%;padding-top:10px;vertical-align:top;text-align:left;font-size:5pt;color:#323232;">
+            Royal Coster Diamonds B.V.<br />
+            Paulus Potterstraat 2 | 1071 CZ Amsterdam<br />
+            The Netherlands | T +31 (0)20 305 55 55<br />
+            service@costerdiamonds.com
+         </td>
+         <td style="width:33%;min-width:33%;max-width:33%;padding-top:10px;vertical-align:top;text-align:left;font-size:5pt;color:#323232;">
+            Bank: ABN AMRO Amsterdam<br />
+            Account no: 243 5008 66 | BIC: ABNANL2A<br />
+            IBAN: NL30 ABNA 0243 5008 66<br />
+            VAT: NL008640294B01 | CoC: 33180723<br />
+         </td>
+         <td style="width:33%;min-width:33%;max-width:33%;padding-top:10px;vertical-align:top;text-align:left;font-size:5pt;color:#323232;">
+            <span id="cacheover" style="display:none;">Due to company policy we require a valid<br />
+            ID for sales of € 10.000  or more.</span>
+            <br />Goods remain seller's property until<br />legally valid payment has been received in full.
+         </td>
+      </tr>
+      <tr>
+         <td colspan="3" style="font-size:4.5pt;text-align:center;">
+            For Terms & Conditions visit costerdiamonds.com/terms
+         </td>
+      </tr>
+   </table>
+</div>
+</div>
+<div  class="col-lg-3 col-md-3 col-xs-12" id="mastershowrooms" style="margin-bottom: 10px;display:none !important;">
+   <div class="salesperson">
+      <span>Showroom</span>
+   </div>
+</div>
+<style>
+  #content {
+    top: 99px;
+    margin-top: 0px;
+    background: transparent;
+    position: fixed;
+    padding-top: 10px;
+  }
+  #cnt {
+    font-family: "Montserrat";
+  }
+   html {
+   background-color: white;
+   }
+   .yadcf-filter-wrapper {
+   width: 100%;
+   }
+   .yadcf-filter-reset-button {
+   display: none !important;
+   }
+   .filter-div {
+   width: 100%;
+   padding-top: 10px;
+   padding-bottom: 10px;
+   border-bottom: 1px solid black;
+   }
+   .select2-selection.select2-selection--multiple {
+   max-width: 50% !important;
+   }
+   #tours_filter {
+   display: none;
+   }
+   #tours_wrapper {
+   margin-top: 30px;
+   }
+   #tours td:nth-of-type(6) {
+   display: none !important;
+   }
+   #tours td:nth-of-type(4) {
+   max-width: 100% !important;
+   width: 100% !important;
+   word-wrap: break-word;
+   word-break: break-word;
+   white-space: normal;
+   }
+   #tours td,
+   #tours th {
+   font-size: 14px;
+   }
+
+   #mTableBody tr {
+   }
+   #mTableBody tr td {
+   font-size:5pt !important;
+   vertical-align: bottom !important;
+   background-color: transparent;
+   }
+   #mTableBody tr > td:last-of-type {
+   padding-right: 5px;
+   }
+   #mTableBody tr.even {
+   background-color: #F2F2F2;
+   }
+   .progress {
+         width: 80%;
+         margin: 10px auto;
+         height: 70px;
+         padding-top: 10px;
+         padding-left:15px;
+         display: contents;
+         background-color:white;
+
+
+     }
+     .progressbar {
+         counter-reset: step;
+
+         padding-top: 5px;
+         display: inline-block;
+         width:90%;
+         padding-left: 0px;
+     }
+     .progressbar li {
+         list-style-type: none;
+         width: 25%;
+         float: left;
+         font-size: 12px;
+         position: relative;
+         text-align: center;
+         text-transform: uppercase;
+         color: #7d7d7d;
+     }
+     .progressbar li:before {
+         width: 30px;
+         height: 30px;
+         content: counter(step);
+         counter-increment: step;
+         line-height: 30px;
+         border: 2px solid #7d7d7d;
+         display: block;
+         text-align: center;
+         margin: 0 auto 10px auto;
+         border-radius: 50%;
+         background-color: white;
+
+     }
+     .progressbar li.done:before {
+         width: 30px;
+         height: 30px;
+         content: '\2713';
+         counter-increment: step;
+         line-height: 30px;
+         border: 2px solid #09B261;
+         display: block;
+         text-align: center;
+         margin: 0 auto 10px auto;
+         border-radius: 50%;
+         color:white;
+         background-color: #09B261;
+
+     }
+     .progressbar li:after {
+         width: 100%;
+         height: 2px;
+         content: '';
+         position: absolute;
+         background-color: #7d7d7d;
+         top: 15px;
+         left: -50%;
+         z-index: -1;
+         opacity: 0.3;
+     }
+     .progressbar li:first-child:after {
+         content: none;
+     }
+     .progressbar li.active {
+         color: black;
+     }
+     .progressbar li.active:before {
+       color: white;
+       background-color: black;
+     }
+     .progressbar li.active + li:after {
+         background-color: #55b776;
+     }
+     .salesperson {
+    	cursor: pointer;
+    	margin-right: 10px;
+    	margin-bottom: 10px;
+    	padding: 20px 20px;
+    	min-height: 108px;
+    	background: white;
+    	margin: 0px auto;
+    	border-radius: 15px;
+    	border: 1px solid transparent;
+    }
+
+    .salesperson:hover,
+    .salesperson.active {
+    	border: 1px solid black;
+    }
+
+    .salesperson.active {
+    	border: 1px solid black;
+    }
+
+    .flex-container {
+    	overflow: hidden;
+    	height: 130px;
+    	max-width: 100%;
+    	padding: 0;
+    	margin: 0;
+    	list-style: none;
+    	border: 1px solid silver;
+    	-ms-box-orient: horizontal;
+    	display: -webkit-box;
+    	display: -moz-box;
+    	display: -ms-flexbox;
+    	display: -moz-flex;
+    	display: -webkit-flex;
+    	display: inline-flex;
+    }
+
+    .wrap {
+    	-webkit-flex-wrap: wrap;
+    	flex-wrap: wrap;
+    }
+
+    .flex-item {
+    	background: tomato;
+    	padding: 5px;
+    	min-width: 100px;
+    	height: 100px;
+    	margin: 10px;
+    	line-height: 100px;
+    	color: white;
+    	font-weight: bold;
+    	font-size: 2em;
+    	text-align: center;
+    	flex: 1;
+    	display: inline-block;
+    }
+
+    .salesperson>span {
+    	font-family: Montserrat;
+    	font-style: normal;
+    	font-weight: normal;
+    	font-size: 20px;
+    	line-height: 24px;
+    	color: #000000;
+    }
+
+    #e74_222 {
+    	float: right;
+    }
+
+    #findSP:focus {
+    	outline: none;
+    }
+    img {
+      cursor: pointer;
+    }
+    .typeahead.dropdown-menu {
+      top:65px !important;
+    }
+    .typeahead.dropdown-menu > li > a {
+      font-weight: bold;
+    }
+    .row.labels {
+      padding-top:30px;
+    }
+.paymentSummary {
+  margin-top: 10px;
+}
+.paymentSummary td {
+  font-family: 'Montserrat',
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 30px;
+
+}
+.paymentSummary td:first-of-type {
+  padding-right: 20px;
+  text-align: left;
+}
+.paymentSummary td:last-of-type {
+  padding-right: 20px;
+  text-align: right;
+}
+.cnt {
+  font-family: "Montserrat";
+  font-size: 18px;
+}
+
+.row.equal {
+  display: flex;
+  flex-wrap: wrap;
+}
+.row.equal > col-* {
+  background: red;
+}
+.row.equal > .col-lg-8, .row.equal > .col-md-8, .row.equal > .col-sm-8, .row.equal > .col-xs-12, .row.equal > .col-lg-4, .row.equal > .col-md-4, .row.equal > .col-sm-4 {
+  min-height: calc(100vh - 295px);
+  height: calc(100vh - 295px);
+  position: relative;
+  background: transparent;
+  font-size: 18px;
+}
+.row.equal > .col-lg-8.form-group, .row.equal > .col-md-8.form-group, .row.equal > .col-sm-8.form-group, .row.equal > .col-xs-12.form-group, .row.equal > .col-lg-4.form-group, .row.equal > .col-md-4.form-group, .row.equal > .col-sm-4.form-group {
+  min-height: unset;
+  height: unset;
+  position: relative;
+  background: transparent;
+}
+.row.equal > .col-lg-8 > div, .row.equal > .col-md-8 > div, .row.equal > .col-sm-8 > div, .row.equal > .col-xs-12 > div,.row.equal > .col-lg-4 > div, .row.equal > .col-md-4 > div, .row.equal > .col-sm-4 > div {
+  padding: 20px;
+  background: white;
+  height: 100%;
+}
+.row.equal > .col-lg-8 > div > div, .row.equal > .col-md-8  > div > div, .row.equal > .col-sm-8  > div > div, .row.equal > .col-xs-12  > div > div,.row.equal > .col-lg-4 > div > div, .row.equal > .col-md-4 > div > div,
+ .col-sm-4 > div > div {
+  padding-bottom: 20px;
+    background: white;
+}
+</style>

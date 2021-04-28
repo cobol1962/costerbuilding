@@ -1,0 +1,349 @@
+<div class="cnt" id="main" style="visibility:hidden;">
+<div class="row equal">
+   <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12" style="padding-right: 10px;">
+      <div section="main">
+         <div style="border-bottom:1px solid rgba(0, 0, 0, 0.1);">
+            <span style="font-family: 'Canela';font-style: normal;font-weight: bold; font-size: 36px; line-height: 36px;">Cart</span>
+            <img style="float:right;margin-left: 10px;" onclick="loadPage('invoice');" src="/images/browsecatalog.svg" />
+            <img id="scanbutton" style="float:right;" data-toggle="popover" data-trigger="click" data-placement="bottom" data-html="true" data-title="Scan or type barcode" data-original-title="" title="" src="/images/scanitem.svg" />
+         </div>
+         <div id="items" style="width:100%;padding-right:10px;"></div>
+         <table style="position:absolute;bottom: 20px;">
+            <tr>
+               <td style="vertical-align:bottom;">
+                  <img class="menutoggle" src="/images/3dots.svg" />
+                  <img class="menutoggle" style="display:none;" src="/images/3dotsclose.svg">
+               </td>
+               <td style="vertical-align:bottom;padding-left:5px;">
+                  <div class="menuitems" style="display:none;">
+                     <img onclick="loadedPages.shoppingCart.discountClickedFired();" src="/images/action_discount.svg" /><br />
+                     <img onclick="loadedPages.shoppingCart.loadSection('returnproduct');" style="margin-top: 5px;" src="/images/action_return.svg" /><br />
+                     <img onclick="loadedPages.shoppingCart.loadSection('addproduct');" style="margin-top: 5px;" src="/images/action_escape.svg" /><br />
+                  </div>
+               </td>
+            </tr>
+         </table>
+      </div>
+
+      <div section="addproduct" style="display:none;">
+         <div style="border-bottom:1px solid rgba(0, 0, 0, 0.1);">
+            <span style="font-family: 'Canela';font-style: normal;font-weight: bold; font-size: 36px; line-height: 36px;">Add Product</span>
+            <img onclick="loadedPages.shoppingCart.loadSection('main');" style="float:right;" src="/images/closesvg.svg" />
+          </div>
+          <form id="nart" style="padding:10px;">
+          <div class="row">
+              <div class="col-md-3 col-xs-12 form-group">
+                <select id="category" name="category" class="form-control">
+                  <option value="-1">SELECT CATEGORY</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-xs-12 form-group">
+                  <label for="price">PRICE</label>
+                  <input id="price" name="price" type="number" class="form-control" placeholder="Price" />
+                </div>
+                <div class="col-md-6 col-xs-12 form-group">
+                  <label for="productname">PRODUCT NAME</label>
+                  <input id="productname" name="productname" type="text" class="form-control" placeholder="Product Name" />
+                </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 col-xs-12 form-group">
+                <label for="productname">DESCRIPTION</label>
+                <textarea rows="6" id="description" name="description"  class="form-control" placeholder="Description" />
+              </div>
+            </div>
+          </form>
+          <img src="/images/continueadd.svg" style="float:right;" onclick="$('#nart').submit();" />
+        </div>
+
+
+     <div section="returnproduct" style="display:none;">
+        <div style="border-bottom:1px solid rgba(0, 0, 0, 0.1);">
+           <span style="font-family: 'Canela';font-style: normal;font-weight: bold; font-size: 36px; line-height: 36px;">Return Product</span>
+           <img onclick="loadedPages.shoppingCart.loadSection('main');" style="float:right;" src="/images/closesvg.svg" />
+        </div>
+        <form id="rnart" style="padding:10px;">
+          <div class="row">
+              <div class="col-md-3 col-xs-12 form-group">
+                <select id="rcategory" name="rcategory" class="form-control">
+                  <option value="-1">SELECT CATEGORY</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-xs-12 form-group">
+                  <label for="rprice">PRICE</label>
+                  <input id="rprice" name="rprice" type="number" class="form-control" placeholder="Price" />
+                </div>
+                <div class="col-md-6 col-xs-12 form-group">
+                  <label for="rproductname">ITEM ID/SERIAL NO.</label>
+                  <input id="rproductname" name="rproductname" type="text" class="form-control" placeholder="Item ID/Serial No." />
+                </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 col-xs-12 form-group">
+                <label for="rdescription">DESCRIPTION</label>
+                <textarea rows="6" id="rdescription" name="rdescription"  class="form-control" placeholder="Description" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 col-xs-12 form-group">
+                <label for="invoiceno">RETURN FROM INVOICE NO./ DATE</label>
+                <input class="form-control invoiceno" id="invoiceno" name="invoiceno"  class="form-control" placeholder="INVOICE NO./ DATE" />
+              </div>
+            </div>
+          </form>
+        <img src="/images/continueadd.svg" style="float:right;" onclick="$('#rnart').submit();" />
+    </div>
+   </div>
+   <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style="padding-left: 60px;">
+      <div>
+         <div style="border-bottom:1px solid rgba(0, 0, 0, 0.1);">
+            <span style="font-family: 'Canela';font-style: normal;font-weight: bold; font-size: 36px; line-height: 36px;">Summary</span>
+            <span  id="nits" style="margin-top:10px;float: right;font-family: 'Canela';font-style: normal;font-weight: bold; font-size: 24px; line-height: 24px;margin-left:10px;">&nbsp;items</span>
+            <span id="nit" style="margin-top:10px;float: right;font-family: 'Canela';font-style: normal;font-weight: bold; font-size: 24px; line-height: 24px;">11</span>&nbsp;&nbsp;
+         </div>
+         <table id="total_div" style="margin-top:20px;margin-right:0px;width:100%;font-size:18px;table-layout:auto;float:right;">
+            <tbody>
+              <tr>
+                    <td style="text-align:left;"><span>Country: </span></td>
+                <td style="text-align:right;">
+                  <select id="countries" class="form-control" style="width:200px;min-width:200px;max-width: 200px !important;min-width:100%;margin-right:10px;">
+                   <option></option>
+                </select>
+                <button style="display:none;" onclick="$('#countries').select2('open');">▼</button>
+                </td></tr>
+                <tr style="">
+                  <td style="text-align:left;padding-bottom:100px;vertical-align:top;padding-top:10px;">
+                    <label refundcontainer id="dfw" style="display:none;margin-top:10px;" onclick="loadedPages.shoppingCart.checkCode();" id="dRefund">VAT Refund</label>
+                  </td>
+                  <td style="text-align:right;vertical-align:top;padding-top:10px;">
+                    <div refundcontainer id="refundContainer" class="pretty p-switch p-fill" style="display:none;font-size:17px;clear:both;">
+                       <input type="checkbox" checked id="directRefund" onchange="loadedPages.shoppingCart.calculateRefund();"/>
+                       <div class="state p-success">
+                          <label></label>
+                       </div>
+                    </div>
+                  </td>
+               </tr>
+               <tr>
+                  <td style="text-align:left;"><span id="subtotal" realvalue="154971">Subtotal: </span></td>
+                  <td style="text-align:right;">€&nbsp;154.971,00</td>
+               </tr>
+               <tr>
+                  <td style="text-align:left;padding-top:10px;padding-bottom:10px;"><span spdiscount1="" style="display:none;">Discount: </span></td>
+                  <td style="text-align:right;padding-top:10px;padding-bottom:10px;">
+                     <table>
+                        <tbody>
+                           <tr>
+                             <td style="text-align:right;width:100%;"><input type="text" class="form-control" style="display:none;clear:both;float:right;text-align:right;width:100px;" onchange="loadedPages.shoppingCart.generalDisc();" spdiscount1="" placeholder="Discount" id="masterdiscount"></td>
+                             <td>
+                                  <select spdiscount1="" style="display:none;width:58px;margin-left: 5px;" class="form-control" id="mdt" onchange="loadedPages.shoppingCart.switchMasterDiscountType(this);">
+                                    <option value="">%</option>
+                                    <option value="euro">€</option>
+                                  </select>
+                              </td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </td>
+               </tr>
+               <tr spdiscount1="">
+                  <td spdiscount1="" style="text-align:left;display:none;"><span id="total">Total: </span></td>
+                  <td spdiscount1="" style="display:none;text-align:right;">€&nbsp;154.971,00</td>
+               </tr>
+               <tr norefund="" style="display: none;">
+                  <td style="text-align:left;"><span style="width:100px;min-width:100%;float:right;opacity:0.7" id="vatexcluded">Excluding VAT: </span></td>
+                  <td style="text-align:right;">€&nbsp;128.075,21</td>
+               </tr>
+               <tr>
+                  <td style="text-align:left;"><span style="width:100px;min-width:100%;float:right;opacity:0.7" id="vat">Vat 21%: </span></td>
+                  <td style="text-align:right;">€&nbsp;26.895,79</td>
+               </tr>
+               <tr style="" refund="">
+                  <td style="text-align:left;"><span id="admincharge">Admin Charge: </span></td>
+                  <td style="text-align:right;">€&nbsp;2.092,79</td>
+               </tr>
+               <tr style="display:none;" refundddd="">
+                  <td style="text-align:left;"><span id="withcharge">With charge: </span></td>
+                  <td style="text-align:right;">€&nbsp;157.063,11</td>
+               </tr>
+               <tr style="opacity: 0.7;" refund="">
+                  <td style="text-align:left;"><span id="vatchargeexcl">Excluding VAT: </span></td>
+                  <td style="text-align:right;">€&nbsp;128.075,21</td>
+               </tr>
+               <tr style="display:none;opacity:0.7;">
+                  <td style="text-align:left;"><span id="vatcharge">Vat: </span></td>
+                  <td style="text-align:right;">€&nbsp;27.258,89</td>
+               </tr>
+               <tr style="" refund="">
+                  <td style="text-align:left;"><span id="torefund">VAT (refund): </span></td>
+                  <td style="text-align:right;">€&nbsp;24.803,00</td>
+               </tr>
+            </tbody>
+         </table>
+         <table style="position:absolute;bottom: 20px;right:0px;">
+            <tr>
+               <td style="vertical-align:bottom;padding-left:5px;">
+                  <div>
+                     <img onclick="loadedPages.shoppingCart.drawCart();" src="/images/updatechart.svg" /><br />
+                     <div style="position:relative;">
+                       <img style="margin-top: 5px;" checkoutenabled src="/images/topay.svg" /><br />
+                       <input nrfnd id="cartToPay" style="display:none;float:right;font-size:18px;font-weight:bold;position:absolute;top:25px;left:310px;" class="norefund" type="text" style="text-align:center;" />
+                         <input rfnd id="cartToPay" style="display:none;float:right;font-size:18px;font-weight:bold;position:absolute;top:25px;left:310px;display:none;float:right;" class="refund"  type="text" style="text-align:center;" />
+                     </div>
+                      <img onclick="loadedPages.shoppingCart.checkIsLogged();" style="margin-top: 5px;" checkoutenabled src="/images/continuecheckout.svg" /><br />
+
+                  <!--    <input nrfnd id="cartToPay" style="display:none;" class="norefund" type="text" style="text-align:center;" />
+                      <input rfnd id="cartToPay" style="display:none;" class="refund"  type="text" style="text-align:center;" />-->
+
+                      <img style="display:none;" checkoutdisabled src="/images/continuecheckout_d.svg" /><br />
+                  </div>
+               </td>
+            </tr>
+         </table>
+      </div>
+   </div>
+</div>
+</div>
+<div id="scanContent" style="display: none;">
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="Bar code" id="scanvalue" onchange="scanResult(this.value);"
+            aria-label="Recipient's username with two button addons" aria-describedby="button-addon1">
+        <div class="input-group-append" id="button-addon1" />
+
+        </div>
+    </div>
+
+<!--<div style="display:none;"  id="fullshoppingcart">
+  <div style="text-align:center;width;100%;">
+    <img onclick="loadedPages.shoppingCart.discountClickedFired();" style="height:100px;margin:20px auto;" src="https://costercatalog.com/coster/www/images/cart_icon_full.png" />
+    <br /><span spdiscount2 style="font-size:13px;display:none;">Discount approved by: </span><span spdiscount2 style="font-size:13px;display:none;" id="dap"></span>
+  </div>
+
+  <div style="text-align:center;width;100%;margin-top:10px;">
+    <span><b>Summary</b></span>
+    <br />
+    <div>
+    <select id="countries" class="form-control" style="width:200px;min-width:200px;max-width: 200px !important;margin-left:10px;min-width:100%;margin-right:10px;">
+      <option></option>
+    </select>
+    <button onclick="$('#countries').select2('open');">▼</button>
+    <br /><br />
+    </div>
+    <div refundcontainer id="refundContainer" class="pretty p-switch p-fill" style="margin-left:10px;display:none;font-size:17px;margin-top:10px;clear:both;">
+      <input type="checkbox" checked id="directRefund" onchange="loadedPages.shoppingCart.calculateRefund();"/>
+      <div class="state p-success">
+          <label></label>
+       </div>
+
+      </div>
+      <label refundcontainer id="dfw" style="display:none;margin-left:5px;margin-top:10px;" onclick="loadedPages.shoppingCart.checkCode();" id="dRefund">VAT Refund</label>
+
+      <br />
+    <div id="total_div" style="width:100px;min-width:100%;float:right;text-align:right;background:white;padding:10px;font-size:15px;">
+      <table style="margin-right:0px;width:300px;table-layout:auto;float:right;">
+        <tr><td style="text-align:left;"><span id="subtotal">Subtotal: </span></td><td style="text-align:right;"><span style="min-width:75px;width:75px;"></span></td></tr>
+        <tr>
+            <td style="text-align:left;"><span spdiscount1 style="display:none;">Discount: </span></td>
+            <td style="text-align:right;"><table><tr>
+              <td><span spdiscount1 style="display:none;" onclick="delete localStorage.generalDiscount;loadedPages.shoppingCart.drawCart();">Apply</span></td>
+              <td style="max-width:30px;"><div id="mdt" onclick="loadedPages.shoppingCart.switchMasterDiscountType(this);" spdiscount1 style="display:none;" class="discounttype"></div></td>
+              <td style="text-align:right;width:100%;"><input type="text"  class="form-control" style="display:none;clear:both;float:right;text-align:right;width:100px;" spdiscount1 placeholder="Discount" id="masterdiscount"></input></td>
+            </tr></table>
+          </td></tr>
+
+        <tr spdiscount1><td  spdiscount1 style="text-align:left;display:none;"><span id="total">Total: </span></td><td spdiscount1  style="display:none;text-align:right;"><input type="text" onchange="loadedPages.shoppingCart.drawCart();" class="form-control" style="display:none;clear:both;float:right;text-align:right;width:100px;" spdiscount1 placeholder="Discount" id="masterdiscount"></input></td></tr>
+        <tr norefund><td  style="text-align:left;"><span style="width:100px;min-width:100%;float:right;opacity:0.7" id="vatexcluded">Excluding VAT: </span></td><td style="text-align:right;"><span style="min-width:75px;"></span></td></tr>
+        <tr><td  style="text-align:left;"><span style="width:100px;min-width:100%;float:right;opacity:0.7" id="vat">Vat 21%: </span></td><td style="text-align:right;"><span style="min-width:75px;"></span></td></tr>
+        <tr style="display:none;" refund><td  style="text-align:left;"><span id="admincharge">Admin Charge: </span></td><td style="text-align:right;"><span style="min-width:75px;"></span></td></tr>
+        <tr style="display:none;" refundddd><td  style="text-align:left;"><span id="withcharge">With charge: </span></td><td style="text-align:right;"><span style="min-width:75px;"></span></td></tr>
+        <tr style="display:none;opacity:0.7;" refund><td  style="text-align:left;"><span id="vatchargeexcl">Excluding VAT: </span></td><td style="text-align:right;"><span style="min-width:75px;"></span></td></tr>
+        <tr style="display:none;opacity:0.7;" ><td  style="text-align:left;"><span id="vatcharge">Vat: </span></td><td style="text-align:right;"><span style="min-width:75px;"></span></td></tr>
+        <tr style="display:none;" refund><td  style="text-align:left;"><span id="torefund">VAT (refund): </span></td><td style="text-align:right;"><span style="min-width:75px;"></span></td></tr>
+
+      </table>
+    </div><br />
+    <div style="text-align:center;width;100%;margin-top:10px;">
+      <span>To be paid</span>
+    </div>
+    <div style="height:40px;vertical-align:middle;width:100px;min-width:100%;padding:10px;font-size:18px;background-color:#ececec;font-weight:bold;">
+      <input nrfnd id="cartToPay" style="display:none;" class="norefund" type="text" style="text-align:center;" />
+      <input rfnd id="cartToPay" style="display:none;" class="refund"  type="text" style="text-align:center;" />
+    </div>
+  </div>
+    <button style="margin-top:10px;top:0px;position:relative;min-width:60%;width:60%;left:20%;margin:10px auto;" class="btn-black rounded" onclick="loadedPages.shoppingCart.checkIsLogged();">Continue checkout</button>
+</div>
+
+
+
+<div style="display:none;width:100%;text-align:center;padding-left:40px;padding-right:40px;" id="emptyshoppingcart">
+
+  <img style="height:100px;margin-top:20px;" src="https://costercatalog.com/coster/www/images/cart_icon_empty.png" /><br />
+  <span style="top:20px;position:relative;font-size:20px;"><b>There are no items in your bag</b></span>
+  <button style="margin-top:10px;top:40px;position:relative;" class="btn-black rounded" onclick="loadPage('invoice');">Browse catalog</button>
+  <div>
+-->
+<style>
+  .cnt {
+    font-family: "Montserrat";
+  }
+  body {
+    min-height: 100%;
+    height: 100%;
+  }
+  .row.equal {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .form-control {
+    margin-top: 10px;
+  }
+  .col-lg-8, .col-md-8, .col-sm-8, .col-xs-12, .col-lg-4, .col-md-4, .col-sm-4 {
+    min-height: calc(100vh - 130px);
+    height: calc(100vh - 130px);
+    position: relative;
+    background: transparent;
+  }
+  .col-lg-8.form-group, .col-md-8.form-group, .col-sm-8.form-group, .col-xs-12.form-group, .col-lg-4.form-group, .col-md-4.form-group, .col-sm-4.form-group {
+    min-height: unset;
+    height: unset;
+    position: relative;
+    background: transparent;
+  }
+  .col-lg-8 > div, .col-md-8 > div, .col-sm-8 > div, .col-xs-12 > div,.col-lg-4 > div, .col-md-4 > div, .col-sm-4 > div {
+    padding: 20px;
+    background: white;
+    height: 100%;
+  }
+  .col-lg-8 > div > div, .col-md-8  > div > div, .col-sm-8  > div > div, .col-xs-12  > div > div,.col-lg-4 > div > div, .col-md-4 > div > div,
+   .col-sm-4 > div > div {
+    padding-bottom: 20px;
+      background: white;
+  }
+#ttt td {
+  padding:5px;
+  vertical-align: middle;
+}
+.dsct td {
+  vertical-align: top;
+}
+img {
+  cursor: pointer;
+}
+label {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+}
+.form-control.invoiceno {
+  background-image: url(/images/invoiceno.svg);
+  background-position: 10px center;
+  background-repeat: no-repeat;
+  padding-left: 55px;
+}
+</style>

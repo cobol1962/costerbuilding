@@ -1,0 +1,147 @@
+
+<div class="container-fluid" id="main" style="visibility: hidden;">
+  <div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding:10px;">
+      <span style="font-family:'Canela'; font-size:24px;font-weight:bold;" id="greeting"></span>
+      <br /><span style="font-family:'Canela'; font-size:40px;font-weight:bold;" id="spname"></span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12" style="padding:10px;">
+      <div class="leftcol">
+        <span class="leftcol_1">Create Invoice</span><br />
+        <span class="leftcol_2">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.</span><br />
+        <button class="btn btn-transparent" onclick="loadPage('shoppingCart');"><span>CREATE INVOICE</span></button>
+      </div>
+    </div>
+    <div style="padding:10px;" class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+      <div class="midcol">
+        <span class="leftcol_1">My Invoices</span>
+        <img id="arght" src="/images/arrowRight.svg" style="margin-top:10px;float:right;" />
+        <br />
+        <div style="width:100%;position:absolute;top:50%;">
+          <table style="width:90%;">
+            <tr>
+              <td>
+                <span class="leftcol_1" id="mynmb" style="float:left;"></span>
+              </td>
+              <td>
+                <span class="leftcol_1" id="mydue" style="float:left;"></span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="ctext"  style="float:left;">INVOICES</span><br />
+              </td>
+              <td>
+                <span class="ctext"  style="float:left;">OUTSTANDING</span><br />
+              </td>
+            </tr>
+            </table>
+        </div>
+      </div>
+    </div>
+    <div style="padding:10px;" class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+      <button class="btn btn-background" style="background-image:url(/images/profile.svg);"><span>MY PROFILE</span></button>
+      <button class="btn btn-background" style="margin-top:10px;background-image:url(/images/customers.svg);"><span>MY CUSTOMERS</span></button>
+      <button class="btn btn-background" style="margin-top:10px;background-image:url(/images/stats.svg);"><span>MY STATS</span></button>
+      <button class="btn btn-background" style="margin-top:10px;background-image:url(/images/schedule.svg);"><span>MY SCHEDULE</span></button>
+
+    </div>
+  </div>
+  <div class="row">
+      <div style="padding:10px;" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div style="width:100%;">
+          <span class="leftcol_1">Catalog</span>
+          <img id="arght" src="/images/arrowRight.svg" style="margin-top:10px;float:right;" />
+        </div>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 catalog diamonds"><div><span class="cat" style="color:black;">DIAMONDS</span></div></div>
+      <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 catalog jewelry"><div><span class="cat">JEWELRY</span></div></div>
+      <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 catalog watches"><div><span class="cat">WATCHES</span></div></div>
+      <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 catalog engagement"><div></div></div>
+  </div>
+</div>
+<style>
+  .catalog {
+    padding: 10px;
+  }
+  .catalog > div {
+    min-width: 100%;
+    min-height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-size: 100% 100%;
+  }
+  .catalog.diamonds > div {
+    background-image: url(/images/diamonds.svg);
+  }
+  .catalog.jewelry > div {
+    background-image: url(/images/jewelry.svg);
+  }
+  .catalog.watches > div {
+    background-image: url(/images/watches.svg);
+  }
+  .catalog.engagement > div {
+    background-image: url(/images/engagement.svg);
+  }
+  .catalog > div > span {
+    color: white;
+    font-family: "Montserrat";
+    font-size: 18px;
+    margin-left: 50px;
+    margin-top: 100px;
+    position:relative;
+    top: 20px;
+  }
+
+  .ctext {
+    font-family: "Montserrat";
+    font-size: 20px;
+    line-height: 24px;
+
+  }
+  .leftcol {
+    z-index: 100;
+    min-width: 100%;
+    background-image: url(/images/invoiceBackground.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding-right: 10px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    padding-right: 20px;
+  }
+  .midcol {
+    z-index: 100;
+    min-width: 100%;
+    background-color: white;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    padding-right: 20px;
+
+  }
+.leftcol_1 {
+  font-family: "Canela";
+  font-weight: bold;
+}
+.leftcol_2 {
+  font-family: "Montserrat";
+  margin-top:20px;
+}
+.btn-transparent {
+  position:absolute;
+  bottom: 20px;
+}
+@media (max-width: 992px)
+  .catalog > div > span {
+    font-size: 11px;
+  }
+}
+</style>

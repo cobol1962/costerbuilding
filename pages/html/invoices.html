@@ -1,0 +1,118 @@
+
+  <section id="invoices">
+    <div style="max-width:100%;overflow-x: auto;">
+      <div id="invoiceFilters" style="min-width:100%;float:left;">
+        <div style="float:left">
+          <label>Invoice Date</label><br />
+          <div id="t_0" style="float:left"></div>
+        </div>
+        <div style="float:left;margin-left:5px;">
+          <label>Invoice No. (just number)</label><br />
+          <div id="t_1" style="float:left"></div>
+        </div>
+        <div style="float:left;margin-left:5px;">
+          <label>Is Locked</label><br />
+          <div id="t_2" style="float:left"></div>
+        </div>
+        <div style="float:left;margin-left:5px;">
+          <label>Is Due</label><br />
+          <div id="t_3" style="float:left"></div>
+        </div>
+        <div style="float:left;margin-left:5px;">
+          <label>Discount</label><br />
+          <div id="t_discount" style="float:left"></div>
+        </div>
+        <div style="float:left;margin-left:5px;">
+          <label>Customer(any part of data)</label><br />
+          <div id="t_4" style="float:left"></div>
+        </div>
+        <div style="float:left;margin-left:5px;">
+          <label>Tour No.</label><br />
+          <div id="t_5" style="float:left"></div>
+        </div>
+        <div style="float:left;margin-left:5px;">
+          <label>Tour Operator</label><br />
+          <div id="t_6" style="float:left"></div>
+        </div>
+        <div style="float:left;margin-left:5px;">
+          <label>Showroom</label><br />
+          <div id="t_7" style="float:left"></div>
+        </div>
+        <div style="float:left;margin-left:5px;">
+          <label>Sales Person</label><br />
+          <div id="t_8" style="float:left"></div>
+        </div>
+        <div style="float:left;margin-left:5px;">
+          <label>Discount Approved</label><br />
+          <div id="t_9" style="float:left"></div>
+        </div>
+      </div>
+    <table id="invoicesTable" class="display" style="min-width:100%;max-width:100%;width:100%;">
+      <thead>
+          <tr style="display:none;">
+            <th></th>
+            <th style="width:50px;"></th>
+            <th action></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+
+            <th style="display:none;">Status</th>
+            <th style="display:none;">Ver</th>
+            <th style="display:none;">Locked</th>
+            <th style="display:none;">Reference</th>
+            <th style="display:none;">Reference</th>
+            <th style="display:none;">Reference</th>
+
+          </tr>
+          <tr>
+            <th>Date</th>
+            <th>No</th>
+                <th action>Action</th>
+              <th>Customer</th>
+            <th>Tour</th>
+            <th>Touroperater</th>
+            <th>Showroom</th>
+
+            <th style="display:none;">Sales Persom</th>
+            <th>Discount Approved</th>
+            <th style="text-align:right;">Total</th>
+            <th>Discount</th>
+            <th>Nett</th>
+
+            <th style="display:none;">Status</th>
+            <th style="display:none;">Version</th>
+            <th style="display:none;">Locked</th>
+              <th style="display:none;">Reference</th>
+            <th style="display:none;">Reference</th>
+            <th style="display:none;">Reference</th>
+          </tr>
+        </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+  </section>
+<style>
+  #invoicesTable td:nth-of-type(13n),#invoicesTable td:nth-of-type(8n), #invoicesTable td:nth-of-type(14n),
+#invoicesTable td:nth-of-type(15n),#invoicesTable td:nth-of-type(16n), #invoicesTable td:nth-of-type(17n),
+#invoicesTable td:nth-of-type(18n)  {
+  display:none;
+}
+#invoicesTable td:nth-of-type(10n)  {
+  text-align: right;
+}
+  #invoicesTable td {
+      vertical-align:bottom;
+  }
+#invoicesTable td:nth-of-type(1st),  #invoicesTable th:nth-of-type(1st)  {
+  width:50px;
+}
+</style>
