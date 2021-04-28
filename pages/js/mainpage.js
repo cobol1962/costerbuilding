@@ -1,7 +1,6 @@
 loadedPages.mainpage = {
   spp: null,
   initialize: function() {
-  
     if (localStorage.salesPerson === undefined) {
       loadPage("homepage");
       return;

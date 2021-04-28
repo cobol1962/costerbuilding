@@ -756,7 +756,15 @@ loadedPages.shoppingCart = {
     //  loadedPages.shoppingCart.drawCart();
   },
   checkIsLogged: function() {
-
+    if (Object.keys(shoppingCartContent).length == 0) {
+      showModal({
+        type: "error",
+        showCancelButton: false,
+        confirmButtonText: "CONTINUE",
+        title: "Shopping cart is empty."
+      })
+      return false;
+    }
     if (localStorage.customerCountry === undefined) {
       showModal({
         type: "error",

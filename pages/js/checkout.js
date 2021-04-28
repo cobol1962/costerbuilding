@@ -932,6 +932,27 @@ loadedPages.checkout = {
     prepareOverview: function() {
         //loadedPages.checkout.paymentToLS();
 
+        $('#selectSalesPerson').on('select2:select', function (e) {
+          var csel = e.params.data;
+          var ssssp = {
+            EmplID: csel.id,
+            Employee: csel.text,
+            Email: csel.email
+          }
+          localStorage.salesPerson = JSON.stringify(ssssp);
+        });
+        $('#selectShowRooms').on('select2:select', function (e) {
+          var csel = e.params.data;
+          var ssssp1 = {
+            showroomid: csel.id,
+            name: csel.text
+          }
+          localStorage.sroom = JSON.stringify(ssssp1);
+        });
+        var ss = $.parseJSON(localStorage.sroom)
+        $('#selectShowRooms').val(ss.showroomid).trigger("change");
+        var sss = $.parseJSON(localStorage.salesPerson);
+        $('#selectSalesPerson').val(sss.EmplID).trigger("change");
         $("[tg='4']").removeClass("active");
         $("[tg='4']").addClass("done");
         $("#4").hide();
@@ -965,11 +986,10 @@ loadedPages.checkout = {
 
         loadedPages.checkout.loadPart(6);
         return;
-        var sp = $.parseJSON(localStorage.sp);
-        console.log(sp)
+    var sr = $.parseJSON(localStorage.sroom);
+        var sp = $.parseJSON(localStorage.salesPerson);
         $("#served").html("");
-        $("<span>You have been served by <b>" + sp.Employee + "</b> in " + localStorage.showRoomName + "</span>").appendTo($("#served"));
-        $("#consultant").html(sp.Employee.replace(/\s/g, "").trim() + "@costerdiamonds.com");
+        $("<span>You have been served by <b>" + sp.Employee + "</b> in " + sr.name + "</span>").appendTo($("#served"));
         var tour = $.parseJSON(localStorage.tour);
         try {
             var sc = $.parseJSON(localStorage.customerCountry);
@@ -1209,14 +1229,16 @@ loadedPages.checkout = {
         $("#cinf").html("");
         $("#customerInfo").clone().appendTo($("#cinf"));
         $("#tnmbr").html(tour.ProjId);
-        var sp = $.parseJSON(localStorage.sp);
+        var sp = $.parseJSON(localStorage.salesPerson);
         var bc = textToBase64Barcode(15);
         $("#bar_image").attr("src", bc);
         $("#discountApproved").html(localStorage.dapproved);
         $("#mTableBody").html("");
         $("#pTable").html("");
         $("#summary").html("");
-        $("#servedby").html("You have been served by <b>" + sp.Employee + "</b> in " + localStorage.showRoomName);
+        var spppp = $.parseJSON(localStorage.sroom);
+        $("#servedby").html("You have been served by <b>" + sp.Employee + "</b> in " + spppp.name);
+        $("#consultant").html(sp.Email)
         $("#invoiceDate").html(moment(new Date()).format("DD-MM-YYYY HH:mm"));
         //  $("#invoiceDate").html("18-06-2020 16:33");
         var version = "";
@@ -1654,7 +1676,7 @@ loadedPages.checkout = {
         }
 
         api.call(((invoiceID == "") ? "insertInvoice" : "updateInvoiceDocuments"), function(res) {
-        
+
             if (res.status == "ok") {
                 loadedPages.checkout.currentInvoice = invoiceID.toString().padStart(5, "0");
                 invoiceID = res.invoiceid;
@@ -1884,6 +1906,7 @@ loadedPages.checkout = {
                                             $("#lblCartCount").html("0");
                                             $("[tg]").removeClass("done");
                                             delete localStorage.done;
+                                            localStorage.salesPerson = localStorage.sp;
                                             loadPage("mainpage");
                                             if (!app) {
 
@@ -2133,12 +2156,39 @@ loadedPages.checkout = {
         })
     },
     fillShowrooms: function() {
+      var cntrs = [];
+       api.call("getSalespersons", function(respo) {
+
+
+
+       $("#countries").select2({
+         data: cntrs,
+         width: 200
+       });
+        $.each(respo.data, function() {
+          if (this.status == "2") {
+            var ths = this;
+            var obj = {
+              id: ths.EmplID,
+              text: ths.Employee,
+              email: ths.Email,
+
+            }
+            cntrs.push(obj);
+          }
+        })
+        $("#selectSalesPerson").select2({
+          data: cntrs,
+          width: 200
+        });
+      },{},{},{});
         if (loadedPages.checkout.sps == null) {
             api.call("getShowrooms", function(res) {
                 $("#showrooms").html("");
                 var sorted = _.sortBy(res.data, 'forced');
                 loadedPages.checkout.sps = sorted;
                 $.each(sorted, function() {
+                    $("<option value='" + this.showroomid + "'>" + this.name + "</option>").appendTo($("#selectShowRooms"));
                     if (true) {
                         var dv = $("#mastershowrooms").clone();
                         dv.find("span").html(this.name);
@@ -2163,6 +2213,9 @@ loadedPages.checkout = {
                     }
                 })
 
+                $("#selectShowRooms").select2({
+                  allowClear: false,
+                });
             }, {}, {})
         } else {
             $("#showrooms").html("");
