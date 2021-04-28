@@ -1155,9 +1155,9 @@ $("#scanbutton").popover('hide');
       var exr = $("#currency").find("option:selected").attr("rate");
       html = img[0].outerHTML;
       html += "<div style='position:absolute;top:10px;left:155px;color:#ADADAD;'>" + res[0].SerialNo + "<br />";
-      html += "<span style='color:black;font-size:13px;'><b>" + res[0].SerialName + "</b></span>";
+      html += "<span style='color:black;font-size:13px;'></span>";
       if (res[0].CompName1 !== undefined && res[0].CompName1 !== null) {
-          html += "<br /><div style='color:black;font-size:13px;'>" + res[0].CompName1;
+          html += "<br /><div style='color:black;'>" + res[0].CompName1;
       }
       if (res[0].Discount > 0) {
           html += "<br /><div style='float:left;margin-top:5px;'><span style='color:red;'><b>" + res[0].Discount + "% </b></span><span style='text-decoration:line-through;'>" + (parseFloat(res[0].SalesPrice) * 1).toLocaleString("nl-NL", {
@@ -1193,7 +1193,7 @@ $("#scanbutton").popover('hide');
           SerialNo: data.SerialNo,
           ItemID: data.SerialNo,
           Discount: data.Discount,
-          productName: data.SerialNo + " " + data.SerialName,
+          productName:  data.SerialName,
           SalesPrice: data["SalesPrice"],
           available: data["OnhandQnt"],
           Discount: data["Discount"],

@@ -294,17 +294,14 @@ header('Access-Control-Allow-Origin: *');
 
   }
     function openPDF(data) {
-      alert("https://costerbuilding.com/api/invoice.php?invoice=" + data)
       $.ajax({
        url: "https://costerbuilding.com/api/invoice.php?invoice=" + data,
        type: "GET",
        success: function(res) {
-alert(res)
          var app = document.URL.indexOf( 'mobile' ) > -1;
           var blob = b64toBlob(res, "application/pdf");
           var blobUrl = URL.createObjectURL(blob);
-          alert(blobUrl);
-      //    alert(app)
+
           if (!app) {
            $("#inv").attr("src", blobUrl);
 
@@ -394,7 +391,6 @@ alert(res)
                  var start = pp;
 
                  api.call("listInvoicesByNumber", function(res) {
-                   alert(JSON.stringify(res));
                    $.each(res, function() {
                        var cs = "openPDF('" + this + "');";
                        html += "<tr><td colspan='4'><p onclick=" + cs + ">" + this + "</p></td></tr>";
