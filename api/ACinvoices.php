@@ -161,7 +161,7 @@ header('Access-Control-Allow-Origin: *');
   <script type="text/javascript" src="https://costercatalog.com/admin/js/underscore.js"></script>
   <script type="text/javascript" src="https://costercatalog.com/admin/js/sweetalert2.js"></script>
   <script type="text/javascript" src="https://costercatalog.com/admin/js/jquery.validate.js"></script>
-  <script type="text/javascript" src="https://costercatalog.com/admin/js/api.js"></script>
+  <script type="text/javascript" src="https://costerbuilding.com/js/api.js"></script>
     <script type="text/javascript" src="https://costercatalog.com/admin/js/moment.js"></script>
   <script>
   var invoiceTable = null;
@@ -172,10 +172,9 @@ header('Access-Control-Allow-Origin: *');
     function continueReady() {
 
       var ics = "<?=$_GET['invoices']?>";
-
       invoiceTable = $("#invoicesTable").DataTable({
           ajax: {
-              "url": "https://costercatalog.com/api/index.php?request=showInvoices&invoices=" + ics
+              "url": "https://costerbuilding.com/api/index.php?request=showInvoices&invoices=" + ics
           },
            "order": [[ 0, "desc" ]],
              "paging": false,
@@ -300,10 +299,11 @@ header('Access-Control-Allow-Origin: *');
        url: "https://costerbuilding.com/api/invoice.php?invoice=" + data,
        type: "GET",
        success: function(res) {
-
+alert(res)
          var app = document.URL.indexOf( 'mobile' ) > -1;
           var blob = b64toBlob(res, "application/pdf");
           var blobUrl = URL.createObjectURL(blob);
+          alert(blobUrl);
       //    alert(app)
           if (!app) {
            $("#inv").attr("src", blobUrl);
@@ -394,6 +394,7 @@ header('Access-Control-Allow-Origin: *');
                  var start = pp;
 
                  api.call("listInvoicesByNumber", function(res) {
+                   alert(JSON.stringify(res));
                    $.each(res, function() {
                        var cs = "openPDF('" + this + "');";
                        html += "<tr><td colspan='4'><p onclick=" + cs + ">" + this + "</p></td></tr>";

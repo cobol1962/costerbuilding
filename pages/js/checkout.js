@@ -1654,6 +1654,7 @@ loadedPages.checkout = {
         }
 
         api.call(((invoiceID == "") ? "insertInvoice" : "updateInvoiceDocuments"), function(res) {
+          alert(JSON.stringify(res))
             if (res.status == "ok") {
                 loadedPages.checkout.currentInvoice = invoiceID.toString().padStart(5, "0");
                 invoiceID = res.invoiceid;

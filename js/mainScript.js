@@ -2485,7 +2485,7 @@ function collectCurrentWork() {
 function openPDF(data) {
 
     $.ajax({
-        url: "https://costercatalog.com/api/invoice.php?invoice=" + data,
+        url: "https://costerbuilding.com/api/invoice.php?invoice=" + data,
         type: "GET",
         success: function(res) {
             var app = document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1;

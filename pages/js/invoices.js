@@ -1,7 +1,6 @@
 loadedPages.invoices = {
   table: null,
   initialize: function() {
-    alert("???????")
     $.fn.dataTable.ext.order['numeric_value'] = function  ( settings, col )
     {
       return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {

@@ -10,7 +10,7 @@ if (!isset($_REQUEST["secret"])) {
 }*/
 
 $filename = __DIR__ . "/invoices/" . $_GET["invoice"];
-var_dump($filename);
+
 echo base64_encode(file_get_contents($filename));
 
 /*$filename = __DIR__ . "/invoices/" . $_GET["invoice"];

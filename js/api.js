@@ -23,7 +23,7 @@ api = {
              type: "POST",
              dataType: "json",
              async: false,
-             data: dataEncrypted,
+             data: data,
             success: function(r) {
               if (r != null) {
                 if (r.d !== undefined) {
@@ -80,7 +80,6 @@ api = {
           };
             //  apiAjax.url = "https://costercatalog.comapi/index.php?request=" + endpoint;
             apiAjax.url = "https://costerbuilding.com/api/index.php?request=" + endpoint;
-
 
               for (var prop in ajaxExtend) {
                 if (ajaxExtend.hasOwnProperty(prop)) {
