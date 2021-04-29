@@ -141,7 +141,7 @@ loadedPages.checkout = {
 
                     data.push(obj);
                 })
-
+                alert(JSON.stringify(data));
                 $("#countries").select2({
                     allowClear: false,
                     data: data,
@@ -498,23 +498,25 @@ loadedPages.checkout = {
             } else {
                 for (var key in payments) {
                     var ths = payments[key];
+                    console.log(ths);
                     if (ths.amount > 0) {
+                    
                         var tr = $("#master").clone();
-                        tr.find("select").eq(0).val(ths.paymentMethod);
+                        tr.find("select").eq(0).val(ths.paymentID);
                         tr.find("select").eq(1).val(ths.currency);
                         //  tr.find("select").eq(1).hide();
                         tr.find("input").eq(0).attr("realvalue", ths.amount);
                         tr.find("input").eq(0).attr("euro", ths.original);
                         if (ths.date !== undefined) {
 
-                            tr.find("td").eq(3).find("input").val(ths.date);
-                            tr.find("td").eq(3).attr("realdate", ths.date);
+                            tr.find("td").eq(3).find("input").val(moment(ths.date).format("DD-MM-YYYY"));
+                            tr.find("td").eq(3).find("input").attr("realdate", ths.date);
                             tr.find("td").eq(3).attr("isOld", ths.isOld);
                             tr.find("td").eq(3).attr("version", ths.version);
                         } else {
 
                             tr.find("td").eq(3).find("input").val(ths.date);
-                            tr.find("td").eq(3).attr("realdate", moment(new Date()).format("YYYY-MM-DD HH:mm:ss"));
+                            tr.find("td").eq(3).find("input").attr("realdate", moment(new Date()).format("YYYY-MM-DD HH:mm:ss"));
                             tr.find("td").eq(3).attr("isOld", "0");
                             tr.find("td").eq(3).attr("version", "");
                         }
@@ -1676,7 +1678,6 @@ loadedPages.checkout = {
         }
 
         api.call(((invoiceID == "") ? "insertInvoice" : "updateInvoiceDocuments"), function(res) {
-
             if (res.status == "ok") {
                 loadedPages.checkout.currentInvoice = invoiceID.toString().padStart(5, "0");
                 invoiceID = res.invoiceid;
@@ -2156,16 +2157,11 @@ loadedPages.checkout = {
         })
     },
     fillShowrooms: function() {
+
       var cntrs = [];
+
        api.call("getSalespersons", function(respo) {
-
-
-
-       $("#countries").select2({
-         data: cntrs,
-         width: 200
-       });
-        $.each(respo.data, function() {
+         $.each(respo.data, function() {
           if (this.status == "2") {
             var ths = this;
             var obj = {

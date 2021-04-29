@@ -6787,6 +6787,7 @@ function sendActivationLinkAgain($data, $params, $mysqli) {
 function resetUserPassword($data, $params, $mysqli) {
   $res = [];
   $sql = "select * from salespersons where Email='" . $data["email"] . "'";
+
   $rez = $mysqli->query($sql);
   $rr = mysqli_fetch_assoc($rez);
   if ($rr["status"] != "2") {
@@ -6802,6 +6803,7 @@ function resetUserPassword($data, $params, $mysqli) {
   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
   $result=curl_exec($ch);
+  var_dump($result);
   $rs = json_decode($result);
 
   if ($rs->status == "ok") {

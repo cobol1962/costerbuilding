@@ -51,7 +51,7 @@ loadedPages.openInvoice =  {
   openPDF: function(data) {
 
        $.ajax({
-         url: "https://costercatalog.com/api/invoice.php?invoice=" + data,
+         url: "https://costerbuilding.com/api/invoice.php?invoice=" + data,
          type: "GET",
          success: function(res) {
            var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
@@ -118,7 +118,6 @@ loadedPages.openInvoice =  {
       query: loadedPages.openInvoice.invoice.customerid
     }
     api.call("getCustomerById", function(res) {
-
       localStorage.customerInfo = JSON.stringify(res[0]);
       customerInfoData = JSON.stringify(res[0]);
       loadedPages.openInvoice.setShoppingCart();
@@ -129,15 +128,17 @@ loadedPages.openInvoice =  {
       invoiceid: loadedPages.openInvoice.invoiceid
     }
     payments = [];
+
     api.call("getInvoicePayments", function(res) {
       $.each(res.data, function(ind) {
         var ths = this;
-
+      
             payments[ind]  = {
               paymentID: ths.paymentID,
               paymentMethod: ths.paymentMethods,
               currency: ths.currency,
               amount: ths.amount,
+              original: ths.original,
               date: ths.date,
               isOld: "1",
               version: ths.version

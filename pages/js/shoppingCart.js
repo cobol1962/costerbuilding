@@ -213,9 +213,13 @@ loadedPages.shoppingCart = {
     var totalDiscount = 0;
       if (localStorage.openInvoice !== undefined) {
         var cc = $.parseJSON(localStorage.customerInfo);
-        $('#countries').val(cc.countryCode).trigger("change");
-        var dtt = $("#countries").select2('data');
-        localStorage.customerCountry = JSON.stringify(dtt[0]);
+        if (cc.countryCode != "") {
+          $('#countries').val(cc.countryCode).trigger("change");
+          var dtt = $("#countries").select2('data');
+          localStorage.customerCountry = JSON.stringify(dtt[0]);
+        } else {
+
+        }
       }
 
       if (localStorage.customerCountry !== undefined) {
@@ -359,7 +363,7 @@ loadedPages.shoppingCart = {
        html += "</tr></table>";
      // html += "<div style='position:absolute;right:0px;color:black;font-size:13px;'>";
      html += "<td>";
-     if (  localStorage.openInvoice === undefined ) {
+     if (  true ) {
        html += "<div style='" + ((obj.available == "11111111") ? "display:none;" : "") + "'><table><tr><td style='vertical-align: bottom;'>";
        html += "<img onclick='loadedPages.shoppingCart.calcInput(this, -1);' src='/images/minus.svg' /></td>";
        html += "<td style='vertical-align: top;'><input class='form-control' readonly serialno='" + obj.SerialNo + "' max='" + obj.available + "' onfocus='lastFocused=$(this);' onchange='loadedPages.shoppingCart.recalculate(this);' style='color:black;text-align:right;width:70px;' quantity type='number' itemid='" + obj.ItemID + "' value='" + obj.quantity + "' /></td>";
@@ -704,6 +708,9 @@ loadedPages.shoppingCart = {
       localStorage.directRefundChecked = (($("#dfw").html().trim() == "VAT Refund") ? "0" : "1")
       if (localStorage.customerCountry !== undefined) {
         var data = $.parseJSON(localStorage.customerCountry);
+        if (data.id == "") {
+          return;
+        }
         if (data.CountryID !== undefined) {
           data.id = data.CountryID;
         }
@@ -756,15 +763,7 @@ loadedPages.shoppingCart = {
     //  loadedPages.shoppingCart.drawCart();
   },
   checkIsLogged: function() {
-    if (Object.keys(shoppingCartContent).length == 0) {
-      showModal({
-        type: "error",
-        showCancelButton: false,
-        confirmButtonText: "CONTINUE",
-        title: "Shopping cart is empty."
-      })
-      return false;
-    }
+
     if (localStorage.customerCountry === undefined) {
       showModal({
         type: "error",
@@ -806,7 +805,15 @@ loadedPages.shoppingCart = {
       } catch (err) {
 
       }
-
+      if (Object.keys(shoppingCartContent).length == 0) {
+        showModal({
+          type: "error",
+          showCancelButton: false,
+          confirmButtonText: "CONTINUE",
+          title: "Shopping cart is empty."
+        })
+        return false;
+      }
       loadPage("checkout");
     }
   },

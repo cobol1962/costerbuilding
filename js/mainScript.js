@@ -929,7 +929,7 @@ function addToInvoiceFromSaved(row) {
     row["additionalDiscount"] = "";
     row["startRealPrice"] = parseFloat(row["SalesPrice"]);
     row["realPrice"] = realPrice;
-    row["productName"] += "<br />" + row["CompName"];
+    row["productName"] += "<br />";
     console.log(row);
     shoppingCartContent[row["SerialNo"]] = row;
 
@@ -2552,36 +2552,48 @@ function localToShoppingCartContent() {
     }
 }
 function rPass() {
-  api.call("resetUserPassword", function(res) {
-  if (res.status == "ok") {
-    $("#login").modal("hide");
-    showModal({
-        type: "ok",
-        title: res.message,
-        allowBackdrop: false,
-        showCancelButton: false,
-        showClose: false,
-        confirmCallback: function() {
-            if ($("#login")[0].hasAttribute("nextpage")) {
-                loadPage($("#login").attr("nextpage"));
-            }
-        },
-        confirmButtonText: "CONTINUE"
-    })
+  var sss = $.parseJSON(atob(localStorage.salesPerson))
 
-  } else {
-    $("#login").modal("hide");
+$.ajax({
+  url: "https://costercatalog.com/api/index.php?request=resetUserPassword&secret=ddddddddddddddd",
+  type: "POST",
+  dataType: "json",
+  data: {email: sss.Email },
+  success: function(res) {
+    if (res.status == "ok") {
+      $("#login").modal("hide");
+      showModal({
+          type: "ok",
+          title: res.message,
+          allowBackdrop: false,
+          showCancelButton: false,
+          showClose: false,
+          confirmCallback: function() {
+              if ($("#login")[0].hasAttribute("nextpage")) {
+                  loadPage($("#login").attr("nextpage"));
+              }
+          },
+          confirmButtonText: "CONTINUE"
+      })
 
-    showModal({
-        type: "error",
-        title: res.message,
-        allowBackdrop: false,
-        showCancelButton: false,
-        showClose: false,
-        confirmButtonText: "TRY AGAIN"
-    })
+    } else {
+      $("#login").modal("hide");
+
+      showModal({
+          type: "error",
+          title: res.message,
+          allowBackdrop: false,
+          showCancelButton: false,
+          showClose: false,
+          confirmButtonText: "TRY AGAIN"
+      })
+    }
   }
-  }, { email: $("#spersons").val() }, {}, {});
+
+})
+
+  /*
+}, { email: sss.Email }, {}, {});*/
 }
 function detectMobile() {
     const toMatch = [
