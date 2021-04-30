@@ -116,6 +116,8 @@ function resizeCanvas() {
     // and only part of the canvas is cleared then.
 
 }
+var oldStorage = JSON.stringify(localStorage);
+
 $(document).ready(function() {
   /*$.ajax({
     url: "https://costerbuilding.com/api/index.php?request=getCode",
@@ -137,6 +139,23 @@ $(document).ready(function() {
         }, 100);
     }
   })*/
+  if (localStorage.changedTime === undefined) {
+    localStorage.clear();
+    localStorage.changedTime = (new Date()).toString();
+  } else {
+    var dt = new Date(localStorage.changedTime);
+    var dtt = new Date();
+    var difference = dtt - dt;
+    if (difference > 900000) {
+
+      localStorage.clear();
+      localStorage.changedTime = (new Date()).toString();
+    }
+  }
+  setInterval(function() {
+    localStorage.changedTime = (new Date()).toString();
+
+  }, 5000)
    continueReady();
 })
 function continueReady() {
