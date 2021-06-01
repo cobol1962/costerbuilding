@@ -159,7 +159,7 @@ $(document).ready(function() {
    continueReady();
 })
 function continueReady() {
-
+  
     $.fn.dataTable.ext.errMode = 'none';
     localStorage.invoiceLocked = 0;
     localStorage.recover = 1;

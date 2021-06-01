@@ -1,14 +1,15 @@
-<div class="cnt" id="main" style="visibility:hidden;">
+<div class="cnt" id="main" style="visibility:hidden;overflow:auto;">
 <div class="row equal">
    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12" style="padding-right: 10px;">
       <div section="main">
-         <div style="border-bottom:1px solid rgba(0, 0, 0, 0.1);">
+         <div style="border-bottom:1px solid rgba(0, 0, 0, 0.1);height:120px;">
             <span style="font-family: 'Canela';font-style: normal;font-weight: bold; font-size: 36px; line-height: 36px;">Cart</span>
+            <br /><span>Click barcode to scan an item or to enter an item ID OR click here to browse the catalog</span><br /><br />
             <img style="float:right;margin-left: 10px;" onclick="loadPage('invoice');" src="/images/browsecatalog.svg" />
             <img id="scanbutton" style="float:right;" data-toggle="popover" data-trigger="click" data-placement="bottom" data-html="true" data-title="Scan or type barcode" data-original-title="" title="" src="/images/scanitem.svg" />
          </div>
          <div id="items" style="width:100%;padding-right:10px;"></div>
-         <table style="position:absolute;bottom: 20px;">
+         <table style="position:fixed;bottom: -5px;">
             <tr>
                <td style="vertical-align:bottom;">
                   <img class="menutoggle" src="/images/3dots.svg" />
@@ -32,7 +33,7 @@
           </div>
           <form id="nart" style="padding:10px;">
           <div class="row">
-              <div class="col-md-3 col-xs-12 form-group">
+              <div class="col-md-6 col-xs-12 form-group">
                 <select id="category" name="category" class="form-control">
                   <option value="-1">SELECT CATEGORY</option>
                 </select>
@@ -66,7 +67,7 @@
         </div>
         <form id="rnart" style="padding:10px;">
           <div class="row">
-              <div class="col-md-3 col-xs-12 form-group">
+              <div class="col-md-6 col-xs-12 form-group">
                 <select id="rcategory" name="rcategory" class="form-control">
                   <option value="-1">SELECT CATEGORY</option>
                 </select>
@@ -99,29 +100,46 @@
     </div>
    </div>
    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style="padding-left: 60px;">
-      <div>
+      <div style="padding-left:10px;">
          <div style="border-bottom:1px solid rgba(0, 0, 0, 0.1);">
             <span style="font-family: 'Canela';font-style: normal;font-weight: bold; font-size: 36px; line-height: 36px;">Summary</span>
             <span  id="nits" style="margin-top:10px;float: right;font-family: 'Canela';font-style: normal;font-weight: bold; font-size: 24px; line-height: 24px;margin-left:10px;">&nbsp;items</span>
             <span id="nit" style="margin-top:10px;float: right;font-family: 'Canela';font-style: normal;font-weight: bold; font-size: 24px; line-height: 24px;">11</span>&nbsp;&nbsp;
          </div>
-         <table id="total_div" style="margin-top:20px;margin-right:0px;width:100%;font-size:18px;table-layout:auto;float:right;">
+         <table style="width:100%;">
+           <tr><td style="font-size:15px;text-align:left;"><b>You have served by:</b></td>
+           <td style="text-align:right;">
+            <select id="selectSalesPerson" class="form-control" style="width:200px;min-width:200px;max-width: 200px !important;min-width:100%;margin-right:10px;">
+
+             </select>
+           </td>
+         </tr>
+             <tr><td style="padding-top:5px;font-size:15px;text-align:left;"><b>In Showroom:</b></td>
+             <td style="text-align:right;padding-top:5px;">
+              <select id="selectShowRooms" class="form-control" style="width:200px;min-width:200px;max-width: 200px !important;min-width:100%;margin-right:10px;">
+
+               </select>
+             </td>
+           </tr>
+         </table>
+         <table id="total_div" style="margin-right:0px;width:100%;font-size:18px;table-layout:auto;float:right;">
             <tbody>
+
               <tr>
-                    <td style="text-align:left;"><span>Country: </span></td>
-                <td style="text-align:right;">
+                <td style="text-align:left;"><span>Country: </span></td>
+                <td style="text-align:right;padding-top:10px;">
                   <select id="countries" class="form-control" style="width:200px;min-width:200px;max-width: 200px !important;min-width:100%;margin-right:10px;">
                    <option></option>
                 </select>
                 <button style="display:none;" onclick="$('#countries').select2('open');">▼</button>
                 </td></tr>
                 <tr style="">
-                  <td style="text-align:left;padding-bottom:100px;vertical-align:top;padding-top:10px;">
-                    <label refundcontainer id="dfw" style="display:none;margin-top:10px;" onclick="loadedPages.shoppingCart.checkCode();" id="dRefund">VAT Refund</label>
+                  <td style="text-align:left;padding-bottom:10px;vertical-align:top;padding-top:10px;">
+                    <label refundcontainer id="dfw" style="display:none;margin-top:10px;"  id="dRefund">Direct Refund</label>
                   </td>
-                  <td style="text-align:right;vertical-align:top;padding-top:10px;">
+                  <td style="text-align:right;vertical-align:top;padding-top:5px;">
                     <div refundcontainer id="refundContainer" class="pretty p-switch p-fill" style="display:none;font-size:17px;clear:both;">
-                       <input type="checkbox" checked id="directRefund" onchange="loadedPages.shoppingCart.calculateRefund();"/>
+                       <input type="checkbox" checked id="directRefund" />
                        <div class="state p-success">
                           <label></label>
                        </div>
@@ -129,18 +147,18 @@
                   </td>
                </tr>
                <tr>
-                  <td style="text-align:left;"><span id="subtotal" realvalue="154971">Subtotal: </span></td>
-                  <td style="text-align:right;">€&nbsp;154.971,00</td>
+                  <td style="text-align:left;font-size:15px;"><span id="subtotal" realvalue="154971">Subtotal: </span></td>
+                  <td style="text-align:right;font-size:15px;">€&nbsp;154.971,00</td>
                </tr>
                <tr>
-                  <td style="text-align:left;padding-top:10px;padding-bottom:10px;"><span spdiscount1="" style="display:none;">Discount: </span></td>
-                  <td style="text-align:right;padding-top:10px;padding-bottom:10px;">
+                  <td style="text-align:left;font-size:15px;padding-top:10px;padding-bottom:10px;"><span spdiscount1="" style="display:none;">Discount: </span></td>
+                  <td style="text-align:right;font-size:15px;padding-top:10px;padding-bottom:10px;">
                      <table>
                         <tbody>
                            <tr>
-                             <td style="text-align:right;width:100%;"><input type="text" class="form-control" style="display:none;clear:both;float:right;text-align:right;width:100px;" onchange="loadedPages.shoppingCart.generalDisc();" spdiscount1="" placeholder="Discount" id="masterdiscount"></td>
+                             <td style="text-align:right;width:100%;font-size:15px;"><input type="text" class="form-control" style="display:none;clear:both;float:right;text-align:right;width:100px;" onchange="loadedPages.shoppingCart.generalDisc();" spdiscount1="" placeholder="Discount" id="masterdiscount"></td>
                              <td>
-                                  <select spdiscount1="" style="display:none;width:58px;margin-left: 5px;" class="form-control" id="mdt" onchange="loadedPages.shoppingCart.switchMasterDiscountType(this);">
+                                  <select spdiscount1="" style="display:none;width:65px;margin-left: 5px;font-size:15px;" class="form-control" id="mdt" onchange="loadedPages.shoppingCart.switchMasterDiscountType(this);">
                                     <option value="">%</option>
                                     <option value="euro">€</option>
                                   </select>
@@ -151,40 +169,40 @@
                   </td>
                </tr>
                <tr spdiscount1="">
-                  <td spdiscount1="" style="text-align:left;display:none;"><span id="total">Total: </span></td>
-                  <td spdiscount1="" style="display:none;text-align:right;">€&nbsp;154.971,00</td>
+                  <td spdiscount1="" style="text-align:left;font-size:15px;display:none;"><span id="total">Total: </span></td>
+                  <td spdiscount1="" style="font-size:15px;display:none;text-align:right;">€&nbsp;154.971,00</td>
                </tr>
                <tr norefund="" style="display: none;">
-                  <td style="text-align:left;"><span style="width:100px;min-width:100%;float:right;opacity:0.7" id="vatexcluded">Excluding VAT: </span></td>
-                  <td style="text-align:right;">€&nbsp;128.075,21</td>
+                  <td style="text-align:left;font-size:15px;"><span style="width:100px;font-size:15px;min-width:100%;float:right;opacity:0.7" id="vatexcluded">Excluding VAT: </span></td>
+                  <td style="text-align:right;font-size:15px;">€&nbsp;128.075,21</td>
                </tr>
                <tr>
-                  <td style="text-align:left;"><span style="width:100px;min-width:100%;float:right;opacity:0.7" id="vat">Vat 21%: </span></td>
-                  <td style="text-align:right;">€&nbsp;26.895,79</td>
+                  <td style="text-align:left;font-size:15px;"><span style="width:100px;min-width:100%;float:right;opacity:0.7" id="vat">Vat 21%: </span></td>
+                  <td style="text-align:right;font-size:15px;">€&nbsp;26.895,79</td>
                </tr>
                <tr style="" refund="">
-                  <td style="text-align:left;"><span id="admincharge">Admin Charge: </span></td>
-                  <td style="text-align:right;">€&nbsp;2.092,79</td>
+                  <td style="text-align:left;font-size:15px;"><span id="admincharge">Admin Charge: </span></td>
+                  <td style="text-align:right;font-size:15px;">€&nbsp;2.092,79</td>
                </tr>
                <tr style="display:none;" refundddd="">
-                  <td style="text-align:left;"><span id="withcharge">With charge: </span></td>
-                  <td style="text-align:right;">€&nbsp;157.063,11</td>
+                  <td style="text-align:left;font-size:15px;"><span id="withcharge">With charge: </span></td>
+                  <td style="text-align:right;font-size:15px;">€&nbsp;157.063,11</td>
                </tr>
                <tr style="opacity: 0.7;" refund="">
-                  <td style="text-align:left;"><span id="vatchargeexcl">Excluding VAT: </span></td>
-                  <td style="text-align:right;">€&nbsp;128.075,21</td>
+                  <td style="text-align:left;font-size:15px;"><span id="vatchargeexcl">Excluding VAT: </span></td>
+                  <td style="text-align:right;font-size:15px;">€&nbsp;128.075,21</td>
                </tr>
                <tr style="display:none;opacity:0.7;">
-                  <td style="text-align:left;"><span id="vatcharge">Vat: </span></td>
-                  <td style="text-align:right;">€&nbsp;27.258,89</td>
+                  <td style="text-align:left;font-size:15px;"><span id="vatcharge">Vat: </span></td>
+                  <td style="text-align:right;font-size:15px;">€&nbsp;27.258,89</td>
                </tr>
                <tr style="" refund="">
-                  <td style="text-align:left;"><span id="torefund">VAT (refund): </span></td>
-                  <td style="text-align:right;">€&nbsp;24.803,00</td>
+                  <td style="text-align:left;font-size:15px;"><span id="torefund">VAT (refund): </span></td>
+                  <td style="text-align:right;font-size:15px;">€&nbsp;24.803,00</td>
                </tr>
             </tbody>
          </table>
-         <table style="position:absolute;bottom: 20px;right:0px;">
+         <table style="position:absolute;bottom: 20px;right:20px;">
             <tr>
                <td style="vertical-align:bottom;padding-left:5px;">
                   <div>

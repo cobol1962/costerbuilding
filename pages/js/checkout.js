@@ -26,6 +26,7 @@ loadedPages.checkout = {
         })
         $("#stour").select2({
             allowClear: true,
+            dropdownAutoWidth : true
         });
 
         loadedPages.checkout.fillShowrooms();
@@ -110,7 +111,7 @@ loadedPages.checkout = {
             $("#saledate").datepicker("setDate", new Date());
         }
         if (localStorage.reference !== undefined) {
-            $("#reference").val(localStorage.reference);
+            $("#reference").val(localStorage.reference.replace("undefined", ""));
         }
         if (localStorage.isproform !== undefined) {
             $("#proforma").val(localStorage.isproform);
@@ -141,7 +142,6 @@ loadedPages.checkout = {
 
                     data.push(obj);
                 })
-                alert(JSON.stringify(data));
                 $("#countries").select2({
                     allowClear: false,
                     data: data,
@@ -257,6 +257,9 @@ loadedPages.checkout = {
             var data = $('#countries').select2('data');
             return (data[0].id != "");
         }, "This field is mandatory");
+        $.validator.addMethod("genderSelected", function(value, element) {
+            return ($('#ptitle').val() != "-1");
+        }, "This field is mandatory");
         $(".form-group").css({
             marginBottom: 25
         })
@@ -270,6 +273,9 @@ loadedPages.checkout = {
                 },
                 name: {
                     required: true
+                },
+                ptitle: {
+                  genderSelected: true
                 }
             },
             submitHandler: function(form) {
@@ -428,6 +434,8 @@ loadedPages.checkout = {
     setPayments: function() {
 
         api.call("getPMethods", function(res) {
+          $("<option value='-1' iswwftcheck='-1'>" + "Select" + "</option>").appendTo($("#paymentMethods"));
+
             $.each(res, function() {
                 if (this.IsAdminCharge == "0" && this.IsVatRefund == "0") {
                     $("<option value='" + this.PaymentID + "' iswwftcheck='" + this.IsWWFTCheck + "'>" + this.Payment + "</option>").appendTo($("#paymentMethods"));
@@ -458,12 +466,13 @@ loadedPages.checkout = {
             });
 
             if (vatRefund) {
-                var tpp = parseInt(localStorage.payWithRefund);
-                if (Object.keys(payments).length == 0) {
+                var tpp = (localStorage.payWithRefund);
+
+              /*  if (Object.keys(payments).length == 0) {
                     loadedPages.checkout.calculatePayments();
-                }
+                }*/
             } else {
-                var tpp = parseInt(localStorage.payNoRefund);
+                var tpp = (localStorage.payNoRefund);
             }
             if (tpp < 0) {
                 tpp = 0;
@@ -472,17 +481,21 @@ loadedPages.checkout = {
                 style: 'currency',
                 currency: 'EUR'
             }));
-
             if (Object.keys(payments).length == 0) {
 
                 var tr = $("#master").clone();
-                tr.find("select").eq(0).val("1");
+                tr.find("select").eq(0).val("-1");
                 //  tr.find("select").eq(1).hide();
-                tr.find("input").attr("realvalue", tpp);
-                tr.find("input").attr("euro", tpp);
+
                 //    alert(parseFloat(tpp))
                 //      tr.find("input").val(tpp);
 
+                var thenum = tpp.toString().replace(/^\D+/g, '');
+                var n = thenum.replace(/\./g, "");
+                n = n.replace(/\,/g, ".");
+                tpp = n;
+                tr.find("input").attr("realvalue", tpp);
+                tr.find("input").attr("euro", tpp);
                 tr.find("input").val(parseFloat(tpp).toLocaleString("nl-NL", {
                     style: 'currency',
                     currency: 'EUR'
@@ -494,15 +507,16 @@ loadedPages.checkout = {
                 tr.find("td").eq(3).attr("isold", "0");
                 tr.find("td").eq(3).attr("version", "");
                 tr.find("i").show();
+
                 tr.appendTo($("#paymentsTable").find("tbody"));
             } else {
                 for (var key in payments) {
                     var ths = payments[key];
                     console.log(ths);
                     if (ths.amount > 0) {
-                    
+
                         var tr = $("#master").clone();
-                        tr.find("select").eq(0).val(ths.paymentID);
+                        tr.find("select").eq(0).val(ths.paymentMethod);
                         tr.find("select").eq(1).val(ths.currency);
                         //  tr.find("select").eq(1).hide();
                         tr.find("input").eq(0).attr("realvalue", ths.amount);
@@ -537,6 +551,7 @@ loadedPages.checkout = {
 
                         tr.find("input").prop("disabled", true);
                         tr.find("input").eq(0).prop("disabled", false);
+                          tr.find("input").eq(1).prop("disabled", false);
                         tr.find("input").eq(2).prop("disabled", true);
 
                         tr.find("select").eq(1).prop("disabled", false);
@@ -547,7 +562,6 @@ loadedPages.checkout = {
                 }
                 $("#paymentsTable").find("tbody").find("input").unbind("change");
                 $("#paymentsTable").find("tbody").find("input").bind("change", function() {
-
                     var slct = $(this).closest("tr").find("td").eq(1).find("select");
                     var rate = slct.find("option:selected").attr("rate");
                     $(this).attr("euro", parseFloat($(this).val() / rate));
@@ -564,6 +578,7 @@ loadedPages.checkout = {
                         style: 'currency',
                         currency: "EUR"
                     }));
+
                     loadedPages.checkout.paymentToLS();
 
                 });
@@ -584,7 +599,7 @@ loadedPages.checkout = {
                 if (this.id != "administrative") {
                     if ($(this).find("input").length > 0) {
 
-                        if ($(this).find("select").eq(0).val() != "7") {
+                        if ($(this).find("select").eq(0).val() != "7" && $(this).find("select").eq(0).val() != "-1") {
                             var thenum = $(this).find("input").val().replace(/^\D+/g, '');
                             var n = thenum.replace(/\./g, "");
                             n = n.replace(/\,/g, ".");
@@ -594,15 +609,11 @@ loadedPages.checkout = {
                 }
 
             })
-            if (vatRefund) {
-                var tpp = parseFloat(localStorage.payWithRefund);
-                loadedPages.checkout.calculatePayments();
-            } else {
-                var tpp = parseFloat(localStorage.payNoRefund);
+
                 $("#administrative").remove();
                 $("#vatrefund").remove();
                 loadedPages.checkout.calculatePayments();
-            }
+
         } else {
             $("#administrative").remove();
             $("#vatrefund").remove();
@@ -614,18 +625,14 @@ loadedPages.checkout = {
     calculatePayments: function() {
         var tp = 0;
         payments = {};
-        $.each($("#paymentsTable").find("tbody").find("tr"), function() {
-            if ($(this).find("select").eq(0).val() == "7") {
-                $(this).remove();
-            }
-        })
+
         loadedPages.checkout.cache = 0;
         var paid = 0;
         $.each($("#paymentsTable").find("tbody").find("tr"), function(ind) {
             if (this.id != "administrative") {
                 var ths = this;
 
-                if ($(this).find("input").length > 0) {
+                if ($(this).find("input").length > 0 && $(this).find("select").eq(0).val() != "-1") {
                     var m = 1;
                     if ($(ths).find("input").val().indexOf("-") > -1) {
                         m = -1;
@@ -641,7 +648,9 @@ loadedPages.checkout = {
                         style: 'currency',
                         currency: $(ths).find("td").eq(1).find("select").val()
                     }))
-                    $(ths).find("input").eq(0).attr("realvalue", $(ths).find("input").eq(0).attr("euro"));
+                    $(ths).find("input").eq(0).attr("realvalue", parseInt(n * m))
+                  //    $(ths).find("input").eq(0).attr("euro", parseInt(n))
+              //      $(ths).find("input").eq(0).attr("realvalue", $(ths).find("input").eq(0).attr("realvalue"));
                     $(ths).find("input").eq(0).attr("euro", $(ths).find("input").eq(0).attr("euro"));
 
                     $(ths).find("input").eq(2).val(parseInt($(ths).find("input").eq(0).attr("euro")).toLocaleString("nl-NL", {
@@ -650,7 +659,10 @@ loadedPages.checkout = {
                     }))
                     $(ths).find("input").eq(2).attr("euro", $(ths).find("input").eq(0).attr("euro"));
                     $(ths).find("input").eq(2).attr("realvalue", $(ths).find("input").eq(0).attr("euro"));
-                    paid += parseFloat($(ths).find("input").eq(0).attr("euro"));
+
+                    if ($(ths).find("select").eq(0).val() != "-1") {
+                      paid += parseFloat($(ths).find("input").eq(0).attr("euro"));
+                    }
                     var obj = {
                         paymentID: $(ths).find("select").eq(0).val(),
                         paymentMethod: $(ths).find("select").eq(0).find(":selected").text(),
@@ -661,7 +673,7 @@ loadedPages.checkout = {
                         version: $(ths).find("td").eq(4).attr("version")
                     }
 
-                    if ($(this).find("input").val() != "") {
+                    if ($(this).find("input").eq(0).val() != "" && $(this).find("select").eq(0).val() != "-1") {
                         var thenum = $(this).find("input").val().replace(/^\D+/g, '');
                         var n = thenum.replace(/\./g, "");
                         var n = n.replace(/\,/g, ".");
@@ -674,17 +686,29 @@ loadedPages.checkout = {
 
                 }
             }
-            if (vatRefund) {
-                var tpp = parseFloat(localStorage.payWithRefund);
+            if (localStorage.directRefund == "0") {
+              var tpp = localStorage.payNoRefund;
             } else {
-                var tpp = parseFloat(localStorage.payNoRefund);
+              var tpp = localStorage.payWithRefund;
             }
+            var thenum = tpp.toString().replace(/^\D+/g, '');
+            var n = thenum.replace(/\./g, "");
+            var n = n.replace(/\,/g, ".");
+            tpp = n;
+
             var r = tpp - paid;
+
             $("#paid").html(parseInt(paid).toLocaleString("nl-NL", {
                 style: 'currency',
                 currency: 'EUR'
-            }));
-            $("#due").html(parseInt(r).toLocaleString("nl-NL", {
+            }))
+            if (r < 0) {
+                $("#due").parent().find("td").eq(0).html("Change:");
+            } else {
+              $("#due").parent().find("td").eq(0).html("Amount due:");
+            }
+
+            $("#due").html(parseInt(Math.abs(r)).toLocaleString("nl-NL", {
                 style: 'currency',
                 currency: 'EUR'
             }));
@@ -697,7 +721,7 @@ loadedPages.checkout = {
             var tpp = parseFloat(localStorage.payNoRefund);
         }
 
-        $("#master").clone().appendTo($("#paymentsTable").find("tbody"));
+    /*    $("#master").clone().appendTo($("#paymentsTable").find("tbody"));
         //  $("#paymentsTable").find("tbody").find("tr:last").find("select").eq(1).hide();
         $("#paymentsTable").find("tbody").find("tr:last").find("i").hide();
         $("#paymentsTable").find("tbody").find("tr:last").find("select").eq(0).val("7");
@@ -705,12 +729,13 @@ loadedPages.checkout = {
         $("#paymentsTable").find("tbody").find("tr:last").find("input").val(parseInt(tpp - tp).toLocaleString("nl-NL", {
             style: 'currency',
             currency: "EUR"
-        }));
+        }));*/
 
-        $("#paymentsTable").find("tbody").find("tr:last").find("input").prop("disabled", true);
-        $("#paymentsTable").find("tbody").find("tr:last").css({
-            visibility: "hidden"
-        })
+      //  $("#paymentsTable").find("tbody").find("tr:last").find("input").prop("disabled", true);
+  //      $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(1).prop("disabled", true);
+//        $("#paymentsTable").find("tbody").find("tr:last").css({
+  //          visibility: "hidden"
+    //    })
         $("#paymentsTable").find("tbody").find("input").unbind("change");
         var obj = {
             paymentID: $("#paymentsTable").find("tbody").find("tr:last").find("select").eq(0).val(),
@@ -726,6 +751,7 @@ loadedPages.checkout = {
             $("#addpayment").prop("disabled", false);
         }
         $("#paymentsTable").find("tbody").find("input").bind("change", function() {
+
             var slct = $(this).closest("tr").find("td").eq(1).find("select");
             var rate = slct.find("option:selected").attr("rate");
             $(this).attr("euro", parseFloat($(this).val() / rate));
@@ -745,7 +771,6 @@ loadedPages.checkout = {
             loadedPages.checkout.paymentToLS();
 
         });
-
     },
     deletePayment: function(obj) {
         var tr = $(obj).closest("tr");
@@ -770,7 +795,7 @@ loadedPages.checkout = {
             //  $("#paymentsTable").find("tbody").find("tr:last").remove();
         }
         tr.appendTo($("#paymentsTable").find("tbody"));
-        $("#paymentsTable").find("tbody").find("tr:last").find("select").eq(0).val("1");
+        $("#paymentsTable").find("tbody").find("tr:last").find("select").eq(0).val("-1");
         $("#paymentsTable").find("tbody").find("tr:last").find("select").eq(0).prop("disabled", false);
         $("#paymentsTable").find("tbody").find("tr:last").find("select").eq(1).prop("disabled", false);
         $("#paymentsTable").find("tbody").find("tr:last").find("input").prop("disabled", false);
@@ -793,12 +818,14 @@ loadedPages.checkout = {
             $.each($("#paymentsTable").find("tbody").find("tr").not(":last"), function(ind) {
                 if (this.id != "administrative") {
                     if ($(this).find("input").length > 0) {
-                        if ($(this).find("select").eq(0).val() != "7") {
-                            var mi = ($(this).find("input").val().indexOf("-") > -1) ? -1 : 1;
-                            var thenum = $(this).find("input").val().replace(/^\D+/g, '');
+                        if ($(this).find("select").eq(0).val() != "7" && $(this).find("select").eq(0).val() != "-1") {
+                        //    var mi = ($(this).find("input").eq(0).val().indexOf("-") > -1) ? -1 : 1;
+
+                            var thenum = $(this).find("input").eq(0).val().replace(/^\D+/g, '');
                             var n = thenum.replace(/\./g, "");
-                            n = parseFloat(n * mi) / (parseFloat($(this).closest("tr").find("td").eq(1).find("select").find("option:selected").attr("rate")));
+                            n = parseFloat(n) / (parseFloat($(this).closest("tr").find("td").eq(1).find("select").find("option:selected").attr("rate")));
                             tp += parseFloat(n);
+
                         }
                     }
                 }
@@ -808,31 +835,39 @@ loadedPages.checkout = {
             $.each($("#paymentsTable").find("tbody").find("tr"), function(ind) {
                 if (this.id != "administrative") {
                     if ($(this).find("input").length > 0) {
-                        if ($(this).find("select").eq(0).val() != "7") {
+                        if ($(this).find("select").eq(0).val() != "7" && $(this).find("select").eq(0).val() != "-1") {
                             var mi = ($(this).find("input").val().indexOf("-") > -1) ? -1 : 1;
                             var thenum = $(this).find("input").val().replace(/^\D+/g, '');
                             var n = thenum.replace(/\./g, "");
                             n = parseFloat(n * mi) / (parseFloat($(this).closest("tr").find("td").eq(1).find("select").find("option:selected").attr("rate")));
                             tp += parseFloat(n);
+
                         }
                     }
                 }
             })
         }
+
         if (vatRefund) {
-            var tpp = parseFloat(localStorage.payWithRefund);
+            var tpp = (localStorage.payWithRefund);
         } else {
-            var tpp = parseFloat(localStorage.payNoRefund);
+            var tpp = (localStorage.payNoRefund);
         }
-        $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(0).attr("euro", 0);
-        $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(0).attr("realvalue", 0);
-        $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(0).val(parseFloat(0).toLocaleString("nl-NL", {
+        var thenum = tpp.toString().replace(/^\D+/g, '');
+        var n = thenum.replace(/\./g, "");
+        var n = n.replace(/\,/g, ".");
+        tpp = n;
+
+        tp = (isNaN(tp)) ? 0 : tp;
+        $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(0).attr("euro", tpp - tp);
+        $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(0).attr("realvalue", tpp - tp);
+        $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(0).val(parseFloat(tpp - tp).toLocaleString("nl-NL", {
             style: 'currency',
             currency: "EUR"
         }));
-        $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(2).attr("euro", 0);
-        $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(2).attr("realvalue", 0);
-        $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(2).val(parseFloat(0).toLocaleString("nl-NL", {
+        $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(2).attr("euro", tpp - tp);
+        $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(2).attr("realvalue", tpp - tp);
+        $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(2).val(parseFloat(tpp - tp).toLocaleString("nl-NL", {
             style: 'currency',
             currency: "EUR"
         }));
@@ -845,7 +880,9 @@ loadedPages.checkout = {
             style: 'currency',
             currency: $(obj).find("option:selected").attr("value")
         }));
+
         $(obj).closest("tr").find("td").eq(2).find("input").attr("realvalue", parseInt(vl * crt));
+      //  $(obj).closest("tr").find("td").eq(2).find("input").attr("euro", parseInt(vl * crt));
         var pid = $(obj).closest("tr")[0].rowIndex - 1;
         var vl = $(obj).closest("tr").find("td").eq(2).find("input").val();
         var thenum = vl.replace(/^\D+/g, '');
@@ -864,6 +901,7 @@ loadedPages.checkout = {
         }
         payments[pid] = obj;
         loadedPages.checkout.paymentToLS();
+    //    loadedPages.checkout.calculatePayments();
         console.log(payments);
     },
     paymentToLS: function() {
@@ -885,7 +923,6 @@ loadedPages.checkout = {
             }
         })
         localStorage.payments = JSON.stringify(payments);
-
         loadedPages.checkout.calculatePayments();
     },
     newInvoice: function() {
@@ -917,19 +954,20 @@ loadedPages.checkout = {
         }
     },
     paymentMethodChanged: function(obj) {
-
         if ($(obj).val() == "1") {
             $(obj).closest("tr").find("td").eq(1).find("select").prop("disabled", false);
         } else {
-            $(obj).closest("tr").find("td").eq(1).find("select").val("EUR");
-            var euro = $(obj).closest("tr").find("td").eq(2).find("input").attr("euro");
-            $(obj).closest("tr").find("td").eq(2).find("input").val((parseFloat(euro)).toLocaleString("nl-NL", {
-                style: 'currency',
-                currency: "EUR"
-            }));
-            $(obj).closest("tr").find("td").eq(1).find("select").prop("disabled", true);
+          $(obj).closest("tr").find("td").eq(1).find("select").prop("disabled", true);
         }
+      //  $(obj).closest("tr").find("td").eq(1).find("select").val("EUR");
+        var euro = $(obj).closest("tr").find("td").eq(2).find("input").attr("euro");
+        $(obj).closest("tr").find("td").eq(2).find("input").val((parseFloat(euro)).toLocaleString("nl-NL", {
+            style: 'currency',
+            currency: "EUR"
+        }));
+      //  $(obj).closest("tr").find("td").eq(1).find("select").prop("disabled", true);
         loadedPages.checkout.calculatePayments();
+        loadedPages.checkout.paymentToLS();
     },
     prepareOverview: function() {
         //loadedPages.checkout.paymentToLS();
@@ -942,6 +980,7 @@ loadedPages.checkout = {
             Email: csel.email
           }
           localStorage.salesPerson = JSON.stringify(ssssp);
+          localStorage.sp = JSON.stringify(ssssp);
         });
         $('#selectShowRooms').on('select2:select', function (e) {
           var csel = e.params.data;
@@ -951,10 +990,14 @@ loadedPages.checkout = {
           }
           localStorage.sroom = JSON.stringify(ssssp1);
         });
-        var ss = $.parseJSON(localStorage.sroom)
-        $('#selectShowRooms').val(ss.showroomid).trigger("change");
-        var sss = $.parseJSON(localStorage.salesPerson);
-        $('#selectSalesPerson').val(sss.EmplID).trigger("change");
+        if (localStorage.sroom !== undefined) {
+          var ss = $.parseJSON(localStorage.sroom)
+          $('#selectShowRooms').val(ss.showroomid).trigger("change");
+        }
+        if (localStorage.salesPerson !== undefined) {
+          var sss = $.parseJSON(localStorage.salesPerson);
+          $('#selectSalesPerson').val(sss.EmplID).trigger("change");
+        }
         $("[tg='4']").removeClass("active");
         $("[tg='4']").addClass("done");
         $("#4").hide();
@@ -986,12 +1029,69 @@ loadedPages.checkout = {
             return;
         }
 
-        loadedPages.checkout.loadPart(6);
-        return;
-    var sr = $.parseJSON(localStorage.sroom);
-        var sp = $.parseJSON(localStorage.salesPerson);
+        var dv = $(localStorage.total_div);
+        var tb = dv.find("table");
+        var sgn = (tb.find(".discounttype").hasClass("euro")) ? "€" : "%";
+
+        if (localStorage.invoiceDiscount !== undefined) {
+            if (localStorage.invoiceDiscount != "") {
+                if (sgn == "€") {
+                    tb.parent().html(sgn + " " + parseFloat(localStorage.invoiceDiscount).toLocaleString("nl-NL", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }));
+                } else {
+                    tb.parent().html(localStorage.invoiceDiscount);
+                }
+            } else {
+                tb.parent().html("");
+            }
+        }
+        $("#total_div").html("");
+        dv.appendTo($("#total_div"));
+
+        if (localStorage.invoiceDiscount == "") {
+            $("#total_div").find("#total").hide();
+        }
+        $("<tr><td style='font-size:18px;text-align:left;'><b>To be paid</b></td><td style='font-size:18px;padding-left:5px;'><b>" + localStorage.toBePaid + "</b></td></tr>").appendTo($("#total_div").find("table").find("tbody"));
+        $.each($("#total_div").find("input"), function() {
+            $(this).val(localStorage.invoiceDiscount);
+            $(this).prop("disabled", true);
+            if ($(this).val() == "") {
+                $(this).closest("tr").remove();
+            }
+        })
+        $("#total_div").find("table").css({
+          fontSize: 13,
+          fontWeight: 700,
+          marginTop: 5
+        })
+        $("#total_div").find("tr").eq(0).remove();
+        $("#total_div").find("tr:first").find("td").eq(0).css({
+          padding: 0
+        });
+        $("#total_div").find("tr").eq(2).find("td").eq(0).css({
+          padding: 0
+        });
+        $("#total_div").find("tr").eq(2).find("td").eq(1).css({
+          padding: 0
+        });
+        $("#total_div").find("tr:last").find("td").eq(1).css({
+          textAlign: "right"
+        });
+
+        if (localStorage.sroom !== undefined) {
+          var sr = $.parseJSON(localStorage.sroom);
+        }
+        if (localStorage.salesPerson !== undefined) {
+          var sp = $.parseJSON(localStorage.salesPerson);
+        }
         $("#served").html("");
-        $("<span>You have been served by <b>" + sp.Employee + "</b> in " + sr.name + "</span>").appendTo($("#served"));
+        try {
+          $("<span>You have been served by <b>" + sp.Employee + "</b> in " + sr.name + "</span>").appendTo($("#served"));
+        } catch(err) {
+
+        }
         var tour = $.parseJSON(localStorage.tour);
         try {
             var sc = $.parseJSON(localStorage.customerCountry);
@@ -1077,6 +1177,38 @@ loadedPages.checkout = {
         } else {
             $("[email]").parent().hide();
         }
+
+        $("#pt").find("tr").remove();
+        $("#right6").find("#payST").remove();
+        $("#right6").find("#ppp").remove();
+        setTimeout(function() {
+          var html = "<table id='ppp' style='margin-top: 10px;font-size:15px;width:100%;'>";
+          $.each($("#paymentsTable").find("tbody").find("tr"), function(ind) {
+            if (ind == 0) {
+              html += "<td style='padding-top:10px;'>" + $(this).find("td").eq(3).find("input").val() + "</td>";
+              html += "<td style='padding-top:10px;'>" + $(this).find("td").eq(0).find("select").find("option:selected").text() + "</td>";
+              html += "<td style='text-align:right;padding-top:10px;padding-right:5px;'>" + $(this).find("td").eq(2).find("input").val() + "</td>";
+              html += "<td style='text-align:right;padding-top:10px;'>" + $(this).find("td").eq(4).find("input").val() + "</td>";
+              html += "</tr>";
+            } else {
+              html += "<td>" + $(this).find("td").eq(3).find("input").val() + "</td>";
+              html += "<td>" + $(this).find("td").eq(0).find("select").find("option:selected").text() + "</td>";
+              html += "<td style='text-align:right;padding-right:5px;'>" + $(this).find("td").eq(2).find("input").val() + "</td>";
+              html += "<td style='text-align:right;'>" + $(this).find("td").eq(4).find("input").val() + "</td>";
+              html += "</tr>";
+            }
+          })
+          html += "</table>"
+          $(html).appendTo($("#right6").find("div").eq(0));
+          var d = $($("#payS").html()).appendTo($("#right6").find("div").eq(0));
+          d.css({
+            margintop:10,
+            float: "right"
+          })
+            $("#customerInfo").find("[country]").hide();
+        }, 1000);
+        loadedPages.checkout.loadPart(6);
+        return;
         $("#items").html("");
         $("#total_div").html("");
         var ii = 0;
@@ -1111,36 +1243,7 @@ loadedPages.checkout = {
             $(html).appendTo($("#items"));
 
         }
-        var dv = $(localStorage.total_div);
-        var tb = dv.find("table");
-        var sgn = (tb.find(".discounttype").hasClass("euro")) ? "€" : "%";
 
-        if (localStorage.invoiceDiscount !== undefined) {
-            if (localStorage.invoiceDiscount != "") {
-                if (sgn == "€") {
-                    tb.parent().html(sgn + " " + parseFloat(localStorage.invoiceDiscount).toLocaleString("nl-NL", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    }));
-                } else {
-                    tb.parent().html(localStorage.invoiceDiscount);
-                }
-            } else {
-                tb.parent().html("");
-            }
-        }
-        dv.appendTo($("#total_div"));
-        if (localStorage.invoiceDiscount == "") {
-            $("#total_div").find("#total").hide();
-        }
-        $("<tr><td style='text-align:left;'><b>To be paid</b></td><td style='padding-left:5px;'><b>" + localStorage.toBePaid + "</b></td></tr>").appendTo($("#total_div").find("table").find("tbody"));
-        $.each($("#total_div").find("input"), function() {
-            $(this).val(localStorage.invoiceDiscount);
-            $(this).prop("disabled", true);
-            if ($(this).val() == "") {
-                $(this).closest("tr").remove();
-            }
-        })
         $("#pt").find("tr").remove();
         $.each($("#paymentsTable").find("tr"), function(ind) {
             if (ind > 0) {
@@ -1223,6 +1326,24 @@ loadedPages.checkout = {
         } catch (err) {
 
         }
+        if (localStorage.sroom === undefined) {
+          showModal({
+            type: "error",
+            showCancelButton: false,
+            confirmButtonText: "CONTINUE",
+            title: "Select showroom"
+          })
+          return false;
+        }
+        if (localStorage.salesPerson === undefined) {
+          showModal({
+            type: "error",
+            showCancelButton: false,
+            confirmButtonText: "CONTINUE",
+            title: "Select sales person"
+          })
+          return false;
+        }
         //  var mode = $("#sign").attr("mode");
         $("#sign").modal("hide");
         $("[parts]").hide();
@@ -1230,6 +1351,10 @@ loadedPages.checkout = {
         var tour = $.parseJSON(localStorage.tour);
         $("#cinf").html("");
         $("#customerInfo").clone().appendTo($("#cinf"));
+        $("#cinf").find("#customerInfo").css({
+          fontSize: "5pt"
+        })
+
         $("#tnmbr").html(tour.ProjId);
         var sp = $.parseJSON(localStorage.salesPerson);
         var bc = textToBase64Barcode(15);
@@ -1383,7 +1508,11 @@ loadedPages.checkout = {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }) + "</td></tr>";
-            h += "<tr><td></td><td></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'>To be paid: </td><td style='border-top:1px solid #e2e2e2;text-align:right;font-size: 5pt;'>€&nbsp;</td><td style='border-top:1px solid #e2e2e2;text-align:right;font-size: 5pt;'>" + parseInt(localStorage.payWithRefund).toLocaleString("nl-NL", {
+            var tpp = localStorage.payWithRefund;
+            var thenum = tpp.toString().replace(/^\D+/g, '');
+            var n = thenum.replace(/\./g, "");
+            n = n.replace(/\,/g, ".");
+            h += "<tr><td></td><td></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'>To be paid: </td><td style='border-top:1px solid #e2e2e2;text-align:right;font-size: 5pt;'>€&nbsp;</td><td style='border-top:1px solid #e2e2e2;text-align:right;font-size: 5pt;'>" + parseInt(n).toLocaleString("nl-NL", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }) + "</td></tr>";
@@ -1819,6 +1948,7 @@ loadedPages.checkout = {
                                   //  resetLocalStorage();
                                     delete localStorage.shoppingCartContent;
                                     showModal({
+
                                         title: txt,
                                         allowBackdrop: false,
                                         showCancelButton: false,
@@ -1907,8 +2037,10 @@ loadedPages.checkout = {
                                             $("#lblCartCount").html("0");
                                             $("[tg]").removeClass("done");
                                             delete localStorage.done;
+                                            delete localStorage.directRefund;
+                                            resetLocalStorage();
                                             localStorage.salesPerson = localStorage.sp;
-                                            loadPage("mainpage");
+                                              loadPage("mainpage");
                                             if (!app) {
 
                                                 loadPage('mainpage')
@@ -2161,6 +2293,13 @@ loadedPages.checkout = {
       var cntrs = [];
 
        api.call("getSalespersons", function(respo) {
+         var obj = {
+           id: "-1",
+           text: "Select sales person",
+           email: "",
+
+         }
+        cntrs.push(obj);
          $.each(respo.data, function() {
           if (this.status == "2") {
             var ths = this;
@@ -2183,6 +2322,7 @@ loadedPages.checkout = {
                 $("#showrooms").html("");
                 var sorted = _.sortBy(res.data, 'forced');
                 loadedPages.checkout.sps = sorted;
+                   $("<option value='-1'>" + "Select showroom" + "</option>").appendTo($("#selectShowRooms"));
                 $.each(sorted, function() {
                     $("<option value='" + this.showroomid + "'>" + this.name + "</option>").appendTo($("#selectShowRooms"));
                     if (true) {
@@ -2436,7 +2576,7 @@ loadedPages.checkout = {
             html += "</td></tr>";
             html += "</table>";
 
-            $(html).appendTo($("#shoppingCart"));
+            $(html).prependTo($("#shoppingCart"));
         }
     }
 }

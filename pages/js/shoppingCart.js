@@ -25,6 +25,7 @@ loadedPages.shoppingCart = {
     } else {
       $("#nits").html( "&nbsp;item");
     }
+
     $('#scanbutton').popover({
       sanitize: false,
       content: function () {
@@ -35,10 +36,25 @@ loadedPages.shoppingCart = {
     });
 
     $("#nit").html( Object.keys(shoppingCartContent).length);
-    $("#content").css({
-      marginTop: 0,
-      paddingTop: 80
-    })
+    setTimeout(function() {
+      $("#content").css({
+        marginLeft: ($(window).width() - $("#content").width()) / 2,
+        paddingTop: 165
+      })
+         $(".navbar").show();
+         $(".navbar").css({
+           padding: 20
+         });
+         $(".navbar").css({
+           marginLeft: ($(window).width() - $("#content").width()) / 2,
+         })
+         $("#content").css({
+           padding: 40,
+           paddingTop:80,
+           background: "transparent"
+         });
+
+       }, 1500);
     if (invoiceLocked == 1) {
       $("[lock]").hide();
     }
@@ -49,6 +65,9 @@ loadedPages.shoppingCart = {
     })
     var cntrs = [];
 
+    $("#scanbutton").on('shown.bs.popover', function(){
+       $("#scanvalue").focus();
+     });
     localStorage.goingback = "0";
     if (localStorage.openInvoice !== undefined) {
       loadedPages.shoppingCart.currentInvoice = $.parseJSON(localStorage.openInvoice);
@@ -61,7 +80,6 @@ loadedPages.shoppingCart = {
         $("[spdiscount1]").trigger("click");
       }
     })
-
     $("#dapproved").typeahead({
       items: "all",
       scrollHeight: 100,
@@ -122,6 +140,70 @@ loadedPages.shoppingCart = {
         allowClear: true,
         width: 200
       });
+      cntrs = [];
+      api.call("getSalespersons", function(respo) {
+        var obj = {
+          id: "-1",
+          text: "Select sales person",
+          email: "",
+
+        }
+         cntrs.push(obj);
+        $.each(respo.data, function() {
+         if (this.status == "2") {
+           var ths = this;
+           var obj = {
+             id: ths.EmplID,
+             text: ths.Employee,
+             email: ths.Email,
+
+           }
+           cntrs.push(obj);
+         }
+       })
+       $("#selectSalesPerson").select2({
+         data: cntrs,
+           placeholder: "Select sales person",
+         width: 200
+       });
+       $('#selectSalesPerson').on('select2:select', function (e) {
+         var csel = e.params.data;
+         var ssssp = {
+           EmplID: csel.id,
+           Employee: csel.text,
+           Email: csel.email
+         }
+         localStorage.salesPerson = JSON.stringify(ssssp);
+       });
+       if (localStorage.salesPerson !== undefined) {
+         var sss = $.parseJSON(localStorage.salesPerson);
+         $('#selectSalesPerson').val(sss.EmplID).trigger("change");
+       }
+     },{},{},{});
+     api.call("getShowrooms", function(res) {
+         $("#showrooms").html("");
+         var sorted = _.sortBy(res.data, 'forced');
+         $("<option value='-1'>" + "Select showroom" + "</option>").appendTo($("#selectShowRooms"));
+         $.each(sorted, function() {
+             $("<option value='" + this.showroomid + "'>" + this.name + "</option>").appendTo($("#selectShowRooms"));
+         })
+         $("#selectShowRooms").select2({
+           allowClear: false,
+
+         });
+         $('#selectShowRooms').on('select2:select', function (e) {
+           var csel = e.params.data;
+           var ssssp1 = {
+             showroomid: csel.id,
+             name: csel.text
+           }
+           localStorage.sroom = JSON.stringify(ssssp1);
+         });
+         if (localStorage.sroom !== undefined) {
+           var ss = $.parseJSON(localStorage.sroom)
+           $('#selectShowRooms').val(ss.showroomid).trigger("change");
+         }
+     }, {}, {})
       setTimeout(function() {
           if (localStorage.customerCountry !== undefined) {
             var o = $.parseJSON(localStorage.customerCountry);
@@ -143,11 +225,12 @@ loadedPages.shoppingCart = {
 
           var csel = e.params.data;
          localStorage.isEU = loadedPages.shoppingCart.countryEu[csel.id].EUMember;
+
           csel.eu = loadedPages.shoppingCart.countryEu[csel.id].EUMember;
           localStorage.customerCountry = JSON.stringify(csel);
           customerInfoData["countryCode"] = csel.id;
           if (localStorage.isEU == "0") {
-          //  $("[refundcontainer]").show();
+           $("[refundcontainer]").show();
           } else {
             $("#dRefund").removeClass("refund");
             $("#dRefund").html("VAT refund");
@@ -195,12 +278,20 @@ loadedPages.shoppingCart = {
         loadedPages.shoppingCart.setToPay(this);
       //  $("#cartToPay").val(parseFloat($("#cartToPay").val()).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" }));
       })
+        $("#directRefund").bind("change", function() {
+          loadedPages.shoppingCart.checkCode();
+        })
+      $("#directRefund")[0].checked = (localStorage.directRefund == "1");
+
+      loadedPages.shoppingCart.checkCode(true);
       $("#cartToPay").bind("blur", function() {
 
         $(this).css({
           background: "transparent"
         })
       })
+
+
   },
   drawCart: function() {
   ///  delete localStorage.generalDiscount;
@@ -234,15 +325,15 @@ loadedPages.shoppingCart = {
           if (data.eu == "0") {
 
             $("[refundcontainer]").hide();
-      //      $("#directRefund")[0].checked = true;
-          //    loadedPages.shoppingCart.checkCode();
+          //  $("#directRefund")[0].checked = false;
+    //        loadedPages.shoppingCart.checkCode();
           } else {
             $("#dRefund").removeClass("refund");
             $("#dRefund").html("VAT refund");
             $("[refundcontainer]").hide();
           }
-          loadedPages.shoppingCart.checkCode();
-      //    $("#directRefund")[0].checked = true;
+    //      loadedPages.shoppingCart.checkCode();
+        //  $("#directRefund")[0].checked = false;
           loadedPages.shoppingCart.calculateRefund();
         }
 
@@ -253,7 +344,6 @@ loadedPages.shoppingCart = {
   //  $("#items").hide();
     $("#items").html("");
     $("#lblCartCount").html(" " + Object.keys(shoppingCartContent).length);
-  console.log(shoppingCartContent);
     if (Object.keys(shoppingCartContent).length == 0) {
       $("#toggleShoppigCart").addClass("empty");
       $("#fullshoppingcart").hide();
@@ -521,7 +611,7 @@ loadedPages.shoppingCart = {
      localStorage.total = parseFloat(ttl);
      localStorage.grandTotal = parseFloat(grandTotal);
      localStorage.invoiceDiscount = $("#masterdiscount").val();
-    // localStorage.directRefund = (($("#directRefund")[0].checked) ? "1" : "0");
+   localStorage.directRefund = (($("#directRefund")[0].checked) ? "1" : "0");
     var bb = parseInt((parseFloat(localStorage.torefund) - parseFloat(localStorage.admincharge)));
 
      localStorage.payNoRefund = parseFloat(vex + vat);
@@ -565,11 +655,11 @@ loadedPages.shoppingCart = {
        $('[spdiscount]').show();
        $('[spdiscount1]').show();
      }*/
-
-     $("#content").find("#main").find("input").unbind("keyup");
-     $("#content").find("#main").find("input").bind("keyup", function (event) {
+     $("[section='returnproduct']").find("input").unbind("keyup");
+     $("[section='returnproduct']").find("input").bind("keyup", function (event) {
           $(event.target).val($(event.target).val().toString().replace(/[^0-9]/g, ''));
       });
+
       $("#content").find("input").unbind("focusout");
       $("#content").find("input").bind("focusout", function (event) {
         if (window.StatusBar){
@@ -593,37 +683,47 @@ loadedPages.shoppingCart = {
         loadedPages.shoppingCart.checkIsLogged();
       }
   },
-  checkCode: function() {
-    return;
+  checkCode: function(first = false) {
+//    return;
+//  $("#directRefund")[0].checked = (localStorage.directRefund == "1");
+localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
+
     if (!$("#directRefund")[0].checked) {
       loadedPages.shoppingCart.calculateRefund();
       return;
     }
-    showModal({
-        title: "Please confirm choice. Enter code.",
-        content: "<input id='ccode' type='number' class='form-control' /><span style='color:red;display:none;' id='cer'>Wrong code.</span>",
-        allowBackdrop: false,
-        showClose: false,
-        noclose: true,
-        cancelCallback: function() {
-            $('#mainModal').modal("hide");
-        },
-        confirmCallback: function() {
+    if (!first) {
+        showModal({
+            title: "Please confirm choice. Enter code.",
+            content: "<input id='ccode' type='number' class='form-control' /><span style='color:red;display:none;' id='cer'>Wrong code.</span>",
+            allowBackdrop: false,
+            showClose: false,
+            noclose: true,
+            cancelCallback: function() {
+                $('#mainModal').modal("hide");
+            },
+            confirmCallback: function() {
 
-          if ($("#ccode").val() == "1071") {
-              $("#dRefund").addClass("refund");
-              //$("[refundcontainer]").show();
-              $("#dfw").html("Direct Refund");
-              localStorage.directRefund = "1";
-              loadedPages.shoppingCart.calculateRefund(true);
-              $('#mainModal').modal("hide");
-          } else {
-            $("#cer").show();
-          }
+              if ($("#ccode").val() == "1071") {
+                  $("#dRefund").addClass("refund");
+                  $("[refundcontainer]").show();
+                  $("#dfw").html("Direct Refund");
+                  localStorage.directRefund = "1";
+                  loadedPages.shoppingCart.calculateRefund(true);
+                  $('#mainModal').modal("hide");
+              } else {
+                $("#cer").show();
+              }
 
-        }
-    })
-
+            }
+        })
+      } else {
+        $("#dRefund").addClass("refund");
+        $("[refundcontainer]").show();
+        $("#dfw").html("Direct Refund");
+        localStorage.directRefund = "1";
+        loadedPages.shoppingCart.calculateRefund(true);
+      }
   },
   recalculate: function(obj, vl) {
     var el = $(obj);
@@ -676,18 +776,10 @@ loadedPages.shoppingCart = {
     $("#masterdiscount").trigger("change");
   },
   removeItem: function(obj) {
-    showModal({
-      title: "Are you sure to remove item " + $(obj).closest("[serial]").attr("serial") + " " + $(obj).closest("[root]").find("[productname]").html() + " from cart?",
-      cancelButtonText: "Cancel",
-      confirmButtonText: "Delete",
-      confirmCallback: function() {
-        $("#mainModal").modal("hide");
+
         delete shoppingCartContent[$(obj).closest("[serial]").attr("serial")];
         shoppingCartToLocalStorage();
         loadedPages.shoppingCart.drawCart();
-
-      }
-    })
 
   },
   discounts: function(obj) {
@@ -715,6 +807,11 @@ loadedPages.shoppingCart = {
           data.id = data.CountryID;
         }
         localStorage.isEU = loadedPages.shoppingCart.countryEu[data.id].EUMember;
+        if (localStorage.isEU == "1") {
+          $("[refundcontainer]").hide();
+        } else {
+            $("[refundcontainer]").show();
+        }
       }
 
       if (loadedPages.shoppingCart.currentInvoice != null && loadedPages.shoppingCart.firstDR) {
@@ -734,7 +831,7 @@ loadedPages.shoppingCart = {
                   $("[refund]").show();
                   $(".refund").show();
                   $(".norefund").hide();
-                //  $("[refundcontainer]").show();
+                  $("[refundcontainer]").show();
                   $("[norefund]").hide();
                   if (showpay) {
                     $("#dfw").html("Direct Refund");
@@ -745,7 +842,7 @@ loadedPages.shoppingCart = {
               }, 50);
             } else {
               $("#dfw").html("VAT Refund");
-            //  $("[refundcontainer]").show();
+              $("[refundcontainer]").show();
               $(".refund").hide();
               $(".norefund").show();
               $("[refund]").show();
@@ -763,7 +860,6 @@ loadedPages.shoppingCart = {
     //  loadedPages.shoppingCart.drawCart();
   },
   checkIsLogged: function() {
-
     if (localStorage.customerCountry === undefined) {
       showModal({
         type: "error",
@@ -773,38 +869,24 @@ loadedPages.shoppingCart = {
       })
       return false;
     }
-
-    if (localStorage.sp === undefined) {
-      $("#login").modal("show");
-    } else {
-
       if (loadedPages.shoppingCart.approvedRequested && loadedPages.shoppingCart.currentInvoice == null) {
 
         if ($("#dapproved").val() == "") {
            $("#discountApproved").modal("show");
              return false;
         }
-
       }
       localStorage.invoiceDiscount = $("#masterdiscount").val();
-
-      localStorage.directRefund = (($("#dfw").html() == "Direct Refund") ? "1" : "0");
+      localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
       localStorage.total_div = $("#total_div")[0].outerHTML;
-
       $("[spdiscount1]").val($("#masterdiscount").val());
-
       if (localStorage.directRefund == "1") {
-
         localStorage.toBePaid =   $("[rfnd]").val();
       } else {
         localStorage.toBePaid =   $("[nrfnd]").val();
       }
-      localStorage.generalDiscount = $("#masterdiscount").val();
-      try {
-        AndroidFullScreen.immersiveMode(function() {}, function() {});
-      } catch (err) {
 
-      }
+      localStorage.generalDiscount = $("#masterdiscount").val();
       if (Object.keys(shoppingCartContent).length == 0) {
         showModal({
           type: "error",
@@ -814,16 +896,23 @@ loadedPages.shoppingCart = {
         })
         return false;
       }
+      localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
+      if (localStorage.directRefund == "1") {
+        localStorage.payWithRefund =  $("[rfnd]").val();
+        localStorage.toBePaid =   $("[rfnd]").val();
+      } else {
+        localStorage.payNoRefund =  $("[nrfnd]").val();
+        localStorage.toBePaid =   $("[nrfnd]").val();
+      }
       loadPage("checkout");
-    }
   },
   discountClickedFired: function() {
     loadedPages.shoppingCart.discountClicked = !loadedPages.shoppingCart.discountClicked;
     loadedPages.shoppingCart.showDiscount = loadedPages.shoppingCart.discountClicked;
 
-      $('#masterdiscount').show();
-      $('[spdiscount]').show();
-      $('[spdiscount1]').show();
+      $('#masterdiscount').toggle();
+      $('[spdiscount]').toggle();
+      $('[spdiscount1]').toggle();
   //  }
 
   //  loadedPages.shoppingCart.drawCart();
@@ -884,6 +973,7 @@ applyDiscount: function(obj) {
      loadedPages.shoppingCart.discounts(dfield[0]);
   },
   setToPay: function(obj) {
+
     var $el = $(obj);
   //  loadedPages.shoppingCart.discountClickedFired();
     var vv = parseFloat($el.val());

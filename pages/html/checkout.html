@@ -143,10 +143,11 @@
              <div class="form-group">
                 <div class="col-xs-1 col-lg-1">
                   <select placeholder="Title" id="ptitle"  name="ptitle" class="form-control">
-                      <option  value="Nvt.">Nvt.</option>
+                    <option value="-1">Select</option>
                     <option value="Mr.">Mr.</option>
                     <option value="Mrs.">Mrs.</option>
-
+                    <option value="Ms.">Ms.</option>
+                    <option  value="Nvt.">Nvt.</option>
                   </select>
                 </div>
                 <div class="col-xs-3 col-lg-3">
@@ -256,8 +257,8 @@
            </tbody>
         </table>
      </div>
-     <div style="float:right;">
-       <table class="paymentSummary">
+     <div id="payS" style="float:right;">
+       <table id="payST" class="paymentSummary">
 
          <tbody>
            <tr>
@@ -281,82 +282,22 @@
 
 </div>
 <div id="5" style="display:none;" parts>
-   <div class="div-black" style="margin-top:10px;padding-left:10px;" id="overview_div" step>
+<!--   <div class="div-black" style="margin-top:10px;padding-left:10px;" id="overview_div" step>
       Overview<span onclick="$('#4').hide();$('#3').show();" style="position:absolute;right:10px;">Back to payments</span>
    </div>
    <!--  <div style="padding:5px;width:100%;text-align:center;">
       <img onclick="loadedPages.checkout.shareOverview();" class='share' onclick="shareItem(this);" style='width:30px;margin-left:3px;margin-top:-3px;' src='https://costercatalog.com/coster/www/images/share.png' />
       </div>-->
-   <div id="share" style="max-width:100%;background:white;overflow-x:hidden;padding:10px;">
+<!--   <div id="share" style="max-width:100%;background:white;overflow-x:hidden;padding:10px;">
       <div id="served" style="text-align:center;"></div>
       <div id="tour" style="text-align:center;"></div>
-      <div id="customerInfo">
-         <div class="row">
-            <div class="col-xs-12 col-lg-6" firstName></div>
-         </div>
-         <div class="row">
-            <div class="col-xs-12 col-lg-6" address1></div>
-         </div>
-         <div class="row">
-            <div class="col-xs-12 col-lg-12" address2></div>
-         </div>
-         <div class="row">
-            <div class="col-xs-12 col-lg-12" city></div>
-         </div>
-         <div class="row">
-            <div class="col-xs-12 col-lg-12" country></div>
-         </div>
-         <br />
-         <div class="row">
-            <div class="col-xs-12 col-lg-12" email></div>
-         </div>
-         <div class="row">
-            <div class="col-xs-6 col-lg-6" ringsize></div>
-         </div>
-         <div class="row">
-            <div class="col-xs-12 col-lg-12" telephone></div>
-         </div>
-         <div class="row">
-            <div class="col-xs-6 col-lg-6" hotel></div>
-         </div>
-      </div>
+
       <div id="items"></div>
       <div id="total_div" style="border-bottom:1px solid #e2e2e2;width:100px;min-width:100%;float:right;text-align:right;background:white;padding:10px;font-size:15px;"></div>
       <div id="payments_div" style="width:100px;min-width:100%;float:right;text-align:right;background:white;padding:10px;font-size:15px;">
          <table id="pt" style="table-layout:auto;width:200px;float:right;"></table>
       </div>
-      <div style="max-width:100%;overflow-x:hidden;padding:10px;max-height:100%;overflow-y:auto;">
-        <h6>Optional: additional info</h6>
-         <form id="additionalInfo" confirmed="no" style="font-weight:normal;font-size:12px;max-height:calc(100vh - 260px);">
-           <div class="row">
-              <div class="col-xs-3 col-lg-3">
-                 <div class="form-group">
-                     <input f placeholder="Sale date" id="saledate" type="text" name="saledate" class="form-control" />
-                 </div>
-              </div>
-              <div class="col-xs-6 col-lg-6">
-                 <div class="form-group">
-                     <input f placeholder="Reference" id="reference" type="text" name="reference" class="form-control" />
-                 </div>
-              </div>
-              <div class="col-xs-3 col-lg-3" style="display:none;">
-                 <div class="form-group">
-                    <select  f id="proforma" name="proforma" class="form-control">
-                      <option value="0">Not Proforma</option>
-                      <option value="1">Proforma</option>
-                      </select>
-                 </div>
-              </div>
-           </div>
 
-            <div class="form-group">
-               <textarea f row="5" class="form-control" placeholder="Remark" id="remark" type="text" name="remark" class="form-control" />
-            </div>
-
-
-         </form>
-
-      </div>
       <div style="text-align:center;display:none;" id="notice"></div>
       <div id="cache" style="text-align:center;font-weight:bold;display:none;" id="notice"></div>
    </div>
@@ -364,7 +305,7 @@
       <button id='emailInvoice' onclick="loadedPages.checkout.signature(1);" style="margin-top:5px;float:right;" class="btn-green">EMAIL INVOICE</button>
       <button id='printInvoice' onclick="loadedPages.checkout.signature(2);" style="margin-top:20px;float:right;" class="btn-black">PRINT INVOICE</button>
       <button id='printEmailInvoice' onclick="loadedPages.checkout.signature(3);" style="margin-top:20px;float:right;" class="btn-green">PRINT & EMAIL INVOICE</button>
-   </div>
+   </div> -->
 </div>
 <div id="6" style="display:none;" parts>
   <table style="width:100%">
@@ -376,10 +317,42 @@
 
   <div class="row equal" style="background-color: transparent !important;margin-top:10px;">
      <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12" style="padding-right: 10px;background-color: white;">
-       <div id="shoppingCart" style="width:100%;padding-right:10px;"></div>
+       <div id="shoppingCart" style="width:100%;padding-right:10px;">
+         <div>
+           <h6>Optional: additional info</h6>
+            <form id="additionalInfo" confirmed="no" style="font-weight:normal;font-size:12px;max-height:calc(100vh - 260px);">
+              <div class="row">
+                 <div class="col-xs-3 col-lg-3">
+                    <div class="form-group">
+                        <input f placeholder="Sale date" id="saledate" type="text" name="saledate" class="form-control" />
+                    </div>
+                 </div>
+                 <div class="col-xs-6 col-lg-6">
+                    <div class="form-group">
+                        <input f placeholder="Reference" id="reference" type="text" name="reference" class="form-control" />
+                    </div>
+                 </div>
+                 <div class="col-xs-3 col-lg-3" style="display:none;">
+                    <div class="form-group">
+                       <select  f id="proforma" name="proforma" class="form-control">
+                         <option value="0">Not Proforma</option>
+                         <option value="1">Proforma</option>
+                         </select>
+                    </div>
+                 </div>
+              </div>
+
+               <div class="form-group">
+                  <textarea f row="5" class="form-control" placeholder="Remark" id="remark" type="text" name="remark" class="form-control" />
+               </div>
+
+
+            </form>
+          </div>
+       </div>
      </div>
 
-     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style="padding-left: 60px;background-color: transparent;">
+     <div id="right6" class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style="padding-left: 60px;background-color: transparent;">
        <div>
          <table style="width:100%;">
            <tr><td style="font-size:15px;text-align:left;"><b>You have served by:</b></td>
@@ -397,13 +370,45 @@
              </td>
            </tr>
          </table>
+         <div id="customerInfo" style="font-size:13px;font-weight:600;margin-top:10px;">
+            <div class="row">
+               <div class="col-xs-12 col-lg-6" firstName></div>
+               <div class="col-xs-12 col-lg-6" email></div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 col-lg-6" city></div>
+               <div class="col-xs-12 col-lg-6" address1></div>
+            </div>
+            <div class="row">
+
+                 <div class="col-xs-12 col-lg-6" address2></div>
+                  <div class="col-xs-12 col-lg-6" telephone></div>
+
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-lg-12" country></div>
+            </div>
+            <div class="row">
+              <div class="col-xs-6 col-lg-6" hotel></div>
+               <div class="col-xs-6 col-lg-6" ringsize></div>
+            </div>
+          </div>
+         <div id="total_div">
+         </div>
        </div>
+
      </div>
+<div>
+
+
+  </div>
+  <div style="max-width:100%;overflow-x:hidden;padding:10px;max-height:100%;margin-top:20px;overflow-y:auto;position:fixed;right:145px;bottom:5px;">
+
+     <div style="padding-left:20px;padding-right:65px;width:1440px;">
+        <img src="/images/generateInvoice.svg" onclick="loadedPages.checkout.signature(2);" id='confirmPayments' style="margin-top:5px;float:right;" onclick="loadedPages.checkout.prepareOverview();$('#payment_div').addClass('checked');" />
+    </div>
   </div>
 
-    <div style="padding-left:20px;padding-right:65px;width:1440px;position:fixed;bottom: 5px;">
-       <img src="/images/generateInvoice.svg" onclick="loadedPages.checkout.signature(2);" id='confirmPayments' style="margin-top:5px;float:right;" onclick="loadedPages.checkout.prepareOverview();$('#payment_div').addClass('checked');" />
-   </div>
 
 </div>
 <table style="display:none;">
@@ -422,7 +427,7 @@
         <input type="text" class="form-control" />
      </td>
      <td style="text-align: left;width:160px;min-width:300px;">
-        <input readonly type="text" class="form-control" />
+        <input  type="text" class="form-control" />
      </td>
      <td style="text-align: left;width:160px;min-width:250px;">
         <input readonly type="text" class="form-control" />
@@ -511,7 +516,7 @@
    <span style="font-size: 20px;color:#8E8952;font-weight:bold;">INVOICE</span><br />
    <div style="margin-top: 0px;">
       <strong style="margin-top:5px;font-size:7pt;font-weight:bold;">CUSTOMER INFORMATION</strong>
-      <div id="cinf" style="font-size:5pt;color:color:#323232;line-height:5.5pt;"></div>
+      <div id="cinf" style="font-size:13px;color:color:#323232;"></div>
    </div>
 </div>
 <div id="info" style="width:50%;float:right;margin-top:40px;text-align:right;"">
