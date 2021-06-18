@@ -1,5 +1,6 @@
 loadedPages.addproduct = {
   initialize: function() {
+    $("#btns").hide();
     $.validator.addMethod("selected", function(value, element) {
       var ds = $("#category").select2("data")[0];
       var sid = ds.id;
@@ -12,7 +13,7 @@ loadedPages.addproduct = {
         if (this.MainGroup != "null" && this.MainGroup != null) {
           $("<option value='" + this.MainGroup + "'>" + this.MainGroup + "</option>").appendTo($("#category"));
         }
-      }); 
+      });
     }, {},{},{})
     $("#category").select2();
     $( "#nart" ).validate({

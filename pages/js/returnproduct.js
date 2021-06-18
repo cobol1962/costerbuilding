@@ -1,6 +1,6 @@
 loadedPages.returnproduct = {
   initialize: function() {
-
+    $("#btns").hide();
     $.validator.addMethod("selected", function(value, element) {
       var ds = $("#rcategory").select2("data")[0];
       var sid = ds.id;

@@ -1062,7 +1062,9 @@ applyDiscount: function(obj) {
     }
   },
   loadSection: function(section) {
+
     if (section != "main") {
+      $("#btns").hide();
       $("[checkoutenabled]").hide();
       $("[checkoutdisabled]").show();
       $.getScript("/pages/js/" + section + ".js", function() {
@@ -1070,6 +1072,7 @@ applyDiscount: function(obj) {
       });
 
     } else {
+        $("#btns").show();
       $("[checkoutenabled]").show();
       $("[checkoutdisabled]").hide();
       delete loadedPages.addproduct;
