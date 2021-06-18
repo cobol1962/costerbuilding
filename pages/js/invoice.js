@@ -11,7 +11,9 @@ loadedPages.invoice = {
   vatRefund: false,
   search: {},
   initialize: function(search = {}) {
-
+    $(".container").css({
+      padding: 30
+    })
     loadedPages.invoice.search = search;
     $("#content").css({
       marginTop: 0

@@ -9,12 +9,14 @@ loadedPages.homepage = {
       loadPage("mainpage");
       return;
     }
+setTimeout(function() {
+  $(".navbar").hide();
 
-     $(".navbar").hide();
+}, 300);
      loadedPages.homepage.adjustScreen();
-     $(window).resize(function() {
+  /*   $(window).resize(function() {
        loadedPages.homepage.adjustScreen();
-     });
+     });*/
      loadedPages.homepage.fillEmployees();
      $("#findSP").bind("keyup", function() {
         loadedPages.homepage.fillEmployees();
@@ -73,7 +75,7 @@ loadedPages.homepage = {
                     dv.find(".salesperson").attr("sp", JSON.stringify(this));
                     dv.appendTo($("#employees"));
                     dv.find(".salesperson").bind("click", function(e) {
-                    
+
                       $(".salesperson").removeClass("active");
                       localStorage.salesPerson = btoa($(this).attr("sp"));
                       $(this).addClass("active");
@@ -100,10 +102,11 @@ loadedPages.homepage = {
        $("#master").hide();
    },
    adjustScreen: function() {
+
      $("#employees").css({
        overflow: "auto",
        maxHeight: $(window).height() - $(".container-fluid").eq(0).height(),
-       height: $(window).height() - $(".container-fluid").eq(0).height()
+       height: $(window).height()
      })
      if ($(window).width() > 740) {
        $("#content").css({
@@ -120,7 +123,7 @@ loadedPages.homepage = {
          maxWidth: "unset"
        })
      } else {
-
+       alert("here")
        $(".salesperson").css({
          maxWidth: "92%",
 

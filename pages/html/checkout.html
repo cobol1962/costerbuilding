@@ -121,7 +121,7 @@
      </div>
      <img src="/images/clear.svg" style="position:absolute;right:10px;" onclick="$('#searchCustomer').val('');$('#customerForm')[0].reset();" />
     </div><br />
-      <div style="max-width:100%;overflow-x:hidden;padding:10px;max-height:100%;overflow-y:auto;">
+      <div style="max-width:100%;overflow-x:hidden;padding:10px;max-height:100%;overflow-y:hidden;">
       <form id="customerForm" confirmed="no" style="font-weight:normal;font-size:12px;max-height:calc(100vh - 260px);">
 
          <input type="hidden" id="customerid" value="-1" />
@@ -227,8 +227,8 @@
            </div>
          </div>
       </form>
-      <div style="padding-left:20px;padding-right:65px;width:1440px;position:fixed;bottom: 5px;">
-          <img src="/images/nextstep.svg" style="margin-top:5px;float:right;" onclick="$('#customerForm').submit();" />
+      <div style="padding-left:20px;padding-right:85px;width:1440px;">
+          <img src="/images/nextstep.svg" style="margin-bottom:15px;float:right;" onclick="$('#customerForm').submit();" />
       </div>
 
    </div>
@@ -242,7 +242,8 @@
         </tr></table>
       </div>
      <div style="max-width:100%;overflow-x:hidden;width:100%;font-size:14px;">
-        <table id="paymentsTable" class="table-striped table-bordered" style="margin-top:10px;width:100%;font-size:14px;">
+
+        <table id="paymentsTable" class="table-striped table-bordered" style="margin-top:10px;width:1300px;font-size:14px;">
           <thead>
             <th>PAYMENT METHOD</th>
             <th>CURRENCY</th>
@@ -275,10 +276,11 @@
            </tr>
          </tbody>
        </table>
+
      </div>
-   <div style="padding-left:20px;padding-right:65px;width:1440px;position:fixed;bottom: 5px;">
-       <img src="/images/nextstep.svg" onclick="$('#4').hide();loadedPages.checkout.prepareOverview();" id='confirmPayments' style="margin-top:5px;float:right;"  />
-   </div>
+     <div style="padding-left:20px;padding-right:0px;width:1440px;position:fixed;bottom:5px;right:20px;">
+         <img src="/images/nextstep.svg" onclick="$('#4').hide();loadedPages.checkout.prepareOverview1();" id='confirmPayments' style="margin-top:5px;float:right;"  />
+     </div>
 
 </div>
 <div id="5" style="display:none;" parts>
@@ -395,6 +397,7 @@
           </div>
          <div id="total_div">
          </div>
+         
        </div>
 
      </div>
@@ -404,9 +407,7 @@
   </div>
   <div style="max-width:100%;overflow-x:hidden;padding:10px;max-height:100%;margin-top:20px;overflow-y:auto;position:fixed;right:145px;bottom:5px;">
 
-     <div style="padding-left:20px;padding-right:65px;width:1440px;">
-        <img src="/images/generateInvoice.svg" onclick="loadedPages.checkout.signature(2);" id='confirmPayments' style="margin-top:5px;float:right;" onclick="loadedPages.checkout.prepareOverview();$('#payment_div').addClass('checked');" />
-    </div>
+
   </div>
 
 

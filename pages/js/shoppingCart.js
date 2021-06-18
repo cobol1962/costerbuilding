@@ -17,8 +17,32 @@ loadedPages.shoppingCart = {
   currentInvoice: null,
   approvedRequested: false,
   countryEu: {},
+  codeEntered: false,
   initialize: function() {
 
+    let code = "";
+    let reading = false;
+    document.removeEventListener("keypress", {});
+    document.addEventListener('keypress', e=>{
+      //usually scanners throw an 'Enter' key at the end of read
+       if (e.keyCode===13){
+              if(code.length>6){
+              scanResult(code);
+                /// code ready to use
+                code="";
+             }
+        }else{
+             code+=e.key;//while this is not an 'enter' it stores the every key
+        }
+       //run a timeout of 200ms at the first read and clear everything
+        if(!reading){
+             reading=true;
+             setTimeout(()=>{
+              code="";
+              reading=false;
+          }, 200);
+        } //200 works fine for me but you can adjust it
+      });
     var ool = Object.keys(shoppingCartContent).length;
     if (ool == 0 || ool > 1) {
       $("#nits").html( "&nbsp;items");
@@ -39,7 +63,9 @@ loadedPages.shoppingCart = {
     setTimeout(function() {
       $("#content").css({
         marginLeft: ($(window).width() - $("#content").width()) / 2,
-        paddingTop: 165
+        paddingTop: 165,
+        overflowY: "auto",
+        overflowX: "hidden"
       })
          $(".navbar").show();
          $(".navbar").css({
@@ -51,7 +77,11 @@ loadedPages.shoppingCart = {
          $("#content").css({
            padding: 40,
            paddingTop:80,
-           background: "transparent"
+           background: "transparent",
+           height: "100vh",
+           maxHeight: $(window).height() - 30,
+           overflowY: "auto",
+           overflowX: "hidden"
          });
 
        }, 1500);
@@ -80,6 +110,7 @@ loadedPages.shoppingCart = {
         $("[spdiscount1]").trigger("click");
       }
     })
+
     $("#dapproved").typeahead({
       items: "all",
       scrollHeight: 100,
@@ -180,7 +211,7 @@ loadedPages.shoppingCart = {
          $('#selectSalesPerson').val(sss.EmplID).trigger("change");
        }
      },{},{},{});
-     api.call("getShowrooms", function(res) {
+     api.call("getShowroomsNew", function(res) {
          $("#showrooms").html("");
          var sorted = _.sortBy(res.data, 'forced');
          $("<option value='-1'>" + "Select showroom" + "</option>").appendTo($("#selectShowRooms"));
@@ -224,13 +255,14 @@ loadedPages.shoppingCart = {
       $('#countries').on('select2:select', function (e) {
 
           var csel = e.params.data;
-         localStorage.isEU = loadedPages.shoppingCart.countryEu[csel.id].EUMember;
+         localStorage.isEu = loadedPages.shoppingCart.countryEu[csel.id].EUMember;
 
           csel.eu = loadedPages.shoppingCart.countryEu[csel.id].EUMember;
           localStorage.customerCountry = JSON.stringify(csel);
           customerInfoData["countryCode"] = csel.id;
-          if (localStorage.isEU == "0") {
+          if (localStorage.isEu == "0") {
            $("[refundcontainer]").show();
+           $("#directRefund")[0].checked = true;
           } else {
             $("#dRefund").removeClass("refund");
             $("#dRefund").html("VAT refund");
@@ -239,6 +271,9 @@ loadedPages.shoppingCart = {
           loadedPages.shoppingCart.calculateRefund();
 
       });
+      $("#directRefund")[0].checked = (localStorage.isEu == "0");
+      $("#directRefundToggle")[0].checked = (localStorage.directRefund == "1");
+    //  loadedPages.shoppingCart.checkCode();
       if (localStorage.customerInfo !== undefined) {
         customerInfoData = $.parseJSON(localStorage.customerInfo);
         if (customerInfoData["countryCode"] !== undefined) {
@@ -279,9 +314,9 @@ loadedPages.shoppingCart = {
       //  $("#cartToPay").val(parseFloat($("#cartToPay").val()).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" }));
       })
         $("#directRefund").bind("change", function() {
-          loadedPages.shoppingCart.checkCode();
+          loadedPages.shoppingCart.checkCode(true);
         })
-      $("#directRefund")[0].checked = (localStorage.directRefund == "1");
+  //    $("#directRefund")[0].checked = (localStorage.directRefund == "1");
 
       loadedPages.shoppingCart.checkCode(true);
       $("#cartToPay").bind("blur", function() {
@@ -292,6 +327,12 @@ loadedPages.shoppingCart = {
       })
 
 
+  },
+  checkCode1: function() {
+    if (!$("#directRefund")[0].checked) {
+      $("#directRefundToggle")[0].checked = false;
+      $("#directRefundToggle").trigger("change");
+    }
   },
   drawCart: function() {
   ///  delete localStorage.generalDiscount;
@@ -318,9 +359,12 @@ loadedPages.shoppingCart = {
           if (data.CountryID !== undefined) {
             data.id = data.CountryID;
           }
+
           $('#countries').val(data.id);
           $('#countries').select2().trigger('change');
-          localStorage.isEU = data.EUMember;
+          var dtt = $("#countries").select2('data');
+          localStorage.isEu = dtt.EUMember;
+
           $("[refundcontainer]").hide();
           if (data.eu == "0") {
 
@@ -438,6 +482,9 @@ loadedPages.shoppingCart = {
       html += "<table id='ttt' style='width:100%;'><tr>";
       html += "<td style='max-width:120px;width:120px;'>" + ((obj.imageURL != "") ? obj.imageURL : "<img style='width:100px;' src='https://costercatalog.com/coster/www/images/crown.png' /></td>");
       html += "<td style='text-align: left;width:50%;'><div pdata style='position: relative;top:10px;right:0px;color:#ADADAD;display:inline-block;padding-bottom: 10px;'>" + obj.SerialNo + "<br />";
+if (obj.CompName === undefined) {
+  obj.CompName = "";
+}
       if (obj.productName !== undefined && obj.productName != "undefined") {
         html += "<span productname style='font-size:24px;font-weight: bold;color:black;max-width:300px;min-width:300px;'>" + obj.productName.replace("undefined", "") + "</span>";
         html += "<span productname style='font-size:18px;color:black;max-width:300px;min-width:300px;'>" + obj.CompName.replace("undefined", "") + "</span>";
@@ -611,12 +658,12 @@ loadedPages.shoppingCart = {
      localStorage.total = parseFloat(ttl);
      localStorage.grandTotal = parseFloat(grandTotal);
      localStorage.invoiceDiscount = $("#masterdiscount").val();
-   localStorage.directRefund = (($("#directRefund")[0].checked) ? "1" : "0");
+  //   localStorage.directRefund = (($("#directRefund")[0].checked) ? "1" : "0");
     var bb = parseInt((parseFloat(localStorage.torefund) - parseFloat(localStorage.admincharge)));
 
      localStorage.payNoRefund = parseFloat(vex + vat);
      localStorage.payWithRefund = parseInt((localStorage.total -  vat) + achg);
-     localStorage.isEU = $('#countries').find(':selected').data('eu');
+     localStorage.isEu = $('#countries').find(':selected').data('eu');
 
      $(".norefund").val((Math.ceil(vex + vat).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
      $(".refund").val((Math.ceil((vatchargeexcl + vatcharge) - vat).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
@@ -684,14 +731,18 @@ loadedPages.shoppingCart = {
       }
   },
   checkCode: function(first = false) {
-//    return;
-//  $("#directRefund")[0].checked = (localStorage.directRefund == "1");
-localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
+    //    return;
+    //  $("#directRefund")[0].checked = (localStorage.directRefund == "1");
+  //  localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
 
-    if (!$("#directRefund")[0].checked) {
+    if (!$("#directRefundToggle")[0].checked) {
+          localStorage.directRefund = "0";
+      loadedPages.shoppingCart.codeEntered = false;
       loadedPages.shoppingCart.calculateRefund();
+
       return;
     }
+
     if (!first) {
         showModal({
             title: "Please confirm choice. Enter code.",
@@ -699,30 +750,42 @@ localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
             allowBackdrop: false,
             showClose: false,
             noclose: true,
-            cancelCallback: function() {
-                $('#mainModal').modal("hide");
-            },
+            allowBackdrop: false,
             confirmCallback: function() {
 
               if ($("#ccode").val() == "1071") {
+                 loadedPages.shoppingCart.codeEntered = true;
                   $("#dRefund").addClass("refund");
                   $("[refundcontainer]").show();
-                  $("#dfw").html("Direct Refund");
                   localStorage.directRefund = "1";
+                  $("#directRefundToggle")[0].checked = true;
                   loadedPages.shoppingCart.calculateRefund(true);
                   $('#mainModal').modal("hide");
               } else {
+                loadedpages.shoppingCart.codeEntered = false;
+                localStorage.directRefund = "0";
+                $("#directRefundToggle")[0].checked = false;
+                loadedPages.shoppingCart.calculateRefund(true);
                 $("#cer").show();
               }
 
+            },
+            cancelCallback: function() {
+              $("#directRefundToggle")[0].checked = false;
+              $('#mainModal').modal("hide");
+            },
+            closeCallback: function() {
+              if ($("#directRefundToggle")[0].checked && !loadedPages.shoppingCart.codeEntered) {
+                $("#directRefundToggle")[0].checked = false;
+              }
             }
         })
       } else {
-        $("#dRefund").addClass("refund");
+
+    /*    $("#dRefund").addClass("refund");
         $("[refundcontainer]").show();
-        $("#dfw").html("Direct Refund");
-        localStorage.directRefund = "1";
-        loadedPages.shoppingCart.calculateRefund(true);
+        $("[refund]").show();*/
+    //    loadedPages.shoppingCart.calculateRefund(true);
       }
   },
   recalculate: function(obj, vl) {
@@ -797,7 +860,7 @@ localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
   //  loadedPages.shoppingCart.drawCart();
   },
   calculateRefund: function(showpay = false) {
-      localStorage.directRefundChecked = (($("#dfw").html().trim() == "VAT Refund") ? "0" : "1")
+      localStorage.directRefundChecked = (($("#directRefundToggle")[0].checked) ? "1" : "0")
       if (localStorage.customerCountry !== undefined) {
         var data = $.parseJSON(localStorage.customerCountry);
         if (data.id == "") {
@@ -806,8 +869,8 @@ localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
         if (data.CountryID !== undefined) {
           data.id = data.CountryID;
         }
-        localStorage.isEU = loadedPages.shoppingCart.countryEu[data.id].EUMember;
-        if (localStorage.isEU == "1") {
+        localStorage.isEu = loadedPages.shoppingCart.countryEu[data.id].EUMember;
+        if (localStorage.isEu == "1") {
           $("[refundcontainer]").hide();
         } else {
             $("[refundcontainer]").show();
@@ -818,14 +881,14 @@ localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
 
         if (loadedPages.shoppingCart.currentInvoice.directRefund == "1") {
             localStorage.directRefundChecked = "1";
-          $("#dfw").html("Direct Refund");
+          $("#dfw").html("VAT Refund");
         } else {
           $("#dfw").html("VAT Refund");
             localStorage.directRefundChecked = "0";
         }
         loadedPages.shoppingCart.firstDR = false;
       }
-      if (localStorage.isEU == "0" && $("#directRefund")[0].checked == true) {
+      if (localStorage.isEu == "0" && $("#directRefund")[0].checked == true) {
           if (localStorage.directRefundChecked == "1") {
             setTimeout(function() {
                   $("[refund]").show();
@@ -834,7 +897,7 @@ localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
                   $("[refundcontainer]").show();
                   $("[norefund]").hide();
                   if (showpay) {
-                    $("#dfw").html("Direct Refund");
+                //    $("#dfw").html("Direct Refund");
                     $(".refund").show();
                     $(".norefund").hide();
 
@@ -877,7 +940,7 @@ localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
         }
       }
       localStorage.invoiceDiscount = $("#masterdiscount").val();
-      localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
+    //  localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
       localStorage.total_div = $("#total_div")[0].outerHTML;
       $("[spdiscount1]").val($("#masterdiscount").val());
       if (localStorage.directRefund == "1") {

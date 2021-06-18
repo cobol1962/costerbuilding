@@ -5,6 +5,7 @@ loadedPages.login = {
        marginTop: 0
      })
      if (localStorage.salesPerson === undefined) {
+          $(".navbar").hide();
        loadPage("homepage");
        return;
      }
@@ -55,7 +56,7 @@ loadedPages.login = {
         paddingTop: 70
       })
       $(".btn-grey").css({
-        marginTop: 70,
+        marginTop: 0,
         width: 250
       })
       $("#ddd").css({

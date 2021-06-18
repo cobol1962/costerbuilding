@@ -161,7 +161,7 @@ header('Access-Control-Allow-Origin: *');
   <script type="text/javascript" src="https://costercatalog.com/admin/js/underscore.js"></script>
   <script type="text/javascript" src="https://costercatalog.com/admin/js/sweetalert2.js"></script>
   <script type="text/javascript" src="https://costercatalog.com/admin/js/jquery.validate.js"></script>
-  <script type="text/javascript" src="https://costerbuilding.com/js/api.js"></script>
+  <script type="text/javascript" src="https://costercatalog.com/js/api.js"></script>
     <script type="text/javascript" src="https://costercatalog.com/admin/js/moment.js"></script>
   <script>
   var invoiceTable = null;
@@ -174,7 +174,7 @@ header('Access-Control-Allow-Origin: *');
       var ics = "<?=$_GET['invoices']?>";
       invoiceTable = $("#invoicesTable").DataTable({
           ajax: {
-              "url": "https://costerbuilding.com/api/index.php?request=showInvoices&invoices=" + ics
+              "url": "https://costercatalog.com/api/index.php?request=showInvoices&invoices=" + ics
           },
            "order": [[ 0, "desc" ]],
              "paging": false,
@@ -295,7 +295,7 @@ header('Access-Control-Allow-Origin: *');
   }
     function openPDF(data) {
       $.ajax({
-       url: "https://costerbuilding.com/api/invoice.php?invoice=" + data,
+       url: "https://costercatalog.com/api/invoice.php?invoice=" + data,
        type: "GET",
        success: function(res) {
          var app = document.URL.indexOf( 'mobile' ) > -1;

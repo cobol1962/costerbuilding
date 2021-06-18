@@ -17,8 +17,8 @@ loadedPages.checkout = {
         $("[parts]").css({
             position: "fixed",
             top: 190,
-            width: 1440,
-            maxWidth: 1440,
+            width: 1395,
+            maxWidth: 1395,
             height: $(window).height() - 190,
             maxHeight: $(window).height() - 190,
             overflowY: "auto",
@@ -123,7 +123,11 @@ loadedPages.checkout = {
         //  $("#saledate").val(moment(new Date()).format("DD/MM/YYYY"));
         var ii = "";
         ii = ((Object.keys(shoppingCartContent).length > 1) ? " items " : " item ");
-        $("#itemsinfo").html(Object.keys(shoppingCartContent).length + ii + parseFloat(localStorage.payNoRefund).toLocaleString("nl-NL", {
+        var thenum = localStorage.payNoRefund.replace(/^\D+/g, '');
+
+        var n = thenum.replace(/\./g, "");
+        var n = n.replace(/\,/g, ".")
+        $("#itemsinfo").html(Object.keys(shoppingCartContent).length + ii + n.toLocaleString("nl-NL", {
             style: 'currency',
             currency: "EUR"
         }))
@@ -309,6 +313,8 @@ loadedPages.checkout = {
                                 })*/
                                 loadedPages.checkout.csid = res.customerid;
                                 $("#customerid").val(res.customerid);
+                                obj.customerid = res.customerid;
+                                localStorage.customer = JSON.stringify(obj);
                                 $("[tg='3']").removeClass("active");
                                 $("[tg='3']").addClass("done");
                                 $("#3").attr("completed", "1");
@@ -366,7 +372,7 @@ loadedPages.checkout = {
             },
             source: function(query, result) {
                 $.ajax({
-                    url: "https://costerbuilding.com/api/index.php?request=searchCustomers",
+                    url: "https://costercatalog.com/api/index.php?request=searchCustomers",
                     data: {
                         query: query,
                         secret: "scddddedff2fg6TH22"
@@ -481,6 +487,7 @@ loadedPages.checkout = {
                 style: 'currency',
                 currency: 'EUR'
             }));
+            alert(JSON.stringify(payments))
             if (Object.keys(payments).length == 0) {
 
                 var tr = $("#master").clone();
@@ -494,6 +501,12 @@ loadedPages.checkout = {
                 var n = thenum.replace(/\./g, "");
                 n = n.replace(/\,/g, ".");
                 tpp = n;
+                tr.find("input").eq(0).unbind("focus");
+                tr.find("input").eq(0).bind("focus", function() {
+                  $(this).attr("vv",$(this).val());
+                  $(this).val("");
+                });
+
                 tr.find("input").attr("realvalue", tpp);
                 tr.find("input").attr("euro", tpp);
                 tr.find("input").val(parseFloat(tpp).toLocaleString("nl-NL", {
@@ -511,24 +524,37 @@ loadedPages.checkout = {
                 tr.appendTo($("#paymentsTable").find("tbody"));
             } else {
                 for (var key in payments) {
+                  alert(key);
                     var ths = payments[key];
-                    console.log(ths);
+console.log(ths);
                     if (ths.amount > 0) {
-
                         var tr = $("#master").clone();
-                        tr.find("select").eq(0).val(ths.paymentMethod);
+                        tr.appendTo($("#paymentsTable").find("tbody"));
+                        tr = $("#paymentsTable").find("tr:last");
+                        tr[0].id = "row_" + (new Date()).getTime();
+                        tr.find("select").eq(0).val(ths.paymentID);
                         tr.find("select").eq(1).val(ths.currency);
                         //  tr.find("select").eq(1).hide();
+                        tr.find("input").eq(0).unbind("focus");
+                        tr.find("input").eq(0).bind("focus", function() {
+                          alert("focus")
+                            $(this).attr("vv",$(this).val());
+                            $(this).val("");
+                        });
+                        tr.find("input").eq(0).blur( function() {
+                          if ($(this).val() == "") {
+                            $(this).val($(this).attr("vv"));
+                          }
+                        });
                         tr.find("input").eq(0).attr("realvalue", ths.amount);
                         tr.find("input").eq(0).attr("euro", ths.original);
                         if (ths.date !== undefined) {
-
+                          alert(ths.date);
                             tr.find("td").eq(3).find("input").val(moment(ths.date).format("DD-MM-YYYY"));
                             tr.find("td").eq(3).find("input").attr("realdate", ths.date);
                             tr.find("td").eq(3).attr("isOld", ths.isOld);
                             tr.find("td").eq(3).attr("version", ths.version);
                         } else {
-
                             tr.find("td").eq(3).find("input").val(ths.date);
                             tr.find("td").eq(3).find("input").attr("realdate", moment(new Date()).format("YYYY-MM-DD HH:mm:ss"));
                             tr.find("td").eq(3).attr("isOld", "0");
@@ -538,7 +564,11 @@ loadedPages.checkout = {
                             style: 'currency',
                             currency: ths.currency
                         }));
-
+                        tr.find("input").eq(0).unbind("focus");
+                        tr.find("input").eq(0).bind("focus", function() {
+                            $(this).attr("vv",$(this).val());
+                          $(this).val("");
+                        });
                         tr.find("input").eq(0).attr("realvalue", ths.amount);
                         tr.find("input").eq(0).attr("euro", ths.original);
 
@@ -551,17 +581,20 @@ loadedPages.checkout = {
 
                         tr.find("input").prop("disabled", true);
                         tr.find("input").eq(0).prop("disabled", false);
-                          tr.find("input").eq(1).prop("disabled", false);
+                        tr.find("input").eq(1).prop("disabled", false);
                         tr.find("input").eq(2).prop("disabled", true);
 
                         tr.find("select").eq(1).prop("disabled", false);
                         tr.find("select").eq(0).prop("disabled", false);
                         tr.find("i").show();
-                        tr.appendTo($("#paymentsTable").find("tbody"));
+
                     }
                 }
-                $("#paymentsTable").find("tbody").find("input").unbind("change");
-                $("#paymentsTable").find("tbody").find("input").bind("change", function() {
+
+              tr.find("input").eq(0).unbind("change");
+
+                tr.find("input").eq(0).bind("change", function() {
+
                     var slct = $(this).closest("tr").find("td").eq(1).find("select");
                     var rate = slct.find("option:selected").attr("rate");
                     $(this).attr("euro", parseFloat($(this).val() / rate));
@@ -631,7 +664,7 @@ loadedPages.checkout = {
         $.each($("#paymentsTable").find("tbody").find("tr"), function(ind) {
             if (this.id != "administrative") {
                 var ths = this;
-
+                this.id = "row_" + (new Date()).getTime();
                 if ($(this).find("input").length > 0 && $(this).find("select").eq(0).val() != "-1") {
                     var m = 1;
                     if ($(ths).find("input").val().indexOf("-") > -1) {
@@ -670,7 +703,8 @@ loadedPages.checkout = {
                         amount: parseFloat(n),
                         date: $(ths).find("td").eq(3).attr("realdate"),
                         isOld: $(ths).find("td").eq(4).attr("isOld"),
-                        version: $(ths).find("td").eq(4).attr("version")
+                        version: $(ths).find("td").eq(4).attr("version"),
+                    //    paymentDate: moment($(ths).find("input").eq(1).datepicker('getDate')).format("YYYY-MM-DD HH:mm:ss")
                     }
 
                     if ($(this).find("input").eq(0).val() != "" && $(this).find("select").eq(0).val() != "-1") {
@@ -736,7 +770,7 @@ loadedPages.checkout = {
 //        $("#paymentsTable").find("tbody").find("tr:last").css({
   //          visibility: "hidden"
     //    })
-        $("#paymentsTable").find("tbody").find("input").unbind("change");
+        $("#paymentsTable").find("tbody").find("input").eq(0).unbind("change");
         var obj = {
             paymentID: $("#paymentsTable").find("tbody").find("tr:last").find("select").eq(0).val(),
             paymentMethod: $("#paymentsTable").find("tbody").find("tr:last").find("select").eq(0).find(":selected").text(),
@@ -750,8 +784,32 @@ loadedPages.checkout = {
         } else {
             $("#addpayment").prop("disabled", false);
         }
-        $("#paymentsTable").find("tbody").find("input").bind("change", function() {
-
+        var del =    $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(1);
+        if (typeof del.id == 'undefined') {
+          del[0].id = "date_" + $("#paymentsTable").find("tbody").find("tr").length;
+        }
+        var ii = $("#paymentsTable").find("tbody").find("tr").length;
+        var el = $("#date_" + ii);
+        el.datepicker({
+            dateFormat: "dd.mm.yy",
+            onSelect: function(dateText) {
+              el.attr("realdate", moment(el.datepicker("getDate")).format("YYYY-MM-DD HH:mm:ss"))
+              loadedPages.checkout.paymentToLS();
+           }
+        });
+        console.log(el.datepicker());
+        el.datepicker("setDate", new Date(el.attr("realdate")));
+      /*  $("#paymentsTable").find("tbody").find("input").eq(1).unbind("change");
+        $("#paymentsTable").find("tbody").find("input").eq(1).bind("change", function() {
+          alert("date")
+        });*/
+        $("#paymentsTable").find("tbody").find("input").eq(0).blur(function() {
+          if ($(this).val() == "") {
+            $(this).val($(this).attr("vv"));
+          }
+        });
+        $("#paymentsTable").find("tbody").find("input").eq(0).unbind("change");
+        $("#paymentsTable").find("tbody").find("input").eq(0).bind("change", function() {
             var slct = $(this).closest("tr").find("td").eq(1).find("select");
             var rate = slct.find("option:selected").attr("rate");
             $(this).attr("euro", parseFloat($(this).val() / rate));
@@ -799,8 +857,7 @@ loadedPages.checkout = {
         $("#paymentsTable").find("tbody").find("tr:last").find("select").eq(0).prop("disabled", false);
         $("#paymentsTable").find("tbody").find("tr:last").find("select").eq(1).prop("disabled", false);
         $("#paymentsTable").find("tbody").find("tr:last").find("input").prop("disabled", false);
-        $("#paymentsTable").find("tbody").find("tr:last").find("td").eq(3).find("input").val(moment(new Date()).format("DD-MM-YYYY"));
-        $("#paymentsTable").find("tbody").find("tr:last").find("td").eq(3).attr("realdate", moment(new Date()).format("YYYY-MM-DD HH:mm:ss"));
+
         $("#paymentsTable").find("tbody").find("tr:last").find("td").eq(3).attr("isOld", "0");
         $("#paymentsTable").find("tbody").find("tr:last").find("td").eq(3).attr("version", "");
         $("#paymentsTable").find("tbody").find("tr:last").find("i").show();
@@ -808,11 +865,23 @@ loadedPages.checkout = {
         loadedPages.checkout.firstAddPayment = false;
         var tp = 0;
 
-        $.each($("#paymentsTable").find("tbody").find("tr"), function() {
-            if ($(this).find("select").eq(0).val() == "7") {
-                $(this).remove();
-            }
+        $.each($("#paymentsTable").find("tbody").find("tr:last"), function(ind) {
+          var ths = this;
+          $(ths).find("input").eq(0).unbind("focus");
+          $(ths).find("input").eq(0).bind("focus", function() {
+              $(this).attr("vv",$(this).val());
+            $(this).val("");
+          });
+          if ($(ths).find("select").eq(0).val() == "7") {
+                $(ths).remove();
+          }
         })
+        $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(0).unbind("change");
+        $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(0).blur(function() {
+            if ($(this).val() == "") {
+              $(this).val($(this).attr("vv"));
+            }
+        });
         if (localStorage.openInvoice === undefined || !loadedPages.checkout.firstAddPayment) {
 
             $.each($("#paymentsTable").find("tbody").find("tr").not(":last"), function(ind) {
@@ -847,7 +916,6 @@ loadedPages.checkout = {
                 }
             })
         }
-
         if (vatRefund) {
             var tpp = (localStorage.payWithRefund);
         } else {
@@ -909,11 +977,13 @@ loadedPages.checkout = {
         $.each($("#paymentsTable").find("tbody").find("tr"), function(ind) {
             if ($(this).is(":visible")) {
                 var ths = this;
+            //    alert(moment($(ths).find("input").eq(1).datepicker('getDate').format("YYYY-MM-DD HH:mm:ss")));
                 if ($(ths).find("select").eq(0).val() != "7") {
+
                     var obj = {
-                        paymentID: ind,
-                        date: $(ths).find("input").eq(1).val(),
-                        paymentMethod: $(ths).find("select").eq(0).val(),
+                        paymentID: $(ths).find("select").eq(0).val(),
+                        date: moment($(ths).find("input").eq(1).datepicker('getDate')).format("YYYY-MM-DD HH:mm:ss"),
+                        paymentMethod: $(ths).find("select").eq(0).find("option:selected").text(),
                         currency: $(ths).find("select").eq(1).val(),
                         amount: $(ths).find("input").eq(0).attr("realvalue"),
                         original: $(ths).find("input").eq(0).attr("euro")
@@ -968,6 +1038,26 @@ loadedPages.checkout = {
       //  $(obj).closest("tr").find("td").eq(1).find("select").prop("disabled", true);
         loadedPages.checkout.calculatePayments();
         loadedPages.checkout.paymentToLS();
+    },
+    prepareOverview1: function() {
+      var ns = 0;
+      $.each($("#paymentsTable").find("tbody").find("tr"), function() {
+        var ths = this;
+        if ($(ths).find("select").eq(0).val() == "-1") {
+          ns++;
+        }
+
+      })
+      if (ns > 0) {
+        showModal({
+            type: "error",
+            title: "Not for all payments payment method selected",
+
+        })
+        loadedPages.checkout.loadPart(4);
+      } else {
+        loadedPages.checkout.prepareOverview();
+      }
     },
     prepareOverview: function() {
         //loadedPages.checkout.paymentToLS();
@@ -1184,14 +1274,15 @@ loadedPages.checkout = {
         setTimeout(function() {
           var html = "<table id='ppp' style='margin-top: 10px;font-size:15px;width:100%;'>";
           $.each($("#paymentsTable").find("tbody").find("tr"), function(ind) {
+
             if (ind == 0) {
-              html += "<td style='padding-top:10px;'>" + $(this).find("td").eq(3).find("input").val() + "</td>";
+              html += "<td style='padding-top:10px;'>" + moment($(this).find("td").eq(3).find("input").datepicker("getDate")).format("DD.MM.YYYY") + "</td>";
               html += "<td style='padding-top:10px;'>" + $(this).find("td").eq(0).find("select").find("option:selected").text() + "</td>";
               html += "<td style='text-align:right;padding-top:10px;padding-right:5px;'>" + $(this).find("td").eq(2).find("input").val() + "</td>";
               html += "<td style='text-align:right;padding-top:10px;'>" + $(this).find("td").eq(4).find("input").val() + "</td>";
               html += "</tr>";
             } else {
-              html += "<td>" + $(this).find("td").eq(3).find("input").val() + "</td>";
+              html += "<td>" + moment($(this).find("td").eq(3).find("input").datepicker("getDate")).format("DD.MM.YYYY") + "</td>";
               html += "<td>" + $(this).find("td").eq(0).find("select").find("option:selected").text() + "</td>";
               html += "<td style='text-align:right;padding-right:5px;'>" + $(this).find("td").eq(2).find("input").val() + "</td>";
               html += "<td style='text-align:right;'>" + $(this).find("td").eq(4).find("input").val() + "</td>";
@@ -1200,6 +1291,8 @@ loadedPages.checkout = {
           })
           html += "</table>"
           $(html).appendTo($("#right6").find("div").eq(0));
+          $('<div style=""><img src="/images/generateInvoice.svg" onclick="loadedPages.checkout.signature(2);" id="confirmPayments" style="margin-top:5px;float:right;" onclick="loadedPages.checkout.prepareOverview();$(\'#payment_div\').addClass(\'checked\');" /></div>').appendTo($("#right6"));
+
           var d = $($("#payS").html()).appendTo($("#right6").find("div").eq(0));
           d.css({
             margintop:10,
@@ -1208,6 +1301,9 @@ loadedPages.checkout = {
             $("#customerInfo").find("[country]").hide();
         }, 1000);
         loadedPages.checkout.loadPart(6);
+        $("#customerInfo").find("div").css({
+          display: "block"
+        })
         return;
         $("#items").html("");
         $("#total_div").html("");
@@ -1354,6 +1450,10 @@ loadedPages.checkout = {
         $("#cinf").find("#customerInfo").css({
           fontSize: "5pt"
         })
+        $("#cinf").find("#customerInfo").find("div").css({
+          display: "block"
+        })
+
 
         $("#tnmbr").html(tour.ProjId);
         var sp = $.parseJSON(localStorage.salesPerson);
@@ -1594,11 +1694,14 @@ loadedPages.checkout = {
         var tpaid = 0;
         var chpaid = 0;
         var fp = true;
+        paymentss = $.parseJSON(localStorage.payments);
         for (var key in payments) {
 
             var pay = payments[key];
+            var payy = paymentss[key];
+            pay.date = payy.date;
             if (pay.version == "") {
-                pay["date"] = moment($("#saledate").datepicker('getDate')).format("YYYY-MM-DD HH:mm:ss");
+              //  pay["date"] = moment($("#saledate").datepicker('getDate')).format("YYYY-MM-DD HH:mm:ss");
 
             }
             if (fp) {
@@ -1733,24 +1836,26 @@ loadedPages.checkout = {
             localStorage.reference = $("#reference").val();
             localStorage.isproform = $("#proforma").val();
             localStorage.remark = $("#remark").val().replace(/\n/g, "<br />");
+            var sroom = $.parseJSON(localStorage.sroom);
+
             var obj = {
 
-                customerid: $("#customerid").val(),
-                showroom: localStorage.showRoomName,
-                salesPerson: $.parseJSON(localStorage.sp)["Employee"],
+                customerid: $.parseJSON(localStorage.customer).customerid,
+                showroom: sroom.name,
+                salesPerson: $.parseJSON(localStorage.salesPerson)["Employee"],
                 tourNo: tour.ProjId,
                 total: parseFloat(localStorage.grandTotal),
                 discount: localStorage.invoiceDiscount,
                 discountAmount: parseFloat(localStorage.discountAmount),
                 discountApproved: localStorage.dapproved,
                 discountApprovedName: localStorage.dapprovedname,
-                salePersonId: $.parseJSON(localStorage.sp)["EmplID"],
+                salePersonId: $.parseJSON(localStorage.salesPerson)["EmplID"],
                 dueAmount: tobepaid,
                 //   pdf:  nm + "_" + "gb" + ".pdf",
                 //   documentName :  nm,
                 documentLanguages: "gb",
                 showroomid: localStorage.showRoomName,
-                salePersonId: $.parseJSON(localStorage.sp)["EmplID"],
+                salePersonId: $.parseJSON(localStorage.salesPerson)["EmplID"],
                 status: "1",
                 vatExcluded: parseFloat(localStorage.vatexcluded),
                 vat: parseFloat(localStorage.vat),
@@ -1768,23 +1873,25 @@ loadedPages.checkout = {
                 localStorage.discountAmount = 0;
             }
             var dt = $("#saledate").datepicker('getDate');
+                var sroom = $.parseJSON(localStorage.sroom);
+
             var obj = {
                 invoiceid: invoiceID,
                 version: version,
-                customerid: $("#customerid").val(),
-                showroom: localStorage.showRoomName,
-                salesPerson: $.parseJSON(localStorage.sp)["Employee"],
+                customerid: $.parseJSON(localStorage.customer).customerid,
+                showroom: sroom.name,
+                salesPerson: $.parseJSON(localStorage.salesPerson)["Employee"],
                 tourNo: tour.ProjId,
                 total: parseFloat(localStorage.grandTotal),
                 discount: localStorage.invoiceDiscount,
                 discountAmount: parseFloat(localStorage.discountAmount),
-                salePersonId: $.parseJSON(localStorage.sp)["EmplID"],
+                salePersonId: $.parseJSON(localStorage.salesPerson)["EmplID"],
                 dueAmount: tobepaid,
                 //   pdf:  nm + "_" + "gb" + ".pdf",
                 //   documentName :  nm,
                 documentLanguages: "gb",
                 showroomid: localStorage.showRoomName,
-                salePersonId: $.parseJSON(localStorage.sp)["EmplID"],
+                salePersonId: $.parseJSON(localStorage.salesPerson)["EmplID"],
                 status: "1",
                 vatExcluded: parseFloat(localStorage.vatexcluded),
                 vat: parseFloat(localStorage.vat),
@@ -1846,7 +1953,7 @@ loadedPages.checkout = {
 
                     api.call("insertInvoiceBody", function(r) {}, obj, {}, {});
                 }
-
+                payments = $.parseJSON(localStorage.payments);
                 for (var key in payments) {
                     var data = payments[key];
 
@@ -1854,17 +1961,16 @@ loadedPages.checkout = {
                     for (var k in data) {
                         obj[k] = data[k];
                     }
-
                     obj["invoiceid"] = invoiceID;
                     if (obj["isOld"] == "0") {
                         obj["version"] = version;
                     }
                     delete obj["isOld"];
                     if (obj.version == "") {
-                        obj["date"] = moment($("#saledate").datepicker('getDate')).format("YYYY-MM-DD HH:mm:ss");
+            //            obj["date"] = moment($("#saledate").datepicker('getDate')).format("YYYY-MM-DD HH:mm:ss");
                     }
                     if (obj.version === undefined) {
-                        obj["date"] = moment($("#saledate").datepicker('getDate')).format("YYYY-MM-DD HH:mm:ss");
+          //              obj["date"] = moment($("#saledate").datepicker('getDate')).format("YYYY-MM-DD HH:mm:ss");
                     }
                     if (obj.paymentID != "7") {
                         api.call("insertInvoicePayments", function(r) {
@@ -1887,7 +1993,7 @@ loadedPages.checkout = {
                 $("#bar_image").attr("src", bc);
                 var html = $("#invoice")[0].outerHTML;
                 $.ajax({
-                    url: "https://costerbuilding.com:5100",
+                    url: "https://costercatalog.com:5100",
                     type: 'POST',
                     dataType: "json",
                     data: {
@@ -1971,7 +2077,7 @@ loadedPages.checkout = {
                                                      var blob = b64toBlob(res.base64, "application/pdf");
                                                      var blobUrl = URL.createObjectURL(blob);
                                                      if (!app) {
-                                                      window.open("https://costerbuilding.com/api/ACinvoices.php?invoices=" + loadedPages.checkout.iid + "&print=1&customer=" + loadedPages.checkout.csid, "_blank","location=yes");
+                                                      window.open("https://costercatalog.com/api/ACinvoices.php?invoices=" + loadedPages.checkout.iid + "&print=1&customer=" + loadedPages.checkout.csid, "_blank","location=yes");
 
                                                      } else {
 
@@ -2011,7 +2117,7 @@ loadedPages.checkout = {
                                                  } else {
 
                                                    if (GB) {
-                                                     window.open("https://costerbuilding.com/api/ACinvoices.php?invoices=" + loadedPages.checkout.iid + "&print=1&customer=" + loadedPages.checkout.csid, "_blank","location=yes");
+                                                     window.open("https://costercatalog.com/api/ACinvoices.php?invoices=" + loadedPages.checkout.iid + "&print=1&customer=" + loadedPages.checkout.csid, "_blank","location=yes");
                                                    }
                                                  }
                                             var t = $.parseJSON(localStorage.tour);
@@ -2048,7 +2154,7 @@ loadedPages.checkout = {
                                                 setTimeout(function() {
                                                     loadPage('mainpage')
                                                 }, 3000)
-                                                window.open("https://costerbuilding.com/api/ACinvoices.php?mobile=1&invoices=" + loadedPages.checkout.iid + "&print=1&customer=" + loadedPages.checkout.csid + "&sessiontoken=" + token, "_blank", "location=yes");
+                                                window.open("https://costercatalog.com/api/ACinvoices.php?mobile=1&invoices=" + loadedPages.checkout.iid + "&print=1&customer=" + loadedPages.checkout.csid + "&sessiontoken=" + token, "_blank", "location=yes");
 
                                             }
                                         }
@@ -2233,7 +2339,7 @@ loadedPages.checkout = {
             fixedColumns: true,
             autoWidth: false,
             "ajax": {
-                "url": "https://costerbuilding.com/api/index.php?request=getTours",
+                "url": "https://costercatalog.com/api/index.php?request=getTours",
                 "type": "POST",
                 "data": {
                     secret: "scddddedff2fg6TH22"
@@ -2318,7 +2424,7 @@ loadedPages.checkout = {
         });
       },{},{},{});
         if (loadedPages.checkout.sps == null) {
-            api.call("getShowrooms", function(res) {
+            api.call("getShowroomsNew", function(res) {
                 $("#showrooms").html("");
                 var sorted = _.sortBy(res.data, 'forced');
                 loadedPages.checkout.sps = sorted;
@@ -2533,10 +2639,10 @@ loadedPages.checkout = {
        alert("here");
        html += "<div style='" + ((obj.available == "11111111") ? "display:none;" : "") + "'><table><tr><td style='vertical-align: bottom;'>";
        html += "<img  src='/images/minus.svg' /></td>";
-       html += "<td style='vertical-align: top;'><input class='form-control' readonly serialno='" + obj.SerialNo + "' max='" + obj.available + "' onfocus='lastFocused=$(this);'  style='color:black;text-align:right;width:70px;' quantity type='number' itemid='" + obj.ItemID + "' value='" + obj.quantity + "' /></td>";
+       html += "<td style='vertical-align: top;'><input class='form-control' readonly serialno='" + obj.SerialNo + "' max='" + obj.available + "' focus='lastFocused=$(this);'  style='color:black;text-align:right;width:70px;' quantity type='number' itemid='" + obj.ItemID + "' value='" + obj.quantity + "' /></td>";
        html += "<td style='vertical-align: bottom;'><img  src='/images/plus.svg' /></div></td></tr></table>";
      } else {
-       html += "<div style=''><label style='color:black;font-size:15px;'>Quantity:&nbsp;</label><input  serialno='" + obj.SerialNo + "' max='" + obj.available + "' onfocus='lastFocused=$(this);'  style='color:black;font-size:13px;text-align:right;width:70px;' quantity type='number' itemid='" + obj.ItemID + "' value='" + obj.quantity + "' /></div></td>";
+       html += "<div style=''><label style='color:black;font-size:15px;'>Quantity:&nbsp;</label><input  serialno='" + obj.SerialNo + "' max='" + obj.available + "' focus='lastFocused=$(this);'  style='color:black;font-size:13px;text-align:right;width:70px;' quantity type='number' itemid='" + obj.ItemID + "' value='" + obj.quantity + "' /></div></td>";
      }
    html += "</td>";*/
 

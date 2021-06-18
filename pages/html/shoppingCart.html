@@ -1,4 +1,4 @@
-<div class="cnt" id="main" style="visibility:hidden;overflow:auto;">
+<div class="cnt" id="main" style="visibility:hidden;">
 <div class="row equal">
    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12" style="padding-right: 10px;">
       <div section="main">
@@ -99,7 +99,7 @@
         <img src="/images/continueadd.svg" style="float:right;" onclick="$('#rnart').submit();" />
     </div>
    </div>
-   <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style="padding-left: 60px;">
+   <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" style="padding-left: 60px;overflowL hidden !important;">
       <div style="padding-left:10px;">
          <div style="border-bottom:1px solid rgba(0, 0, 0, 0.1);">
             <span style="font-family: 'Canela';font-style: normal;font-weight: bold; font-size: 36px; line-height: 36px;">Summary</span>
@@ -135,11 +135,11 @@
                 </td></tr>
                 <tr style="">
                   <td style="text-align:left;padding-bottom:10px;vertical-align:top;padding-top:10px;">
-                    <label refundcontainer id="dfw" style="display:none;margin-top:10px;"  id="dRefund">Direct Refund</label>
+                    <label  refundcontainer id="dfw" style="display:none;margin-top:10px;"  id="dRefund">VAT Refund</label>
                   </td>
                   <td style="text-align:right;vertical-align:top;padding-top:5px;">
                     <div refundcontainer id="refundContainer" class="pretty p-switch p-fill" style="display:none;font-size:17px;clear:both;">
-                       <input type="checkbox" checked id="directRefund" />
+                       <input type="checkbox" onchange="loadedPages.shoppingCart.checkCode1();" checked id="directRefund" />
                        <div class="state p-success">
                           <label></label>
                        </div>
@@ -200,24 +200,35 @@
                   <td style="text-align:left;font-size:15px;"><span id="torefund">VAT (refund): </span></td>
                   <td style="text-align:right;font-size:15px;">€&nbsp;24.803,00</td>
                </tr>
+               <tr style="" refund="">
+                  <td style="text-align:left;font-size:18px;"><span>Direct refund</span></td>
+                  <td style="text-align:right;font-size:18px;padding-top:5px;">
+                    <div refundcontainer  class="pretty p-switch p-fill" style="display:none;font-size:17px;clear:both;">
+                       <input type="checkbox" onchange="loadedPages.shoppingCart.checkCode();" id="directRefundToggle" />
+                       <div class="state p-success">
+                          <label></label>
+                       </div>
+                    </div>
+                  </td>
+               </tr>
             </tbody>
          </table>
-         <table style="position:absolute;bottom: 20px;right:20px;">
+         <table style="position:relative;top:50px;">
             <tr>
                <td style="vertical-align:bottom;padding-left:5px;">
-                  <div>
-                     <img onclick="loadedPages.shoppingCart.drawCart();" src="/images/updatechart.svg" /><br />
+                  <div style="padding-right:10px;">
+                     <img style="width:100%;" onclick="loadedPages.shoppingCart.drawCart();" src="/images/updatechart.svg" /><br />
                      <div style="position:relative;">
-                       <img style="margin-top: 5px;" checkoutenabled src="/images/topay.svg" /><br />
-                       <input nrfnd id="cartToPay" style="display:none;float:right;font-size:18px;font-weight:bold;position:absolute;top:25px;left:310px;" class="norefund" type="text" style="text-align:center;" />
-                         <input rfnd id="cartToPay" style="display:none;float:right;font-size:18px;font-weight:bold;position:absolute;top:25px;left:310px;display:none;float:right;" class="refund"  type="text" style="text-align:center;" />
+                       <img style="margin-top: 5px;width:100%;" checkoutenabled src="/images/topay.svg" /><br />
+                       <input nrfnd id="cartToPay" style="display:none;float:right;font-size:18px;font-weight:bold;position:relative;top:-35px;" class="norefund" type="text" style="text-align:center;" />
+                         <input rfnd id="cartToPay" style="display:none;float:right;font-size:18px;font-weight:bold;position:relative;top:-35px;display:none;float:right;" class="refund"  type="text" style="text-align:center;" />
                      </div>
-                      <img onclick="loadedPages.shoppingCart.checkIsLogged();" style="margin-top: 5px;" checkoutenabled src="/images/continuecheckout.svg" /><br />
+                      <img onclick="loadedPages.shoppingCart.checkIsLogged();" style="margin-top: 5px;;width:100%;" checkoutenabled src="/images/continuecheckout.svg" /><br />
 
                   <!--    <input nrfnd id="cartToPay" style="display:none;" class="norefund" type="text" style="text-align:center;" />
                       <input rfnd id="cartToPay" style="display:none;" class="refund"  type="text" style="text-align:center;" />-->
 
-                      <img style="display:none;" checkoutdisabled src="/images/continuecheckout_d.svg" /><br />
+                      <img style="display:none;width:100%;" checkoutdisabled src="/images/continuecheckout_d.svg" /><br />
                   </div>
                </td>
             </tr>

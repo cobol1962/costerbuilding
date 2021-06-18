@@ -18,7 +18,7 @@ loadedPages.invoices = {
 
     loadedPages.invoices.table = $("#invoicesTable").DataTable({
         ajax: {
-            "url": "https://costerbuilding.com/api/index.php?request=allinvoices",
+            "url": "https://costercatalog.com/api/index.php?request=allinvoices",
              data : { salePersonId: sp.EmplID, secret:"scddddedff2fg6TH22" },
              type: "POST"
         },
@@ -50,7 +50,7 @@ loadedPages.invoices = {
                    { data: "pdf",
                        "defaultContent": "",
                        "render": function ( data, type, row ) {
-                         var cs = "openPDF('" + data + "');";
+                         var cs = "loadedPages.invoices.openPDF('" + data + "');";
                          html = '<div style="width:150px;min-width:150px;"><a class="gen-link" onclick=' + cs + ' ><img src="images/pdf.png" style="width:35px;" /></a>';
                          html += '&nbsp;&nbsp;<a unlock class="gen-link"><img src="images/locked.png" style="width:25px;" /></a><a lock class="gen-link"><img src="images/unlocked.png" style="width:25px;" /></a>';
                          html += "</div>"
@@ -285,52 +285,54 @@ loadedPages.invoices = {
       ]);*/
  },
  openPDF: function(data) {
+  var inn = data.split("_")[2];
+   window.open("https://costercatalog.com/api/ACinvoices.php?invoices=" + inn + "&print=1", '_system');
+   return;
+  $.ajax({
+    url: "https://costercatalog.com/api/invoice.php?invoice=" + data,
+    type: "GET",
+    success: function(res) {
+      var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
+       var blob = b64toBlob(res, "application/pdf");
+       var blobUrl = URL.createObjectURL(blob);
+       if (!app) {
+        window.open(blobUrl, "_system","location=yes");
 
-   $.ajax({
-     url: "https://costerbuilding.com/api/invoice.php?invoice=" + data,
-     type: "GET",
-     success: function(res) {
-       var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
-        var blob = b64toBlob(res, "application/pdf");
-        var blobUrl = URL.createObjectURL(blob);
-        if (!app) {
-         window.open(blobUrl, "_system","location=yes");
+       } else {
+         var storageLocation = "";
+          storageLocation = 'file:///storage/emulated/0/';
+          var folderpath = storageLocation + "Download";
+          var filename = "invoice.pdf";
+          var DataBlob = b64toBlob(res, "application/pdf");
 
-        } else {
-          var storageLocation = "";
-           storageLocation = 'file:///storage/emulated/0/';
-           var folderpath = storageLocation + "Download";
-           var filename = "invoice.pdf";
-           var DataBlob = b64toBlob(res, "application/pdf");
+         window.resolveLocalFileSystemURL(folderpath, function(dir) {
+           dir.getFile(filename, {create:true}, function(file) {
+                   file.createWriter(function(fileWriter) {
+                       fileWriter.write(DataBlob);
+                       setTimeout(function() {
 
-          window.resolveLocalFileSystemURL(folderpath, function(dir) {
-            dir.getFile(filename, {create:true}, function(file) {
-                    file.createWriter(function(fileWriter) {
-                        fileWriter.write(DataBlob);
-                        setTimeout(function() {
+                   cordova.plugins.fileOpener2.open(
+                       "file:///storage/emulated/0/Download/invoice.pdf",
+                       "application/pdf",
+                       {
+                           error : function(){ },
+                           success : function(){ }
+                       }
+                   );
+                 }, 500);
+                   }, function(err){
+                     // failed
+                   });
+           });
+         });
+       //  DownloadToDevice("http://costercatalog.com:81/api/invoice.php?invoice=" +  nm + "_" + "gb" + ".pdf");
+       }
 
-                    cordova.plugins.fileOpener2.open(
-                        "file:///storage/emulated/0/Download/invoice.pdf",
-                        "application/pdf",
-                        {
-                            error : function(){ },
-                            success : function(){ }
-                        }
-                    );
-                  }, 500);
-                    }, function(err){
-                      // failed
-                    });
-            });
-          });
-        //  DownloadToDevice("http://costerbuilding.com:81/api/invoice.php?invoice=" +  nm + "_" + "gb" + ".pdf");
-        }
+       //  window.open("http://costercatalog.com:81/api/invoice.php?invoice=" +  data, '_system');
+    }
+  })
 
-        //  window.open("http://costerbuilding.com:81/api/invoice.php?invoice=" +  data, '_system');
-     }
-   })
-
- },
+},
  searchLocked: function(filterVal, columnVal) {
          var found;
          if (filterVal == "-1") {

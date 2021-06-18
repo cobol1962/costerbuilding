@@ -3,7 +3,7 @@
 header("Access-Control-Allow-Origin: *");
 /*$ua = strtolower($_SERVER['HTTP_USER_AGENT']);
 if (!isset($_REQUEST["secret"])) {
-  if ((strpos($_SERVER["HTTP_REFERER"],"ACinvoices.php") === FALSE && $_SERVER["HTTP_REFERER"] != "https://costerbuilding.com" && $_SERVER["HTTP_REFERER"] != "https://costercatalog.com/admin/" && $_SERVER['HTTP_REFERER'] != "http://costerbuilding.com/" && $_SERVER['HTTP_REFERER'] != "http://localhost:3000/") && stripos($ua,'android') === false){
+  if ((strpos($_SERVER["HTTP_REFERER"],"ACinvoices.php") === FALSE && $_SERVER["HTTP_REFERER"] != "https://costercatalog.com" && $_SERVER["HTTP_REFERER"] != "https://costercatalog.com/admin/" && $_SERVER['HTTP_REFERER'] != "http://costerbuilding.com/" && $_SERVER['HTTP_REFERER'] != "http://localhost:3000/") && stripos($ua,'android') === false){
     header('HTTP/1.0 403 Forbidden');
     die; //just for good measure
   }

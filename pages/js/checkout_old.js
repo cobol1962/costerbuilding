@@ -337,7 +337,7 @@ loadedPages.checkout = {
             },
             source: function(query, result) {
                 $.ajax({
-                    url: "https://costerbuilding.com/api/index.php?request=searchCustomers",
+                    url: "https://costercatalog.com/api/index.php?request=searchCustomers",
                     data: { query: query, secret: "scddddedff2fg6TH22" },
                     dataType: "json",
                     type: "POST",
@@ -1517,7 +1517,7 @@ loadedPages.checkout = {
                 $("#bar_image").attr("src", bc);
                 var html = $("#invoice")[0].outerHTML;
                 $.ajax({
-                    url: "https://costerbuilding.com:5100",
+                    url: "https://costercatalog.com:5100",
                     type: 'POST',
                     dataType: "json",
                     data: {
@@ -1602,7 +1602,7 @@ loadedPages.checkout = {
                                               var blobUrl = URL.createObjectURL(blob);
                                               alert(blobUrl)
                                               if (true) {
-                                               window.open("https://costerbuilding.com/api/ACinvoices.php?invoices=" + loadedPages.checkout.iid + "&print=1&customer=" + loadedPages.checkout.csid + "&sessiontoken=" + token, "_system","location=yes");
+                                               window.open("https://costercatalog.com/api/ACinvoices.php?invoices=" + loadedPages.checkout.iid + "&print=1&customer=" + loadedPages.checkout.csid + "&sessiontoken=" + token, "_system","location=yes");
 
                                               } else {
 
@@ -1642,7 +1642,7 @@ loadedPages.checkout = {
                                           } else {
 
                                             if (GB) {
-                                              window.open("https://costerbuilding.com/api/ACinvoices.php?invoices=" + loadedPages.checkout.iid + "&print=1&customer=" + loadedPages.checkout.csid + "&sessiontoken=" + token, "_system","location=yes");
+                                              window.open("https://costercatalog.com/api/ACinvoices.php?invoices=" + loadedPages.checkout.iid + "&print=1&customer=" + loadedPages.checkout.csid + "&sessiontoken=" + token, "_system","location=yes");
                                             }
                                           }
                                           var t = $.parseJSON(localStorage.tour);
@@ -1670,7 +1670,7 @@ loadedPages.checkout = {
                                             setTimeout(function() {
                                               loadPage('homepage')
                                             }, 3000)
-                                            window.open("https://costerbuilding.com/api/ACinvoices.php?mobile=1&invoices=" + loadedPages.checkout.iid + "&print=1&customer=" + loadedPages.checkout.csid + "&sessiontoken=" + token, "_blank","location=yes");
+                                            window.open("https://costercatalog.com/api/ACinvoices.php?mobile=1&invoices=" + loadedPages.checkout.iid + "&print=1&customer=" + loadedPages.checkout.csid + "&sessiontoken=" + token, "_blank","location=yes");
 
                                           }
                                       }
@@ -1822,7 +1822,7 @@ loadedPages.checkout.generateInvoice(mode);
 //        alert(message);
       }).DataTable({
         "ajax": {
-          "url": "https://costerbuilding.com/api/index.php?request=getTours",
+          "url": "https://costercatalog.com/api/index.php?request=getTours",
           "type": "POST",
           "data": { secret:"scddddedff2fg6TH22" }
         },

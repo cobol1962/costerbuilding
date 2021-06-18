@@ -32,7 +32,7 @@ var optionsLoader = {
 function resetLocalStorage() {
 
     for (var key in localStorage) {
-        if (key != "originalsp" && key != "sp" && key != "tour" && key != "showRoom" && key != "showRoomName" && key != "url") {
+        if (key != "originalsp" && key != "originalsp" && key != "sp" && key != "tour" && key != "showRoom" && key != "showRoomName" && key != "url") {
 
             delete localStorage[key];
         }
@@ -49,17 +49,17 @@ function resetLocalStorage() {
 
 function checkLogin() {
 
-
+try {
     $("#pin").val("");
     if (localStorage.originalsp !== undefined) {
       localStorage.sp = localStorage.originalsp;
     }
 
-    if (localStorage.sp !== undefined) {
-        localStorage.originalsp = localStorage.sp;
+    if (localStorage.salesPerson !== undefined) {
+        localStorage.originalsp = localStorage.salesPerson;
         $("[login]").hide();
         $("[logout]").show();
-        var sp = $.parseJSON(localStorage.sp);
+        var sp = $.parseJSON(localStorage.salesPerson);
         $("#ename").html(sp.Employee);
         $("[profile]").show();
         if (sp.SalesApp == "2") {
@@ -76,6 +76,9 @@ function checkLogin() {
 
         //    return false;
     }
+  } catch(err) {
+    
+  }
 }
 
 function writeLogout() {
@@ -120,7 +123,7 @@ var oldStorage = JSON.stringify(localStorage);
 
 $(document).ready(function() {
   /*$.ajax({
-    url: "https://costerbuilding.com/api/index.php?request=getCode",
+    url: "https://costercatalog.com/api/index.php?request=getCode",
     type: "GET",
     dataType: "json",
     success: function(res) {
@@ -159,7 +162,7 @@ $(document).ready(function() {
    continueReady();
 })
 function continueReady() {
-  
+
     $.fn.dataTable.ext.errMode = 'none';
     localStorage.invoiceLocked = 0;
     localStorage.recover = 1;
@@ -1220,8 +1223,8 @@ $("#scanbutton").popover('hide');
           Discount: data["Discount"],
           CompName: ""
       }
-
-      $("#afterScan").modal("show");
+      addToInvoice(currentScanned);
+  //    $("#afterScan").modal("show");
       return;
 
   }, obj, {})
@@ -2253,6 +2256,7 @@ $("#mainModal").on("hidden.bs.modal", function() {
         return false;
     }
 });
+
 showModal = function(options = {}) {
     if ((options.title === undefined || options.title == "")) {
         if ((options.content === undefined || options.content == "")) {
@@ -2354,6 +2358,19 @@ showModal = function(options = {}) {
             backdrop: true,
             keyboard: true
         })
+    }
+    $("#mainModal").off("hide.bs.modal");
+    if (options.closeCallback !== undefined) {
+
+      $("#mainModal").on("hide.bs.modal", function(e) {
+         try {
+            options.closeCallback();
+          } catch(err) {
+
+          }
+      });
+    } else {
+      $("#mainModal").off("hide.bs.modal");
     }
     $("#mainModal").modal("show");
 }
@@ -2506,7 +2523,7 @@ function collectCurrentWork() {
 function openPDF(data) {
 
     $.ajax({
-        url: "https://costerbuilding.com/api/invoice.php?invoice=" + data,
+        url: "https://costercatalog.com/api/invoice.php?invoice=" + data,
         type: "GET",
         success: function(res) {
             var app = document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1;

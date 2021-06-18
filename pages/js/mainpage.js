@@ -13,18 +13,23 @@ loadedPages.mainpage = {
     delete localStorage.salesPerson;
     loadPage("homepage");
   }
+  try {
    if (loadedPages.mainpage.spp.logged === undefined) {
       $(".navbar").hide();
       delete localStorage.salesPerson;
       loadPage("homepage");
       return;
     }
-
+} catch(err) {
+    $(".navbar").hide();
+}
 
     setTimeout(function() {
       $("#content").css({
         marginLeft: ($(window).width() - $("#content").width()) / 2,
-        paddingTop: 165
+        paddingTop: 165,
+        overflowY: "auto",
+        overflowX: "hidden"
       })
          $(".navbar").show();
          $(".navbar").css({
@@ -36,8 +41,10 @@ loadedPages.mainpage = {
          $("#content").css({
            padding: 40,
            paddingTop:80,
-           background: "transparent"
-         });
+           background: "transparent",
+              overflowY: "auto",
+              overflowX: "hidden"
+           });
          $.each($(".catalog"), function() {
            $(this).css({
              minHeight: 1.02 * $(this).width(),
@@ -79,7 +86,9 @@ loadedPages.mainpage = {
         top:"70%",
       })
       $("#content").css({
-        padding: 40
+        padding: 40,
+        overflowY: "auto",
+        overflowX: "hidden"
       })
       $(".leftcol_1").css({
         fontSize: 48,
@@ -89,7 +98,9 @@ loadedPages.mainpage = {
       })
     } else {
       $("#content").css({
-        padding: 15
+        padding: 15,
+        overflowY: "auto",
+        overflowX: "hidden"
       })
       $(".leftcol_1").css({
         fontSize: 24,
