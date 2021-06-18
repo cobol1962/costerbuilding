@@ -156,7 +156,7 @@
                      <table>
                         <tbody>
                            <tr>
-                             <td style="text-align:right;width:100%;font-size:15px;"><input type="text" class="form-control" style="display:none;clear:both;float:right;text-align:right;width:100px;" onchange="loadedPages.shoppingCart.generalDisc();" spdiscount1="" placeholder="Discount" id="masterdiscount"></td>
+                             <td style="text-align:right;width:100%;font-size:15px;"><input  type="text" class="form-control" style="display:none;clear:both;float:right;text-align:right;width:100px;" onchange="loadedPages.shoppingCart.generalDisc();" spdiscount1="" placeholder="Discount" id="masterdiscount"></td>
                              <td>
                                   <select spdiscount1="" style="display:none;width:65px;margin-left: 5px;font-size:15px;" class="form-control" id="mdt" onchange="loadedPages.shoppingCart.switchMasterDiscountType(this);">
                                     <option value="">%</option>
@@ -218,7 +218,8 @@
                <td style="vertical-align:bottom;padding-left:5px;">
                  <div id="btns">
                   <div style="padding-right:10px;">
-                     <img style="width:100%;" onclick="loadedPages.shoppingCart.drawCart();" src="/images/updatechart.svg" /><br />
+                     <img style="width:100%;" onclick="$('#btns1').show();loadedPages.shoppingCart.drawCart();" src="/images/updatechart.svg" /><br />
+                     <div id="btns1">
                      <div style="position:relative;">
                        <img style="margin-top: 5px;width:100%;" checkoutenabled src="/images/topay.svg" /><br />
                        <input nrfnd id="cartToPay" style="display:none;float:right;font-size:18px;font-weight:bold;position:relative;top:-35px;" class="norefund" type="text" style="text-align:center;" />
@@ -230,6 +231,7 @@
                       <input rfnd id="cartToPay" style="display:none;" class="refund"  type="text" style="text-align:center;" />-->
 
                       <img style="display:none;width:100%;" checkoutdisabled src="/images/continuecheckout_d.svg" /><br />
+                      </div>
                   </div>
                   </div>
                </td>

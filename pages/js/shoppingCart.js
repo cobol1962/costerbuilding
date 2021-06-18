@@ -31,9 +31,10 @@ loadedPages.shoppingCart = {
                 /// code ready to use
                 code="";
              }
-        }else{
+        } else{
              code+=e.key;//while this is not an 'enter' it stores the every key
         }
+
        //run a timeout of 200ms at the first read and clear everything
         if(!reading){
              reading=true;
@@ -558,8 +559,20 @@ if (obj.CompName === undefined) {
 
        $(html).appendTo($("#items"));
 
-
      }
+     $("[spdiscount]").unbind("change");
+     $("[spdiscount]").bind("change", function() {
+        $("#btns1").hide();
+     });
+     $("[spdiscount1]").unbind("change");
+     $("[spdiscount1]").bind("change", function() {
+       $("#btns1").hide();
+     });
+     $("[quantity]").unbind("change");
+     $("[quantity]").bind("change", function() {
+       $("#btns1").hide();
+     });
+
      $("#subtotal").parent().next("td").html(parseInt(loadedPages.shoppingCart.total).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" }));
       $("#subtotal").attr("realvalue", parseInt(loadedPages.shoppingCart.total));
      var ttl = 0;
@@ -973,7 +986,7 @@ if (obj.CompName === undefined) {
     loadedPages.shoppingCart.discountClicked = !loadedPages.shoppingCart.discountClicked;
     loadedPages.shoppingCart.showDiscount = loadedPages.shoppingCart.discountClicked;
 
-      $('#masterdiscount').toggle();
+  //    $('#masterdiscount').toggle();
       $('[spdiscount]').toggle();
       $('[spdiscount1]').toggle();
   //  }
@@ -1081,6 +1094,7 @@ applyDiscount: function(obj) {
     $("[section='" + section + "']").show();
   },
   calcInput: function(obj, add) {
+    $("#btns1").hide();
     var el = $(obj);
     var tgt = el.closest("tr").find("td").eq(1).find("input");
     if (add < 0 && tgt.val() <= 1) {
