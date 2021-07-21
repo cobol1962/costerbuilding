@@ -9,6 +9,9 @@ loadedPages.homepage = {
       loadPage("mainpage");
       return;
     }
+    if (Object.keys(shoppingCartContent).length > 0) {
+      loadPage('shoppingCart');
+    }
 setTimeout(function() {
   $(".navbar").hide();
 
@@ -104,7 +107,7 @@ setTimeout(function() {
    adjustScreen: function() {
 
      $("#employees").css({
-       overflow: "auto",
+       overflowY: "auto",
        maxHeight: $(window).height() - $(".container-fluid").eq(0).height(),
        height: $(window).height()
      })
@@ -123,7 +126,7 @@ setTimeout(function() {
          maxWidth: "unset"
        })
      } else {
-       alert("here")
+      
        $(".salesperson").css({
          maxWidth: "92%",
 

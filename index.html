@@ -39,7 +39,7 @@
         * Enable eval(): add 'unsafe-eval' to default-src
     * Create your own at http://cspisawesome.com -->
      <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
-     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE"> 
+     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
      <script type="text/javascript">
        window.dataLayer = window.dataLayer || [];
        function gtag(){dataLayer.push(arguments);}
@@ -97,7 +97,7 @@ function hideCatalog() {
                     <tr style="background: transparent;">
 
                         <td style="vertical-align: top;background:transparent;">
-                            <img onclick="localStorage.sp=localStorage.originalsp;resetLocalStorage();loadPage('homepage')" src="https://costercatalog.com/coster/www/images/crown.png" style="cursor:pointer;margin-left:5px;margin-top:5px;" width="35" height="auto" alt="">
+                            <img onclick="localStorage.sp=localStorage.originalsp;resetLocalStorage();loadPage('mainpage')" src="https://costercatalog.com/coster/www/images/crown.png" style="cursor:pointer;margin-left:5px;margin-top:5px;" width="35" height="auto" alt="">
                         </td>
                         <td style="vertical-align: bottom;background:transparent;">
                           <button type="button" style="margin-left:10px;" class="navbar-toggle" data-toggle="collapse" data-target="#mainNavbar" onclick="$('#navbackdrop').toggle();$('#tt').toggle()">
@@ -181,7 +181,7 @@ function hideCatalog() {
         </div>
     </div>
 
-    <div id="content" style="max-width:1440px;"></div>
+    <div id="content" style="max-width:1440px;overflow:hidden !important;"></div>
 
       <div class="modal" tabindex="-1" role="dialog" id="sign">
           <div class="modal-dialog" role="document">
@@ -476,8 +476,76 @@ function hideCatalog() {
       var onError = function(msg) {
         alert("Sharing failed with message: " + msg);
       };
-        $(document).ready(function() {
+      var oldLocalStorage = "";
 
+        $(document).ready(function() {
+          if (localStorage.changedTime === undefined) {
+              localStorage.clear();
+              localStorage.changedTime = (new Date()).toString();
+              var tls = localStorage;
+              delete tls.changedTime;
+              oldLocalStorage = {};
+
+            } else {
+              var dt = new Date(localStorage.changedTime);
+              var dtt = new Date();
+              var difference = dtt - dt;
+              if (difference > 300000) {
+                localStorage.clear();
+                localStorage.changedTime = (new Date()).toString();
+              } else {
+              setTimeout(function() {
+                showModal({
+                  type: "error",
+                  confirmButtonText: "Reset session. Clear all data.",
+                  cancelButtonText: "Continue work.",
+                  title: "Some data are stored in session. Would you like to start new session or contonue with old?",
+                  confirmCallback: function() {
+                    localStorage.clear();
+                    window.location.reload();
+                  },
+                  cancelCallback: function() {
+                    localStorage.changedTime = (new Date()).toString();
+                  }
+                })
+              }, 2000);
+              }
+            }
+            setInterval(function() {
+              console.log(localStorage.changedTime);
+              var tls = localStorage;
+              if (localStorage.changedTime === undefined) {
+                localStorage.clear();
+                localStorage.changedTime = (new Date()).toString();
+
+              }
+              var dt = new Date(localStorage.changedTime);
+              var dtt = new Date();
+              var difference = dtt - dt;
+              if (difference > 300000) {
+                showModal({
+                  type: "error",
+                  confirmButtonText: "Continue",
+                  cancelButtonText: "Reset session. Data are saved and you can continue work.",
+                  title: "Session expired. App will be reloaded. All data will be deleted and lost.",
+                  confirmCallback: function() {
+                    localStorage.clear();
+                    window.location.reload();
+                  },
+                  cancelCallback: function() {
+                    localStorage.changedTime = (new Date()).toString();
+
+                  }
+                })
+              }
+          //    var lll = localStorage;
+          //    delete lll.changedTime;
+              if (oldLocalStorage != JSON.stringify(localStorage)) {
+
+                  localStorage.changedTime = (new Date()).toString();
+                  oldLocalStorage = JSON.stringify(localStorage);
+              }
+            }, 5000)
             checkLogin();
             var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
 

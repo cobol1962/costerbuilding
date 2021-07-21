@@ -9,7 +9,7 @@ loadedPages.shoppingCart = {
   vat: 0,
   administrative: 0,
   vatrefunt: 0,
-  topay: 0,
+  topay: 0,   
   masterdiscount: 0,
   discountClicked: false,
   dApproved: {},
@@ -50,7 +50,9 @@ loadedPages.shoppingCart = {
     } else {
       $("#nits").html( "&nbsp;item");
     }
-
+    $("#directRefundToggle").bind("change", function() {
+      localStorage.directRefund = ($("#directRefundToggle")[0].checked) ? "1" : "0";
+    });
     $('#scanbutton').popover({
       sanitize: false,
       content: function () {
@@ -246,6 +248,7 @@ loadedPages.shoppingCart = {
 
             }
           }
+            loadedPages.shoppingCart.calculateRefund();
       }, 2000)
       $('#countries').on('select2:clear', function (e) {
         $("#refund")[0].checked = false;
@@ -354,7 +357,6 @@ loadedPages.shoppingCart = {
 
         }
       }
-
       if (localStorage.customerCountry !== undefined) {
           var data = $.parseJSON(localStorage.customerCountry);
           if (data.CountryID !== undefined) {
@@ -639,27 +641,28 @@ if (obj.CompName === undefined) {
        $('[spdiscount]').show();
        $('[spdiscount1]').show();
      }*/
+        var torefund = (parseFloat(ttl) / 100) * 16;
+       torefund = Math.floor(torefund);
+       var vex = parseFloat(ttl / 1.21);
+       var vat = parseFloat(ttl - (ttl / 1.21));
+       var achg = vat - torefund;
 
-     var vex = parseFloat(ttl / 1.21);
-     var vat = parseFloat(ttl - (ttl / 1.21));
-     var achg = parseFloat((ttl / 100) * 1.35);
-     var torefund = vat - achg;
-     torefund = Math.floor(torefund);
-     var withcharge = ttl + achg;
-     var vatchargeexcl =  withcharge / 1.21;
-     var vatcharge = withcharge - vatchargeexcl;
-     var bb = parseInt(vat - achg);
-     achg =  vat - torefund;
+       var withcharge = ttl + achg;
+       var vatchargeexcl =  withcharge / 1.21;
+       var vatcharge = withcharge - vatchargeexcl;
+       var bb = parseInt(vat - achg);
+       achg =  vat - torefund;
 
-//     admin charge = VAT21% - VAT REFUND AMOUNT = 30.815,85 - 28.417,00 = 2398,85
-     $("#vatexcluded").parent().next("td").html((parseFloat(vex).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
-     $("#vat").parent().next("td").html((parseFloat(ttl - vex).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
-     $("#admincharge").parent().next("td").html((parseFloat(achg).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
-     $("#withcharge").parent().next("td").html((parseFloat(withcharge).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
-     $("#vatchargeexcl").parent().next("td").html((parseFloat(vex).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
-     $("#vatcharge").parent().next("td").html((parseFloat(vatcharge).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
-     $("#torefund").parent().next("td").html(torefund.toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" }));
-     $("#total").parent().next("td").html((parseFloat(ttl).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
+  //     admin charge = VAT21% - VAT REFUND AMOUNT = 30.815,85 - 28.417,00 = 2398,85
+       $("#vatexcluded").parent().next("td").html((parseFloat(vex).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
+       $("#vat").parent().next("td").html((parseFloat(ttl - vex).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
+       $("#admincharge").parent().next("td").html((parseFloat(achg).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
+       $("#withcharge").parent().next("td").html((parseFloat(withcharge).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
+       $("#vatchargeexcl").parent().next("td").html((parseFloat(vex).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
+       $("#vatcharge").parent().next("td").html((parseFloat(vatcharge).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
+       $("#torefund").parent().next("td").html(torefund.toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" }));
+       $("#total").parent().next("td").html((parseFloat(ttl).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
+
 
      localStorage.vatexcluded = parseFloat(vex);
      localStorage.vat = parseFloat(ttl - vex);
@@ -671,7 +674,7 @@ if (obj.CompName === undefined) {
      localStorage.total = parseFloat(ttl);
      localStorage.grandTotal = parseFloat(grandTotal);
      localStorage.invoiceDiscount = $("#masterdiscount").val();
-  //   localStorage.directRefund = (($("#directRefund")[0].checked) ? "1" : "0");
+     localStorage.directRefund = (($("#directRefundToggle")[0].checked) ? "1" : "0");
     var bb = parseInt((parseFloat(localStorage.torefund) - parseFloat(localStorage.admincharge)));
 
      localStorage.payNoRefund = parseFloat(vex + vat);
@@ -680,17 +683,29 @@ if (obj.CompName === undefined) {
 
      $(".norefund").val((Math.ceil(vex + vat).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
      $(".refund").val((Math.ceil((vatchargeexcl + vatcharge) - vat).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" })));
+     $(".norefund").show();
+     $(".refund").hide();
      if (localStorage.directRefund === undefined) {
        localStorage.directRefund = "0";
-     }
-     if (localStorage.directRefund == "0") {
        $(".norefund").show();
-       $(".refund").hide();
-     } else {
-       $(".norefund").hide();
-       $(".refund").show();
+       $("[refund]").hide();
      }
+     setTimeout(function() {
 
+       if (localStorage.directRefund !== undefined ) {
+           if (localStorage.directRefund == "0") {
+             $(".norefund").show();
+             $("[refund]").hide();
+           } else {
+             $(".norefund").hide();
+             $("[refund]").show();
+             $("#directRefundToggle")[0].checked = true;
+           }
+           if ( localStorage.customerCountry !== undefined) {
+             loadedPages.shoppingCart.calculateRefund();
+           }
+         }
+     }, 1000);
      if (!loadedPages.shoppingCart.approvedRequested && parseFloat(totalDiscount) > 0) {
        if (!loadedPages.shoppingCart.firstDraw) {
          $("#discountApproved").modal("show");
@@ -715,8 +730,8 @@ if (obj.CompName === undefined) {
        $('[spdiscount]').show();
        $('[spdiscount1]').show();
      }*/
-     $("[section='returnproduct']").find("input").unbind("keyup");
-     $("[section='returnproduct']").find("input").bind("keyup", function (event) {
+     $("[section='returnproduct']").find(".num").unbind("keyup");
+     $("[section='returnproduct']").find(".num").bind("keyup", function (event) {
           $(event.target).val($(event.target).val().toString().replace(/[^0-9]/g, ''));
       });
 
@@ -765,7 +780,6 @@ if (obj.CompName === undefined) {
             noclose: true,
             allowBackdrop: false,
             confirmCallback: function() {
-
               if ($("#ccode").val() == "1071") {
                  loadedPages.shoppingCart.codeEntered = true;
                   $("#dRefund").addClass("refund");
@@ -873,7 +887,10 @@ if (obj.CompName === undefined) {
   //  loadedPages.shoppingCart.drawCart();
   },
   calculateRefund: function(showpay = false) {
+    var o = $.parseJSON(localStorage.customerCountry);
+    console.log(o);
       localStorage.directRefundChecked = (($("#directRefundToggle")[0].checked) ? "1" : "0")
+      localStorage.isEu = $.parseJSON(localStorage.customerCountry).eu;
       if (localStorage.customerCountry !== undefined) {
         var data = $.parseJSON(localStorage.customerCountry);
         if (data.id == "") {
@@ -882,7 +899,7 @@ if (obj.CompName === undefined) {
         if (data.CountryID !== undefined) {
           data.id = data.CountryID;
         }
-        localStorage.isEu = loadedPages.shoppingCart.countryEu[data.id].EUMember;
+      //  localStorage.isEu = loadedPages.shoppingCart.countryEu[data.id].EUMember;
         if (localStorage.isEu == "1") {
           $("[refundcontainer]").hide();
         } else {
@@ -972,7 +989,7 @@ if (obj.CompName === undefined) {
         })
         return false;
       }
-      localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
+      localStorage.directRefund = ($("#directRefundToggle")[0].checked) ? "1" : "0";
       if (localStorage.directRefund == "1") {
         localStorage.payWithRefund =  $("[rfnd]").val();
         localStorage.toBePaid =   $("[rfnd]").val();

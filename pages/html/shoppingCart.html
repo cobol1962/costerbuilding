@@ -76,11 +76,11 @@
             <div class="row">
                 <div class="col-md-6 col-xs-12 form-group">
                   <label for="rprice">PRICE</label>
-                  <input id="rprice" name="rprice" type="number" class="form-control" placeholder="Price" />
+                  <input id="rprice" name="rprice" type="number" class="form-control num" placeholder="Price" />
                 </div>
                 <div class="col-md-6 col-xs-12 form-group">
                   <label for="rproductname">ITEM ID/SERIAL NO.</label>
-                  <input id="rproductname" name="rproductname" type="text" class="form-control" placeholder="Item ID/Serial No." />
+                  <input id="rproductname" name="rproductname" type="text" class="form-control num" placeholder="Item ID/Serial No." />
                 </div>
             </div>
             <div class="row">
@@ -92,7 +92,7 @@
             <div class="row">
               <div class="col-md-6 col-xs-12 form-group">
                 <label for="invoiceno">RETURN FROM INVOICE NO./ DATE</label>
-                <input class="form-control invoiceno" id="invoiceno" name="invoiceno"  class="form-control" placeholder="INVOICE NO./ DATE" />
+                <input type="text" class="form-control invoiceno" id="invoiceno" name="invoiceno"  class="form-control" placeholder="INVOICE NO. OR DATE" />
               </div>
             </div>
           </form>
@@ -374,9 +374,7 @@ label {
   line-height: 20px;
 }
 .form-control.invoiceno {
-  background-image: url(/images/invoiceno.svg);
-  background-position: 10px center;
-  background-repeat: no-repeat;
-  padding-left: 55px;
+
+
 }
 </style>

@@ -77,7 +77,7 @@ try {
         //    return false;
     }
   } catch(err) {
-    
+
   }
 }
 
@@ -142,23 +142,7 @@ $(document).ready(function() {
         }, 100);
     }
   })*/
-  if (localStorage.changedTime === undefined) {
-    localStorage.clear();
-    localStorage.changedTime = (new Date()).toString();
-  } else {
-    var dt = new Date(localStorage.changedTime);
-    var dtt = new Date();
-    var difference = dtt - dt;
-    if (difference > 900000) {
 
-      localStorage.clear();
-      localStorage.changedTime = (new Date()).toString();
-    }
-  }
-  setInterval(function() {
-    localStorage.changedTime = (new Date()).toString();
-
-  }, 5000)
    continueReady();
 })
 function continueReady() {
@@ -402,12 +386,13 @@ function continueReady() {
       loadPage(window.location.hash.substring(1));*/
 
     if (window.location.hash != "") {
+
         window.location.hash = "";
     } else {
       if (localStorage.salesPerson !== undefined) {
         loadPage("mainpage");
       } else {
-        loadPage("homepage");
+        loadPage("mainpage");
       }
     }
     $("[login]").bind("click", function(e) {
@@ -591,15 +576,16 @@ function locationHashChanged() {
       if (localStorage.salesPerson !== undefined) {
         loadPage("mainpage");
       } else {
-        loadPage("homepage");
+        loadPage("mainpage");
       }
     }
     if (firstLoad) {
+
         firstLoad = false;
         if (localStorage.salesPerson !== undefined) {
           loadPage1("mainpage");
         } else {
-          loadPage1("homepage");
+          loadPage1("mainpage");
         }
         return;
     }
@@ -639,12 +625,7 @@ function loadPage1(page, addToPages = true, backtocart = false, search = {}) {
 
   var _originalSize = $(window).width() + $(window).height();
 
-  if (!firstLoad && page != "homepage") {
-//    $("body").LoadingOverlay("show", optionsLoader);
-  } else {
 
-
-  }
   if (addToPages) {
     pages.push(page);
   }
@@ -2630,6 +2611,19 @@ $.ajax({
 
   /*
 }, { email: sss.Email }, {}, {});*/
+}
+function getQueryParam(url, key) {
+  var queryStartPos = url.indexOf('?');
+  if (queryStartPos === -1) {
+    return;
+  }
+  var params = url.substring(queryStartPos + 1).split('&');
+  for (var i = 0; i < params.length; i++) {
+    var pairs = params[i].split('=');
+    if (decodeURIComponent(pairs.shift()) == key) {
+      return decodeURIComponent(pairs.join('='));
+    }
+  }
 }
 function detectMobile() {
     const toMatch = [

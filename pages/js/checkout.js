@@ -13,7 +13,6 @@ loadedPages.checkout = {
     csid: "",
     sps: null,
     initialize: function() {
-
         $("[parts]").css({
             position: "fixed",
             top: 190,
@@ -56,7 +55,8 @@ loadedPages.checkout = {
                     localStorage.tour = JSON.stringify({
                         PrivateID: null,
                         ProjId: data.id,
-                        ProjName: data.text
+                        ProjName: data.text,
+                        custom: true
                     });
                     $("#searchCustomer").val("");
                     var dt = loadedPages.checkout.table.row(this).data();
@@ -487,7 +487,6 @@ loadedPages.checkout = {
                 style: 'currency',
                 currency: 'EUR'
             }));
-            alert(JSON.stringify(payments))
             if (Object.keys(payments).length == 0) {
 
                 var tr = $("#master").clone();
@@ -523,8 +522,8 @@ loadedPages.checkout = {
 
                 tr.appendTo($("#paymentsTable").find("tbody"));
             } else {
+              var crt = 1;
                 for (var key in payments) {
-                  alert(key);
                     var ths = payments[key];
 console.log(ths);
                     if (ths.amount > 0) {
@@ -537,7 +536,6 @@ console.log(ths);
                         //  tr.find("select").eq(1).hide();
                         tr.find("input").eq(0).unbind("focus");
                         tr.find("input").eq(0).bind("focus", function() {
-                          alert("focus")
                             $(this).attr("vv",$(this).val());
                             $(this).val("");
                         });
@@ -549,11 +547,23 @@ console.log(ths);
                         tr.find("input").eq(0).attr("realvalue", ths.amount);
                         tr.find("input").eq(0).attr("euro", ths.original);
                         if (ths.date !== undefined) {
-                          alert(ths.date);
+                            tr.find("td").eq(3).find("input")[0].id = "date_" + key;
                             tr.find("td").eq(3).find("input").val(moment(ths.date).format("DD-MM-YYYY"));
                             tr.find("td").eq(3).find("input").attr("realdate", ths.date);
                             tr.find("td").eq(3).attr("isOld", ths.isOld);
                             tr.find("td").eq(3).attr("version", ths.version);
+                            if (crt < Object.keys(payments).length) {
+                              var el = $("#date_" + key);
+                              el.datepicker({
+                                  dateFormat: "dd.mm.yy",
+                                  onSelect: function(dateText) {
+                                    el.attr("realdate", moment(el.datepicker("getDate")).format("YYYY-MM-DD HH:mm:ss"))
+                                    loadedPages.checkout.paymentToLS();
+                                 }
+                              });
+                              el.datepicker("setDate", new Date(ths.date));
+                            }
+                            crt++;
                         } else {
                             tr.find("td").eq(3).find("input").val(ths.date);
                             tr.find("td").eq(3).find("input").attr("realdate", moment(new Date()).format("YYYY-MM-DD HH:mm:ss"));
@@ -2145,7 +2155,7 @@ console.log(ths);
                                             delete localStorage.done;
                                             delete localStorage.directRefund;
                                             resetLocalStorage();
-                                            localStorage.salesPerson = localStorage.sp;
+
                                               loadPage("mainpage");
                                             if (!app) {
 
@@ -2276,7 +2286,9 @@ console.log(ths);
 
             if (data.PrivateID != "null") {
                 if ($("#name").val() == "") {
+                  if (data.custom === undefined) {
                     $("#name").val(data.ProjName);
+                  }
                 }
                 $("[tg='2']").removeClass("active");
                 $("[tg='2']").addClass("done");
@@ -2295,7 +2307,7 @@ console.log(ths);
 
         }
     },
-    signature: function(mode) {
+    signature: function(mode) {  
   /*    alert("Coming soon");
       shoppingCartContent = {};
       $("#lblCartCount").html("0");

@@ -1,9 +1,9 @@
 loadedPages.mainpage = {
   spp: null,
   initialize: function() {
+
     if (localStorage.salesPerson === undefined) {
-      loadPage("homepage");
-      return;
+
     } else {
       localStorage.sp = localStorage.salesPerson;
     }
@@ -11,20 +11,12 @@ loadedPages.mainpage = {
     loadedPages.mainpage.spp = $.parseJSON(localStorage.salesPerson);
   } catch(err) {
     delete localStorage.salesPerson;
-    loadPage("homepage");
+    //loadPage("homepage");
   }
-  try {
-   if (loadedPages.mainpage.spp.logged === undefined) {
-      $(".navbar").hide();
-      delete localStorage.salesPerson;
-      loadPage("homepage");
-      return;
-    }
-} catch(err) {
-    $(".navbar").hide();
-}
+
 
     setTimeout(function() {
+      
       $("#content").css({
         marginLeft: ($(window).width() - $("#content").width()) / 2,
         paddingTop: 165,

@@ -243,7 +243,7 @@
       </div>
      <div style="max-width:100%;overflow-x:hidden;width:100%;font-size:14px;">
 
-        <table id="paymentsTable" class="table-striped table-bordered" style="margin-top:10px;width:1300px;font-size:14px;">
+        <table id="paymentsTable" class="table-striped table-bordered" style="margin-top:10px;width:100%;font-size:14px;">
           <thead>
             <th>PAYMENT METHOD</th>
             <th>CURRENCY</th>
@@ -397,7 +397,7 @@
           </div>
          <div id="total_div">
          </div>
-         
+
        </div>
 
      </div>
@@ -414,17 +414,17 @@
 </div>
 <table style="display:none;">
   <tr id="master">
-     <td style="text-align: right;width:290px;min-width:290px;">
+     <td style="text-align: right;width:270px;min-width:270px;">
         <select class="form-control" onchange="loadedPages.checkout.paymentMethodChanged(this);" id="paymentMethods" currency>
         </select>
      </td>
-     <td style="text-align: right;width:270px;min-width:270px;">
+     <td style="text-align: right;width:250px;min-width:250px;">
        <select class="form-control"  onchange="loadedPages.checkout.changeCurrency(this);" id="pay_currency" class="pay_currency" style="width:100%;">
           <option value="EUR" rate="1">EUR</option>
        </select>
 
      </td>
-     <td style="text-align: right;width:210px;min-width:270px;">
+     <td style="text-align: right;width:190px;min-width:190px;">
         <input type="text" class="form-control" />
      </td>
      <td style="text-align: left;width:160px;min-width:300px;">
@@ -433,7 +433,7 @@
      <td style="text-align: left;width:160px;min-width:250px;">
         <input readonly type="text" class="form-control" />
      </td>
-     <td onclick='loadedPages.checkout.deletePayment(this);return false;' style="max-width:100%;background-image:url(images/deletepayment.svg);background-repeat:no-repeat;background-size:contain;background-position:center center;"></td>
+     <td onclick='loadedPages.checkout.deletePayment(this);return false;' style="max-width:50px;min-width:50px;width:50px;background-image:url(/images/deletepayment.svg);background-repeat:no-repeat;background-size:contain;background-position:center center;"></td>
   <tr>
   <!-- <tr id="master" style="min-width:100px;">
       <td style="text-align: right;min-width:80px;">
@@ -917,7 +917,7 @@
 .row.equal > .col-lg-8 > div, .row.equal > .col-md-8 > div, .row.equal > .col-sm-8 > div, .row.equal > .col-xs-12 > div,.row.equal > .col-lg-4 > div, .row.equal > .col-md-4 > div, .row.equal > .col-sm-4 > div {
   padding: 20px;
   background: white;
-  height: 100%;
+  height: 85%;
 }
 .row.equal > .col-lg-8 > div > div, .row.equal > .col-md-8  > div > div, .row.equal > .col-sm-8  > div > div, .row.equal > .col-xs-12  > div > div,.row.equal > .col-lg-4 > div > div, .row.equal > .col-md-4 > div > div,
  .col-sm-4 > div > div {

@@ -540,11 +540,13 @@ var pageUrls = {
 }
 
 function locationHashChanged() {
+  alert("here????")
     $(".modal").modal("hide");
     if (location.hash == "") {
         loadPage("homepage");
     }
     if (firstLoad) {
+      alert("bbbbbbbb");
         firstLoad = false;
         loadPage1("homepage");
         return;
