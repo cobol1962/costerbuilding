@@ -168,7 +168,7 @@ function hideCatalog() {
             <li navigation><a onclick="if (invoiceLocked!=1){$('#mainNavbar').removeClass('in');if (currentPage != 'invoice') {loadPage('invoice')};setTimeout(function() { setWatches();}, 2000);}">Browse Coster watches</a></li>
             <li navigation><a onclick="if (invoiceLocked!=1){loadPage('diamonds');}">Browse diamondlist</a></li>
             <li navigation><a onclick="if (invoiceLocked!=1){loadPage('tours');}">Browse tours</a></li>
-            <li navigation salespersons><a href="javascript:checkIsLogged('customers');">Browse My Customer</a></li>
+            <li navigation salespersons><a href="window.open('https://costercatalog.com/admin', '_blank');">Browse My Customer</a></li>
             <li navigation salespersons><a href="javascript:checkIsLogged('invoices');">Browse My Invoices</a></li>
             <li navigation salespersons><a href="#">Help</a></li>
             <li style="font-size:11px;" navigation salespersons><a style="font-size:11px;" id="appversion" href="#"></a></li>
@@ -490,7 +490,9 @@ function hideCatalog() {
               var dt = new Date(localStorage.changedTime);
               var dtt = new Date();
               var difference = dtt - dt;
+
               if (difference > 300000) {
+                shoppingCartContent = [];
                 localStorage.clear();
                 localStorage.changedTime = (new Date()).toString();
               } else {
