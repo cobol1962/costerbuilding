@@ -951,14 +951,23 @@ console.log(ths);
         }));
         loadedPages.checkout.calculatePayments();
     },
-    changeCurrency: function(obj) {
+    changeCurrency: function(obj, value) {
         var crt = parseFloat($(obj).find("option:selected").attr("rate"));
-        var vl = $(obj).closest("tr").find("td").eq(2).find("input").attr("euro");
-        $(obj).closest("tr").find("td").eq(2).find("input").val(parseInt(vl * crt).toLocaleString("nl-NL", {
-            style: 'currency',
-            currency: $(obj).find("option:selected").attr("value")
-        }));
 
+        if (value === undefined) {
+            var vl = $(obj).closest("tr").find("td").eq(2).find("input").attr("euro");
+            $(obj).closest("tr").find("td").eq(2).find("input").val(parseInt(vl * crt).toLocaleString("nl-NL", {
+                style: 'currency',
+                currency: $(obj).find("option:selected").attr("value")
+            }));
+          } else {
+            $(obj).closest("tr").find("td").eq(2).find("input").attr("euro", value);
+            var vl = $(obj).closest("tr").find("td").eq(2).find("input").attr("euro");
+            $(obj).closest("tr").find("td").eq(2).find("input").val(parseInt(vl * crt).toLocaleString("nl-NL", {
+                style: 'currency',
+                currency: $(obj).find("option:selected").attr("value")
+            }));
+          }
         $(obj).closest("tr").find("td").eq(2).find("input").attr("realvalue", parseInt(vl * crt));
       //  $(obj).closest("tr").find("td").eq(2).find("input").attr("euro", parseInt(vl * crt));
         var pid = $(obj).closest("tr")[0].rowIndex - 1;
@@ -2307,14 +2316,18 @@ console.log(ths);
 
         }
     },
-    signature: function(mode) {  
+    signature: function(mode) {
   /*    alert("Coming soon");
       shoppingCartContent = {};
       $("#lblCartCount").html("0");
       $("[tg]").removeClass("done");
       delete localStorage.done;
       loadPage("mainpage");*/
-      loadedPages.checkout.generateInvoice(mode);
+      if ($("#mailCustomer")[0].checked) {
+          loadedPages.checkout.generateInvoice(3);
+      } else {
+        loadedPages.checkout.generateInvoice(2);
+      }
         /*  $("#sign").attr("mode", mode);
             $("#clear").trigger("click");
             $('#sign').modal({

@@ -122,17 +122,10 @@ loadedPages.search = {
     loadedPages.search.showProductInfo(oo[0]);
   },
   confirmAddToInvoice: function(obj) {
-    showModal({
-      title: "ADD ITEM " + $("#items_div").find("[searchitem]").attr("searchitem") + " TO BAG?",
-      allowBackdrop: false,
-      showCancelButton: true,
-      cancelButtonText: "CANCEL",
-      confirmButtonText: "CONFIRM",
-      confirmCallback: function() {
+
         loadedPages.search.checkAddToInvoice(obj);
         $(obj).remove();
-      }
-    });
+
   },
   checkAddToInvoice(obj) {
       var iid = $("#productDetail").attr("item");

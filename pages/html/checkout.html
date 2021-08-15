@@ -8,15 +8,15 @@
       <div class="col-md-9 col-sm-9" style="padding-left:30px;">
         <div class="progress">
           <ul class="progressbar">
-            <li class="circles active" tg="1" onclick="loadedPages.checkout.loadPart(1);">SALE LOCATION></li>
-            <li class="circles" tg="2" onclick="loadedPages.checkout.loadPart(2);">TOUR INFO</li>
+        <!--    <li class="circles active" tg="1" onclick="loadedPages.checkout.loadPart(1);">SALE LOCATION></li> -->
+            <li class="circles active" tg="2" onclick="loadedPages.checkout.loadPart(2);">TOUR INFO</li>
             <li class="circles" tg="3" onclick="loadedPages.checkout.loadPart(3);">CUSTOMER DETAILS</li>
             <li class="circles" tg="4" onclick="loadedPages.checkout.loadPart(4);">PAYMENT</li>
           </ul>
         </div>
       </div>
     </div>
-  <div id="1" parts>
+  <div id="1"  style="display:none;" parts>
     <div class="row" id="sRow" style="height: 115px;">
        <div class="col-md-6 col-sm-12">
           <span id="select_acc" style="margin-bottom:20px;margin-top:20px;float:left;height: 45px;font-family: Canela;font-style: normal;font-weight: bold;font-size: 45px;line-height: 45px;">Showrooms</span>
@@ -40,7 +40,7 @@
        </div>
     </div>
   </div>
-<div id="2" parts style="display:none;">
+<div id="2" parts>
    <div class="div-black" style="margin-top:20px;" id="tours_div" step>Select Tour <br />
      <div style="padding-left:10px;padding-top:-5px;">
        <img src="/images/addtour.svg" onclick="loadedPages.checkout.addTour();" />
@@ -146,8 +146,6 @@
                     <option value="-1">Select</option>
                     <option value="Mr.">Mr.</option>
                     <option value="Mrs.">Mrs.</option>
-                    <option value="Ms.">Ms.</option>
-                    <option  value="Nvt.">Nvt.</option>
                   </select>
                 </div>
                 <div class="col-xs-3 col-lg-3">
@@ -395,9 +393,22 @@
                <div class="col-xs-6 col-lg-6" ringsize></div>
             </div>
           </div>
+
          <div id="total_div">
          </div>
-
+         <table>
+           <tr style="" refund="">
+              <td style="text-align:left;font-size:18px;"><span>Email invoice to customer</span></td>
+              <td style="text-align:right;font-size:18px;padding-top:5px;">&nbsp;&nbsp;
+                <div refundcontainer  class="pretty p-switch p-fill" style="font-size:17px;clear:both;">
+                   <input type="checkbox"  id="mailCustomer" />
+                   <div class="state p-success">
+                      <label></label>
+                   </div>
+                </div>
+              </td>
+           </tr>
+         </table>
        </div>
 
      </div>
@@ -425,7 +436,7 @@
 
      </td>
      <td style="text-align: right;width:190px;min-width:190px;">
-        <input type="text" class="form-control" />
+        <input type="text" class="form-control" onchange="loadedPages.checkout.changeCurrency($(this).closest('tr').find('select').eq(1),$(this).val());"/>
      </td>
      <td style="text-align: left;width:160px;min-width:300px;">
         <input  type="text" class="form-control" />

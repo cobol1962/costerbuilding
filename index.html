@@ -86,7 +86,7 @@ function hideCatalog() {
 <body>
 
 
-    <div class="container" style="padding: 30px;padding-bottom: 0px;background: transparent;position:fixed; top: 0px;width:100%;z-index: 1;">
+    <div class="container" style="max-height:60px;padding: 30px;padding-bottom: 0px;background: transparent;position:fixed; top: 0px;width:100%;z-index: 1;">
   <div class="app">
 
   </div>
@@ -491,7 +491,7 @@ function hideCatalog() {
               var dtt = new Date();
               var difference = dtt - dt;
 
-              if (difference > 300000) {
+              if (difference > 900000) {
                 shoppingCartContent = [];
                 localStorage.clear();
                 localStorage.changedTime = (new Date()).toString();
@@ -499,8 +499,8 @@ function hideCatalog() {
               setTimeout(function() {
                 showModal({
                   type: "error",
-                  confirmButtonText: "Reset session. Clear all data.",
-                  cancelButtonText: "Continue work.",
+                  confirmButtonText: "Start fresh session. Clear all saved data.",
+                  cancelButtonText: "Continue work using saved data.",
                   title: "Some data are stored in session. Would you like to start new session or contonue with old?",
                   confirmCallback: function() {
                     localStorage.clear();
@@ -524,11 +524,11 @@ function hideCatalog() {
               var dt = new Date(localStorage.changedTime);
               var dtt = new Date();
               var difference = dtt - dt;
-              if (difference > 300000) {
+              if (difference > 900000) {
                 showModal({
                   type: "error",
-                  confirmButtonText: "Continue",
-                  cancelButtonText: "Reset session. Data are saved and you can continue work.",
+                  confirmButtonText: "Start fresh session. Clear all saved data.",
+                  cancelButtonText: "Continue work using saved data.",
                   title: "Session expired. App will be reloaded. All data will be deleted and lost.",
                   confirmCallback: function() {
                     localStorage.clear();
