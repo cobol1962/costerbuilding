@@ -44,7 +44,7 @@ function resetLocalStorage() {
     invoiceLocked = 0;
     $("[lock]").show();
     $("#toggleShoppigCart").addClass("empty");
-
+    $("#lblCartCount").html("0");
 }
 
 function checkLogin() {
@@ -860,6 +860,7 @@ function addToInvoice(row) {
     row["realPrice"] = realPrice;
     row["toPay"] = parseInt(row["quantity"]) * realPrice;
     row["productName"] += "<br />";
+
 
     shoppingCartContent[row["SerialNo"]] = row;
     shoppingCartToLocalStorage();

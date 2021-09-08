@@ -499,14 +499,14 @@ function hideCatalog() {
               setTimeout(function() {
                 showModal({
                   type: "error",
-                  confirmButtonText: "Start fresh session. Clear all saved data.",
-                  cancelButtonText: "Continue work using saved data.",
-                  title: "Some data are stored in session. Would you like to start new session or contonue with old?",
-                  confirmCallback: function() {
+                  confirmButtonText: "Continue work with saved data.",
+                  cancelButtonText: "Reset session and clear all data.",
+                  title: "Some data are stored in session. Would you like to start new session or continue with old?",
+                  cancelCallback: function() {
                     localStorage.clear();
                     window.location.reload();
                   },
-                  cancelCallback: function() {
+                  confirmCallbaxk: function() {
                     localStorage.changedTime = (new Date()).toString();
                   }
                 })
@@ -527,14 +527,14 @@ function hideCatalog() {
               if (difference > 900000) {
                 showModal({
                   type: "error",
-                  confirmButtonText: "Start fresh session. Clear all saved data.",
-                  cancelButtonText: "Continue work using saved data.",
+                  confirmButtonText: "Continue work with saved data.",
+                  cancelButtonText: "Reset session and clear all data.",
                   title: "Session expired. App will be reloaded. All data will be deleted and lost.",
                   confirmCallback: function() {
                     localStorage.clear();
                     window.location.reload();
                   },
-                  cancelCallback: function() {
+                  confirmCallback: function() {
                     localStorage.changedTime = (new Date()).toString();
 
                   }

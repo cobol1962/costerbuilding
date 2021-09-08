@@ -9,7 +9,7 @@ loadedPages.shoppingCart = {
   vat: 0,
   administrative: 0,
   vatrefunt: 0,
-  topay: 0,   
+  topay: 0,
   masterdiscount: 0,
   discountClicked: false,
   dApproved: {},
@@ -309,7 +309,23 @@ loadedPages.shoppingCart = {
       })
     }, 1500);
   //  $('#dapproved').typeahead('val', myVal);
+  $("[nrfnd]").bind("focus", function() {
+    var thenum = this.value.replace(/^\D+/g, '');
+    var n = thenum.replace(/\./g, "");
+    var n = n.replace(/\,/g, ".")
+    $(this).attr("realvalue", n);
+    $(this).val("");
+  //  $("#cartToPay").val(parseFloat($("#cartToPay").val()).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" }));
+  })
+  $("[rfnd]").bind("focus", function() {
+    var thenum = this.value.replace(/^\D+/g, '');
+    var n = thenum.replace(/\./g, "");
+    var n = n.replace(/\,/g, ".")
+    $(this).attr("realvalue", n);
+    $(this).val("");
+  })
       $("[nrfnd]").bind("change", function() {
+
         loadedPages.shoppingCart.setToPay(this);
       //  $("#cartToPay").val(parseFloat($("#cartToPay").val()).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" }));
       })
@@ -317,6 +333,7 @@ loadedPages.shoppingCart = {
         loadedPages.shoppingCart.setToPay(this);
       //  $("#cartToPay").val(parseFloat($("#cartToPay").val()).toLocaleString("nl-NL",{ style: 'currency', currency: "EUR" }));
       })
+
         $("#directRefund").bind("change", function() {
           loadedPages.shoppingCart.checkCode(true);
         })
@@ -732,7 +749,7 @@ if (obj.CompName === undefined) {
      }*/
      $("[section='returnproduct']").find(".num").unbind("keyup");
      $("[section='returnproduct']").find(".num").bind("keyup", function (event) {
-          $(event.target).val($(event.target).val().toString().replace(/[^0-9]/g, ''));
+      //    $(event.target).val($(event.target).val().toString().replace(/[^0-9]/g, ''));
       });
 
       $("#content").find("input").unbind("focusout");
@@ -1069,10 +1086,14 @@ applyDiscount: function(obj) {
 
     var $el = $(obj);
   //  loadedPages.shoppingCart.discountClickedFired();
-    var vv = parseFloat($el.val());
+  var thenum = $el.val().replace(/^\D+/g, '');
+  var n = thenum.replace(/\./g, "");
+  var n = n.replace(/\,/g, ".")
+
+    var vv = parseFloat(n);
 
     if (!$el.hasClass("refund")) {
-      var dsc = parseInt(loadedPages.shoppingCart.total) - $el.val();
+      var dsc = parseInt(loadedPages.shoppingCart.total) - vv;
       loadedPages.shoppingCart.discountClickedFired();
       $("select[spdiscount1]").val("euro");
     //  loadedPages.shoppingCart.switchMasterDiscountType($("#mdt")[0]);

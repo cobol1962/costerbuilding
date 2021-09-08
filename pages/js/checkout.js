@@ -262,8 +262,16 @@ loadedPages.checkout = {
             return (data[0].id != "");
         }, "This field is mandatory");
         $.validator.addMethod("genderSelected", function(value, element) {
-            return ($('#ptitle').val() != "-1");
+
+            return (value != "-1" && value != null);
         }, "This field is mandatory");
+        $.validator.addMethod("isEmail", function(value, element) {
+            if (value == "") {
+              return true;
+            } else {
+              return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
+            }
+        }, "If not empty, has to be valid email");
         $(".form-group").css({
             marginBottom: 25
         })
@@ -277,6 +285,9 @@ loadedPages.checkout = {
                 },
                 name: {
                     required: true
+                },
+                email: {
+                    isEmail: true
                 },
                 ptitle: {
                   genderSelected: true
@@ -1007,11 +1018,13 @@ console.log(ths);
                         amount: $(ths).find("input").eq(0).attr("realvalue"),
                         original: $(ths).find("input").eq(0).attr("euro")
                     }
+
                     payments[ind] = obj;
                 }
             }
         })
         localStorage.payments = JSON.stringify(payments);
+
         loadedPages.checkout.calculatePayments();
     },
     newInvoice: function() {
@@ -1223,13 +1236,19 @@ console.log(ths);
 
         if ($("#name").val() != "") {
             var nma = $("#name").val().split(" ");
-            var pt = ($("#ptitle").val() != "Nvt.") ? $("#ptitle").val() : "";
-            var lname = "";
-            for (var i = 1; i < nma.length; i++) {
-                lname += (nma[i] + " ");
-            }
-            $("[firstname]").html(pt + " " + ((nma[0] !== undefined) ? nma[0].substring(0, 1).toUpperCase() : "") + ". " + lname);
-            $("[firstname]").parent().show();
+            if (nma.length > 1) {
+                var pt = ($("#ptitle").val() != "Nvt.") ? $("#ptitle").val() : "";
+                var lname = "";
+                for (var i = 1; i < nma.length; i++) {
+                    lname += (nma[i] + " ");
+                }
+                $("[firstname]").html(pt + " " + ((nma[0] !== undefined) ? nma[0].substring(0, 1).toUpperCase() : "") + ". " + lname);
+                $("[firstname]").parent().show();
+              } else {
+                      var pt = ($("#ptitle").val() != "Nvt.") ? $("#ptitle").val() : "";
+                $("[firstname]").html(pt + " " +  nma[0]);
+                $("[firstname]").parent().show();
+              }
         } else {
             $("[firstname]").parent().hide();
         }
@@ -1527,6 +1546,9 @@ console.log(ths);
 
             }
             rclass = (rclass == "even") ? "" : "even";
+            if (obj.SerialNo.indexOf("9999") == 0) {
+              obj.productName += "<span style='font-weight:normal;'>" + obj.CompName + "</span>";
+            }
             h += "<tr class='" + rclass + "'>";
             h += "<td style=''>" + obj.SerialNo + "</td>";
             h += "<td style='width:50%;max-width:50%;min-width:50%;'>" + obj.productName.replace("undefined", "") + "</td>";
@@ -1685,7 +1707,7 @@ console.log(ths);
         h += "</tr>";
         var dt = $("#countries").select2('data');
 
-        if (localStorage.isEU == "0") {
+        if (localStorage.isEU == "0" && (parseFloat(localStorage.total) > 50)) {
             var bb = parseFloat(localStorage.torefund);
             h += "<tr><td style='width:100%;text-align: left;font-size: 5pt;'>Admin Charge:</td>";
             h += "<td style='width:100px;text-align:left;padding-right:10px;font-size: 5pt;'>€</td>";
@@ -1714,9 +1736,9 @@ console.log(ths);
         var chpaid = 0;
         var fp = true;
         paymentss = $.parseJSON(localStorage.payments);
-        for (var key in payments) {
+        for (var key in paymentss) {
 
-            var pay = payments[key];
+            var pay = paymentss[key];
             var payy = paymentss[key];
             pay.date = payy.date;
             if (pay.version == "") {
@@ -1743,7 +1765,8 @@ console.log(ths);
             } else {
                 dte = moment(new Date(pay.date)).format("DD-MM-YYYY");
             }
-            if (pay.paymentID != "7" && pay.paymentID != "2" && parseFloat(pay.original) > 0) {
+
+            if (pay.paymentID != "7" && pay.paymentID != "2") {
                 h = "<tr><td></td><td></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'>";
                 h += dte + "&nbsp;" + pay.paymentMethod + ": </td><td style='text-align:right;font-size: 5pt;'>€&nbsp;</td>";
                 h += "<td style='text-align:right;font-size: 5pt;'>" + parseFloat(pay.original).toLocaleString("nl-NL", {
@@ -2645,9 +2668,10 @@ console.log(ths);
             html += "<table id='ttt' style='width:100%;'><tr>";
             html += "<td style='max-width:120px;width:120px;'>" + ((obj.imageURL != "") ? obj.imageURL : "<img style='width:100px;' src='https://costercatalog.com/coster/www/images/crown.png' /></td>");
             html += "<td style='text-align: left;width:50%;'><div pdata style='position: relative;top:10px;right:0px;color:#ADADAD;display:inline-block;padding-bottom: 10px;'>" + obj.SerialNo + "<br />";
-            if (obj.productName !== undefined && obj.productName != "undefined") {
+            if (obj.productName !== undefined ) {
+
                 html += "<span productname style='font-size:24px;font-weight: bold;color:black;max-width:300px;min-width:300px;'>" + obj.productName.replace("undefined", "") + "</span>";
-                html += "<span productname style='font-size:18px;color:black;max-width:300px;min-width:300px;'>" + obj.CompName.replace("undefined", "") + "</span>";
+                html += "<br /><span productname style='font-size:18px;color:black;max-width:300px;min-width:300px;'>" + obj.CompName.replace("undefined", "") + "</span>";
 
             }
             html += "<br /><table class='dsct'  spdiscount style='display:none;float:left;'><tr>";
