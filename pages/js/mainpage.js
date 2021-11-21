@@ -16,7 +16,7 @@ loadedPages.mainpage = {
 
 
     setTimeout(function() {
-      
+
       $("#content").css({
         marginLeft: ($(window).width() - $("#content").width()) / 2,
         paddingTop: 165,

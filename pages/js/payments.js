@@ -162,8 +162,8 @@ loadedPages.payments =  {
               var iimg = "";
             }
                 var obj = {
-                    imageURL: "<img style='width:100px;height:auto;' src='https://costercatalog.com/catalog/images/" + ((iimg == '') ? "crown.png" :  r.data[0].ImageName) + "' />",
-                    img: "<img style='width:250px;height:auto;' src='https://costercatalog.com/catalog/images/" + ((iimg == '') ? "crown.png" :  r.data[0].ImageName) + "' />",
+                    imageURL: "<img style='width:100px;height:auto;' src='/images/" + ((iimg == '') ? "crown.png" :  r.data[0].ImageName) + "' />",
+                    img: "<img style='width:250px;height:auto;' src='/images/" + ((iimg == '') ? "crown.png" :  r.data[0].ImageName) + "' />",
                     SerialNo: data.SerialNo,
                     CompName: data.CompName,
                     productName:  data.productName,

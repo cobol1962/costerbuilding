@@ -1,6 +1,7 @@
 loadedPages.returnproduct = {
   initialize: function() {
     $("#btns").hide();
+
     $.validator.addMethod("selected", function(value, element) {
       var ds = $("#rcategory").select2("data")[0];
       var sid = ds.id;
@@ -42,8 +43,8 @@ loadedPages.returnproduct = {
             imageURL: "<img style='width:100px;height:auto;' src='https://costercatalog.com/catalog/images/" + "crown.png" + "' />",
             img: "<img style='width:250px;height:auto;' src='https://costercatalog.com/catalog/images/" + "crown.png" + "' />",
             SerialNo: "99990000",
-            CompName: $("#rdescription").val().replace(/(?:\r\n|\r|\n)/g, '<br>'),
-            productName:  $("#rcategory").select2("data")[0].text + "<br />" + $("#name").val(),
+            CompName: "Invoice/date: " + $("#invoiceno").val(),
+            productName:  $("#rproductname").val() +"<br>" + $("#rcategory").select2("data")[0].text + "<br>" + $("#rdescription").val().replace(/(?:\r\n|\r|\n)/g, '<br>'),
             SalesPrice: $("#rprice").val() * m,
             realPrice: $("#rprice").val(),
             startRealPrice: $("#rprice").val(),
@@ -53,7 +54,6 @@ loadedPages.returnproduct = {
             invoiceno: $("#invoiceno").val()
         }
         try {
-          console.log(obj);
 
           showModal({
             title: "ADD ITEM " + obj.CompName + " TO BAG?",

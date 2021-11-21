@@ -29,8 +29,8 @@ loadedPages.addrefund = {
       submitHandler: function(form) {
 
         var obj = {
-            imageURL: "<img style='width:100px;height:auto;' src='https://costercatalog.com/costerdemo/coster/www/images/" + "crown.png" + "' />",
-            img: "<img style='width:250px;height:auto;' src='https://costercatalog.com/costerdemo/coster/www/images/" + "crown.png" + "' />",
+            imageURL: "<img style='width:100px;height:auto;' src='/images/" + "crown.png" + "' />",
+            img: "<img style='width:250px;height:auto;' src='/images/" + "crown.png" + "' />",
             SerialNo: "99990000",
             CompName: $("#description").val().replace(/(?:\r\n|\r|\n)/g, '<br>'),
             productName:  $("#name").val(),

@@ -961,7 +961,7 @@ function initializeCatalog() {
 
         },
         "ajax": {
-            "url": "https://costercatalog.com/api/items.php",   
+            "url": "https://costercatalog.com/api/items.php",
             "type": "POST",
             "data": { secret:"scddddedff2fg6TH22" },
             "timeout" : 1000,
@@ -997,7 +997,7 @@ function initializeCatalog() {
                     if (row["imageName"] != "") {
                         var src = "https://costercatalog.com/catalog/images/" + row["imageName"];
                     } else {
-                        var src = "https://costercatalog.com/coster/www/images/crown.png";
+                        var src = "/images/crown.png";
                     }
 
                     html = "<div itemname='" + row["SerialName"] + "' itemid='" + row["ItemID"] + "' style='font-size:12px;min-width:100%;text-align:center;'>";

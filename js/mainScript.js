@@ -462,6 +462,7 @@ function continueReady() {
     api.call("getSalespersons", function(res) {
         spersonsarr = [];
         td = [];
+
         $.each(res.data, function() {
 
             td.push({
@@ -833,7 +834,7 @@ function addToInvoice(row) {
     }
     if (row["invoiceno"] !== undefined) {
         row["SerialNo"] = (parseInt(row["SerialNo"]) + 1).toString();
-        row["SerialNo"] += " (invoice no/date: " + row["invoiceno"] + ")";
+      //  row["SerialNo"] += " (invoice no/date: " + row["invoiceno"] + ")";
     }
     //alert(row["Discount"])
     if (row["Discount"] == "0") {
@@ -1156,7 +1157,7 @@ $("#scanbutton").popover('hide');
       if (res[0].image != "" && res[0].image != null) {
           var img = $("<img src='https://costercatalog.com/catalog/images/" + res[0].image + "' style='width:100px;' />");
       } else {
-          var img = $("<img src='https://costercatalog.com/coster/www/images/crown.png' style='width:100px;' />");
+          var img = $("<img src='/images/crown.png' style='width:100px;' />");
       }
       var exr = $("#currency").find("option:selected").attr("rate");
       html = img[0].outerHTML;
@@ -2247,7 +2248,7 @@ showModal = function(options = {}) {
     }
     if (options.type === undefined) {
         $("#m_header").css({
-            backgroundImage: "url(https://costercatalog.com/catalog/images/crown.png)"
+            backgroundImage: "url(/images/crown.png)"
         })
     }
     if (options.type == "error") {

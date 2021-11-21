@@ -23,10 +23,19 @@ loadedPages.checkout = {
             overflowY: "auto",
             overflowX: "hidden"
         })
-        $("#stour").select2({
-            allowClear: true,
-            dropdownAutoWidth : true
-        });
+        api.call("getFixedProjects", function(res) {
+
+          $.each(res, function() {
+            $("<option value='" + this.projid + "'>" + this.projname + "</option>").appendTo($("#stour"));
+
+          })
+          setTimeout(function() {
+              $("#stour").select2({
+                  allowClear: true,
+                  dropdownAutoWidth : true
+              });
+          }, 2000);
+        },{}, {});
 
         loadedPages.checkout.fillShowrooms();
         $("#findSP").bind("keyup", function() {
@@ -498,6 +507,7 @@ loadedPages.checkout = {
                 style: 'currency',
                 currency: 'EUR'
             }));
+            console.log(payments)
             if (Object.keys(payments).length == 0) {
 
                 var tr = $("#master").clone();
@@ -507,10 +517,14 @@ loadedPages.checkout = {
                 //    alert(parseFloat(tpp))
                 //      tr.find("input").val(tpp);
 
+                var m = 1;
+                if (tpp.toString().indexOf("-") > -1) {
+                  m = -1;
+                }
                 var thenum = tpp.toString().replace(/^\D+/g, '');
                 var n = thenum.replace(/\./g, "");
                 n = n.replace(/\,/g, ".");
-                tpp = n;
+                tpp = n * m;
                 tr.find("input").eq(0).unbind("focus");
                 tr.find("input").eq(0).bind("focus", function() {
                   $(this).attr("vv",$(this).val());
@@ -535,9 +549,10 @@ loadedPages.checkout = {
             } else {
               var crt = 1;
                 for (var key in payments) {
+
                     var ths = payments[key];
-console.log(ths);
-                    if (ths.amount > 0) {
+                    if (true) {
+                  //  if (ths.amount > 0) {
                         var tr = $("#master").clone();
                         tr.appendTo($("#paymentsTable").find("tbody"));
                         tr = $("#paymentsTable").find("tr:last");
@@ -612,16 +627,25 @@ console.log(ths);
                     }
                 }
 
-              tr.find("input").eq(0).unbind("change");
+                tr.find("input").eq(0).unbind("change");
 
                 tr.find("input").eq(0).bind("change", function() {
+                   var m = 1;
+                   if ($(this).val().indexOf("-") > -1) {
+                     m = -1;
+                   }
+                    var thenum = $(this).val().replace(/^\D+/g, '');
+                    var n = thenum.replace(/\./g, "");
+                    n = n.replace(/\,/g, ".");
+                    n = parseFloat(n) * m;
 
                     var slct = $(this).closest("tr").find("td").eq(1).find("select");
                     var rate = slct.find("option:selected").attr("rate");
-                    $(this).attr("euro", parseFloat($(this).val() / rate));
-                    $(this).attr("realvalue", $(this).val());
+                    $(this).attr("euro", parseFloat(n / rate));
+                    $(this).attr("realvalue", n);
                     var er = $(this).attr("euro");
-                    $(this).val(parseFloat($(this).val()).toLocaleString("nl-NL", {
+
+                    $(this).val(n.toLocaleString("nl-NL", {
                         style: 'currency',
                         currency: $(this).closest("tr").find("td").find("select").eq(1).val()
                     }));
@@ -643,6 +667,7 @@ console.log(ths);
                 return;
             }
             var tp = 0;
+            var rpaid = 0;
             $.each($("#paymentsTable").find("tbody").find("tr"), function() {
                 if ($(this).find("select").eq(0).val() == "7") {
                     $(this).remove();
@@ -657,7 +682,10 @@ console.log(ths);
                             var thenum = $(this).find("input").val().replace(/^\D+/g, '');
                             var n = thenum.replace(/\./g, "");
                             n = n.replace(/\,/g, ".");
-                            tp += parseFloat(n);
+                            if (n > 0) {
+                              tp += parseFloat(n);
+                            }
+                            rpaid += parseFloat(n);
                         }
                     }
                 }
@@ -682,6 +710,7 @@ console.log(ths);
 
         loadedPages.checkout.cache = 0;
         var paid = 0;
+        var rpaid = 0;
         $.each($("#paymentsTable").find("tbody").find("tr"), function(ind) {
             if (this.id != "administrative") {
                 var ths = this;
@@ -715,7 +744,12 @@ console.log(ths);
                     $(ths).find("input").eq(2).attr("realvalue", $(ths).find("input").eq(0).attr("euro"));
 
                     if ($(ths).find("select").eq(0).val() != "-1") {
-                      paid += parseFloat($(ths).find("input").eq(0).attr("euro"));
+
+                      if ($(ths).find("input").attr("euro").indexOf("-") == -1) {
+                        paid += parseFloat($(ths).find("input").eq(0).attr("euro"));
+
+                      }
+                      rpaid += parseFloat($(ths).find("input").eq(0).attr("euro"));
                     }
                     var obj = {
                         paymentID: $(ths).find("select").eq(0).val(),
@@ -729,46 +763,56 @@ console.log(ths);
                     }
 
                     if ($(this).find("input").eq(0).val() != "" && $(this).find("select").eq(0).val() != "-1") {
+                      var tn =  $(this).find("input").val();
                         var thenum = $(this).find("input").val().replace(/^\D+/g, '');
                         var n = thenum.replace(/\./g, "");
                         var n = n.replace(/\,/g, ".");
                         n = parseFloat(n) / (parseFloat($(this).closest("tr").find("td").eq(1).find("select").find("option:selected").attr("rate")));
-                        tp += parseFloat(n);
-                        obj.original = n;
-                    }
+                     if (tn.indexOf("-") == -1) {
 
+                          tp += parseFloat(n);
+                          obj.original = n;
+                      } else {
+                          obj.original = n * -1;
+                      }
+                    }
                     payments[Object.keys(payments).length] = obj;
 
                 }
             }
+              })
             if (localStorage.directRefund == "0") {
               var tpp = localStorage.payNoRefund;
             } else {
               var tpp = localStorage.payWithRefund;
             }
+            var m = 1;
+            if (tpp.toString().indexOf("-") > -1) {
+              m = -1;
+            }
             var thenum = tpp.toString().replace(/^\D+/g, '');
             var n = thenum.replace(/\./g, "");
             var n = n.replace(/\,/g, ".");
-            tpp = n;
+            tpp = n * m;
 
-            var r = tpp - paid;
+            var r = tpp - rpaid;
 
-            $("#paid").html(parseInt(paid).toLocaleString("nl-NL", {
+            $("#paid").html(parseInt(rpaid).toLocaleString("nl-NL", {
                 style: 'currency',
                 currency: 'EUR'
             }))
             if (r < 0) {
                 $("#due").parent().find("td").eq(0).html("Change:");
             } else {
-              $("#due").parent().find("td").eq(0).html("Amount due:");
+              $("#due").parent().find("td").eq(0).html("Balance:");
             }
-
+            $("#due").attr("realvalue",parseInt(Math.abs(r)));
             $("#due").html(parseInt(Math.abs(r)).toLocaleString("nl-NL", {
                 style: 'currency',
                 currency: 'EUR'
             }));
 
-        })
+
         //  loadedPages.checkout.paymentToLS();
         if (vatRefund) {
             var tpp = parseFloat(localStorage.payWithRefund);
@@ -806,8 +850,12 @@ console.log(ths);
             $("#addpayment").prop("disabled", false);
         }
         var del =    $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(1);
-        if (typeof del.id == 'undefined') {
-          del[0].id = "date_" + $("#paymentsTable").find("tbody").find("tr").length;
+        try {
+          if (typeof del.id == 'undefined') {
+            del[0].id = "date_" + $("#paymentsTable").find("tbody").find("tr").length;
+          }
+        } catch(err) {
+
         }
         var ii = $("#paymentsTable").find("tbody").find("tr").length;
         var el = $("#date_" + ii);
@@ -818,7 +866,7 @@ console.log(ths);
               loadedPages.checkout.paymentToLS();
            }
         });
-        console.log(el.datepicker());
+
         el.datepicker("setDate", new Date(el.attr("realdate")));
       /*  $("#paymentsTable").find("tbody").find("input").eq(1).unbind("change");
         $("#paymentsTable").find("tbody").find("input").eq(1).bind("change", function() {
@@ -898,6 +946,42 @@ console.log(ths);
           }
         })
         $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(0).unbind("change");
+        var tr = $("#paymentsTable").find("tbody").find("tr:last");
+        tr.find("input").eq(0).bind("change", function() {
+           var m = 1;
+           if ($(this).val().indexOf("-") > -1) {
+             m = -1;
+           }
+            var thenum = $(this).val().replace(/^\D+/g, '');
+            var n = thenum.replace(/\./g, "");
+            n = n.replace(/\,/g, ".");
+            n = parseFloat(n) * m;
+
+            var slct = $(this).closest("tr").find("td").eq(1).find("select");
+            var rate = slct.find("option:selected").attr("rate");
+            $(this).attr("euro", parseFloat(n / rate));
+            $(this).attr("realvalue", n);
+            var er = $(this).attr("euro");
+
+            $(this).val(n.toLocaleString("nl-NL", {
+                style: 'currency',
+                currency: $(this).closest("tr").find("td").find("select").eq(1).val()
+            }));
+            $(this).closest("tr").find("td").eq(4).prop("readonly", false);
+            $(this).closest("tr").find("td").eq(4).find("input").attr("realvalue", $(this).val());
+            $(this).closest("tr").find("td").eq(4).find("input").attr("euro", er);
+            $(this).closest("tr").find("td").eq(4).find("input").val(parseFloat(er).toLocaleString("nl-NL", {
+                style: 'currency',
+                currency: "EUR"
+            }));
+
+            loadedPages.checkout.paymentToLS();
+            setTimeout(function() {
+                loadedPages.checkout.calculatePayments();
+            }, 1500);
+        });
+
+
         $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(0).blur(function() {
             if ($(this).val() == "") {
               $(this).val($(this).attr("vv"));
@@ -910,11 +994,15 @@ console.log(ths);
                     if ($(this).find("input").length > 0) {
                         if ($(this).find("select").eq(0).val() != "7" && $(this).find("select").eq(0).val() != "-1") {
                         //    var mi = ($(this).find("input").eq(0).val().indexOf("-") > -1) ? -1 : 1;
-
+                          var m = 1;
+                          if ($(this).find("input").eq(0).val().indexOf("-") > -1) {
+                            var m = -1;
+                          }
                             var thenum = $(this).find("input").eq(0).val().replace(/^\D+/g, '');
                             var n = thenum.replace(/\./g, "");
                             n = parseFloat(n) / (parseFloat($(this).closest("tr").find("td").eq(1).find("select").find("option:selected").attr("rate")));
-                            tp += parseFloat(n);
+                            tp += parseFloat(n) * m;
+
 
                         }
                     }
@@ -942,12 +1030,18 @@ console.log(ths);
         } else {
             var tpp = (localStorage.payNoRefund);
         }
+        var m = 1;
+
+        if (tpp.toString().indexOf("-") > -1) {
+          m = -1;
+        }
         var thenum = tpp.toString().replace(/^\D+/g, '');
         var n = thenum.replace(/\./g, "");
         var n = n.replace(/\,/g, ".");
-        tpp = n;
+        tpp = n * m;
 
         tp = (isNaN(tp)) ? 0 : tp;
+
         $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(0).attr("euro", tpp - tp);
         $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(0).attr("realvalue", tpp - tp);
         $("#paymentsTable").find("tbody").find("tr:last").find("input").eq(0).val(parseFloat(tpp - tp).toLocaleString("nl-NL", {
@@ -1023,6 +1117,7 @@ console.log(ths);
                 }
             }
         })
+        console.log(payments)
         localStorage.payments = JSON.stringify(payments);
 
         loadedPages.checkout.calculatePayments();
@@ -1056,6 +1151,7 @@ console.log(ths);
         }
     },
     paymentMethodChanged: function(obj) {
+
         if ($(obj).val() == "1") {
             $(obj).closest("tr").find("td").eq(1).find("select").prop("disabled", false);
         } else {
@@ -1085,6 +1181,13 @@ console.log(ths);
             type: "error",
             title: "Not for all payments payment method selected",
 
+        })
+        loadedPages.checkout.loadPart(4);
+      }
+      if (parseFloat($("#due").attr("realvalue")) != 0) {
+        showModal({
+            type: "error",
+            title: "Invoice balance must be 0. if payments not complete done, please add remaining amount as 'On account' payment.",
         })
         loadedPages.checkout.loadPart(4);
       } else {
@@ -1233,7 +1336,6 @@ console.log(ths);
             $("<span>Due to company regulations we require a copy of the customer's identitification details.</span>").appendTo($("#cache"));
         }
         $("<span>Tour no. " + tour.ProjId, +", " + moment(new Date(tour.AVisitDateTime)).format("DD.MM.YYYY HH:mm") + "</span>").appendTo($("#tour"));
-
         if ($("#name").val() != "") {
             var nma = $("#name").val().split(" ");
             if (nma.length > 1) {
@@ -1245,8 +1347,8 @@ console.log(ths);
                 $("[firstname]").html(pt + " " + ((nma[0] !== undefined) ? nma[0].substring(0, 1).toUpperCase() : "") + ". " + lname);
                 $("[firstname]").parent().show();
               } else {
-                      var pt = ($("#ptitle").val() != "Nvt.") ? $("#ptitle").val() : "";
-                $("[firstname]").html(pt + " " +  nma[0]);
+                var pt = ($("#ptitle").val() != "Nvt.") ? $("#ptitle").val() : "";
+                $("[firstname]").html(pt + " " +  $("#name").val());
                 $("[firstname]").parent().show();
               }
         } else {
@@ -1358,7 +1460,7 @@ console.log(ths);
             ii += parseInt(obj.quantity);
             total += parseInt(obj.toPay);
             var html = "<div root style='font-size:14px;'><div serial='" + obj.SerialNo + "' style='border-top:1px solid #e2e2e2;min-height:115px;border-bottom:1px solid #e2e2e2;padding:10px;padding-bottom:20px;width:100%;position:relative;'>";
-            html += "<div>" + ((obj.imageURL != "") ? obj.imageURL : "<img style='width:100px;' src='https://costercatalog.com/coster/www/images/crown.png' />");
+            html += "<div>" + ((obj.imageURL != "") ? obj.imageURL : "<img style='width:100px;' src='/images/crown.png' />");
             html += "<div style='position:absolute;top:10px;left:120px;color:#ADADAD;'>" + obj.SerialNo + "<br />"
             html += "<span productname style='color:black;max-width:300px;font-size:11px;'>" + obj.productName.replace("undefined", "") + "</span></div>";
 
@@ -1453,6 +1555,33 @@ console.log(ths);
 
     },
     generateInvoice: function(mode) {
+      var cache = 0;
+      var fp = true;
+      paymentss = $.parseJSON(localStorage.payments);
+      for (var key in paymentss) {
+          var pay = paymentss[key];
+          var payy = paymentss[key];
+          if (pay.paymentID == "1") {
+            cache += parseFloat(pay.original);
+          }
+      }
+      if (cache > 10000) {
+        showModal({
+          type: "error",
+          cancelButtonText: "CANCEL",
+          confirmButtonText: "CONTINUE ANYWAY",
+          title: "Wwft transaction! Identification of customer is required by law. Please copy id.",
+          confirmCallback: function() {
+            loadedPages.checkout.generateInvoice1(mode);
+          }
+        })
+        return;
+      } else {
+        loadedPages.checkout.generateInvoice1(mode);
+      }
+
+    },
+    generateInvoice1: function(mode) {
         try {
             if (localStorage.goingback == "1") {
                 return;
@@ -1546,12 +1675,12 @@ console.log(ths);
 
             }
             rclass = (rclass == "even") ? "" : "even";
-            if (obj.SerialNo.indexOf("9999") == 0) {
-              obj.productName += "<span style='font-weight:normal;'>" + obj.CompName + "</span>";
+            if (true) {
+              obj.productName += "<div style='font-weight:normal; max-width: 100%;white-space: pre-wrap;word-wrap: break-all;overflow-wrap: break-word;overflow:hidden;'>" + obj.CompName + "</div>";
             }
             h += "<tr class='" + rclass + "'>";
             h += "<td style=''>" + obj.SerialNo + "</td>";
-            h += "<td style='width:50%;max-width:50%;min-width:50%;'>" + obj.productName.replace("undefined", "") + "</td>";
+            h += "<td style='width:50%;max-width:50%;min-width:50%;'><div style='white-space: pre-wrap;font-weight:normal; max-width: 100%;word-wrap: break-all;overflow-wrap: break-word;'>" + obj.productName.replace("undefined", "") + "</div></td>";
             h += "<td style='padding-left:3px;text-align:right;'>€&nbsp;</td>";
             h += "<td style='text-align:right;'>" + obj.quantity + " X " + parseFloat(obj.SalesPrice).toLocaleString("nl-NL", {
                 minimumFractionDigits: 2,
@@ -1707,7 +1836,7 @@ console.log(ths);
         h += "</tr>";
         var dt = $("#countries").select2('data');
 
-        if (localStorage.isEU == "0" && (parseFloat(localStorage.total) > 50)) {
+        if ((localStorage.directRefund == "1" || localStorage.directRefund1 == "1") && (parseFloat(localStorage.total) > 50)) {
             var bb = parseFloat(localStorage.torefund);
             h += "<tr><td style='width:100%;text-align: left;font-size: 5pt;'>Admin Charge:</td>";
             h += "<td style='width:100px;text-align:left;padding-right:10px;font-size: 5pt;'>€</td>";
@@ -1724,16 +1853,20 @@ console.log(ths);
                 maximumFractionDigits: 2
             }) + "</td>";
             h += "</tr>";
-            if (localStorage.directRefund == "0") {
+
+            if (localStorage.directRefund1 == "1" && localStorage.directRefund == "0") {
                 $("[norefund]").show();
             }
             if (localStorage.directRefund == "1") {
+              $("[norefund]").hide();
                 $("[refund]").show();
             }
         }
         $(h).appendTo($("#summary"));
         var tpaid = 0;
+        var rpaid = 0;
         var chpaid = 0;
+        var cache = 0;
         var fp = true;
         paymentss = $.parseJSON(localStorage.payments);
         for (var key in paymentss) {
@@ -1780,11 +1913,11 @@ console.log(ths);
                     h += "</tr>";*/
 
                 if (pay.currency != "EUR") {
-                    h = "<tr><td></td><td></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'>" + pay.paymentMethod + ": </td><td style='text-align:right;font-size: 5pt;'>€&nbsp;</td><td style='text-align:right;font-size: 5pt;'>" + parseFloat(pay.original).toLocaleString("nl-NL", {
+                    h = "<tr><td></td><td></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'>" + pay.paymentMethod + ": </td><td style='text-align:right;font-size: 5pt;'>" + pay.currency + "&nbsp;</td><td style='text-align:right;font-size: 5pt;'>" + parseFloat(pay.amount).toLocaleString("nl-NL", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     }) + "</td></tr>";
-                    h += "<tr><td></td><td></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'></td><td style='text-align:right;font-size: 5pt;'></td><td style='text-align:right;font-size: 4pt;'>(" + pay.paymentMethod + " " + pay.currency + " " + parseFloat(pay.amount).toLocaleString("nl-NL", {
+                    h += "<tr><td></td><td></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'></td><td style='text-align:right;font-size: 5pt;'></td><td style='text-align:right;font-size: 4pt;'>("  + "€" + " " + parseFloat(pay.original).toLocaleString("nl-NL", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     }) + ")</td></tr>";
@@ -1795,16 +1928,22 @@ console.log(ths);
                           h += "</tr>";*/
                 }
                 if (pay.paymentID != "2") {
+                  if (pay.original > 0) {
                     tpaid += parseFloat(pay.original);
+                  }
+                  rpaid += parseFloat(pay.original);
+                }
+                if (pay.original < 0) {
+                    chpaid += parseFloat(pay.original);
                 }
                 if (pay.paymentID == "1") {
-                    chpaid += parseFloat(pay.original);
+                    cache += parseFloat(pay.original);
                 }
                 $(h).appendTo($("#mTableBody"));
             }
         }
         var pdiff = (parseFloat(localStorage.total) / 100) * 1;
-        if ((tpaid > tobepaid)) {
+        if ((rpaid > tobepaid)) {
             h = "<tr><td></td><td><div style='min-height:10px;'></div></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'></td><td style='text-align:right;font-size: 5pt;'></td><td style='text-align:right;font-size: 5pt;'></td></tr>";
 
             /*  h = "<tr><td style='width:100%;font-size: 5pt;'><div style='min-height:10px;'></div></td>";
@@ -1823,13 +1962,13 @@ console.log(ths);
               h += "</tr>";*/
             $(h).appendTo($("#mTableBody"));
         }
-        var tp = tobepaid - tpaid;
+        var tp = tobepaid - rpaid;
         if (tp < 0) {
             var tt = 0;
         } else {
             var tt = tp;
         }
-        h = "<tr><td></td><td><div style='min-height:10px;'></div></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'><b>Total amount due: </b></td><td style='border-top: 2px solid #e5e5e5;color:black;text-align:right;font-size: 5pt;'>&nbsp;€</td><td style='border-top: 2px solid #e5e5e5;color:black;text-align:right;font-size: 5pt;'><b>" + parseInt(tt).toLocaleString("nl-NL", {
+        h = "<tr><td></td><td><div style='min-height:10px;'></div></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'><b>Balance: </b></td><td style='border-top: 2px solid #e5e5e5;color:black;text-align:right;font-size: 5pt;'>&nbsp;€</td><td style='border-top: 2px solid #e5e5e5;color:black;text-align:right;font-size: 5pt;'><b>" + parseInt(tt).toLocaleString("nl-NL", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         }) + "</b></td></tr>";
@@ -1840,8 +1979,9 @@ console.log(ths);
             h += "</tr>";*/
         $(h).appendTo($("#mTableBody"));
 
-        if (chpaid > 10000) {
-            $("#cacheover").show();
+        if (parseFloat(cache) > 10000) {
+
+              $("#cacheover").show();
         }
         localStorage.isEU = $.parseJSON(localStorage.customerCountry).eu;
         if (localStorage.isEU == "0" && localStorage.directRefund == "0") {
@@ -1864,7 +2004,9 @@ console.log(ths);
         }
         $("#rmrk").html(localStorage.remark);
         $("#inm").html(invoiceID + version);
-
+        if (localStorage.directRefund1 == '') {
+          localStorage.directRefund1 = "0";
+        }
         if (invoiceID == "") {
             if (localStorage.discountAmount == "") {
                 localStorage.discountAmount = 0;
@@ -1907,7 +2049,8 @@ console.log(ths);
                 saledate: moment(dt).format("YYYY-MM-DD HH:mm:ss"),
                 reference: $("#reference").val(),
                 isproform: $("#proforma").val(),
-                remark: $("#remark").val().replace(/\n/g, "<br />")
+                remark: $("#remark").val().replace(/\n/g, "<br />"),
+                isVatRefund: localStorage.directRefund1
             }
 
         } else {
@@ -1943,7 +2086,8 @@ console.log(ths);
                 saledate: moment(dt).format("YYYY-MM-DD HH:mm:ss"),
                 reference: $("#reference").val(),
                 isproform: $("#proforma").val(),
-                remark: $("#remark").val().replace(/\n/g, "<br />")
+                remark: $("#remark").val().replace(/\n/g, "<br />"),
+                isVatRefund: localStorage.directRefund1
 
             }
 
@@ -1989,7 +2133,11 @@ console.log(ths);
                     for (var k in data) {
                         obj[k] = data[k];
                     }
-                    obj["name"] = obj["productName"].split("<br />")[0];
+              //      if (obj.SerialNo.indexOf("9999") != 0) {
+                      obj["name"] = obj["productName"].split("<br />")[0];
+                  //  } else {
+                  //    obj["name"] = obj["productName"];
+                //    }
                     obj["imageURL"] = img.attr("src");
                     obj["invoiceid"] = invoiceID;
 
@@ -2034,6 +2182,7 @@ console.log(ths);
                 // $.LoadingOverlay("hide");
                 $("#bar_image").attr("src", bc);
                 var html = $("#invoice")[0].outerHTML;
+console.log(html)
                 $.ajax({
                     url: "https://costercatalog.com:5100",
                     type: 'POST',
@@ -2261,6 +2410,9 @@ console.log(ths);
     },
     addTour: function() {
         delete localStorage.tour;
+        setTimeout(function() {
+          $("#tnum").focus();
+        }, 1000)
         showModal({
             title: "Enter tour number",
             content: "<input id='tnum' type='number' class='form-control' />",
@@ -2666,7 +2818,7 @@ console.log(ths);
             var html = "<div root style='display: block;font-size:12px;border-bottom:1px solid rgba(0, 0, 0, 0.1);'>";
             html += "<div id='" + obj.SerialNo + "' serial='" + obj.SerialNo + "' style='font-size: 18px;padding:10px;padding-bottom:20px;'>";
             html += "<table id='ttt' style='width:100%;'><tr>";
-            html += "<td style='max-width:120px;width:120px;'>" + ((obj.imageURL != "") ? obj.imageURL : "<img style='width:100px;' src='https://costercatalog.com/coster/www/images/crown.png' /></td>");
+            html += "<td style='max-width:120px;width:120px;'>" + ((obj.imageURL != "") ? obj.imageURL : "<img style='width:100px;' src='/images/crown.png' /></td>");
             html += "<td style='text-align: left;width:50%;'><div pdata style='position: relative;top:10px;right:0px;color:#ADADAD;display:inline-block;padding-bottom: 10px;'>" + obj.SerialNo + "<br />";
             if (obj.productName !== undefined ) {
 

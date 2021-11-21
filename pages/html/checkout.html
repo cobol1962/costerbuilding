@@ -46,11 +46,11 @@
        <img src="/images/addtour.svg" onclick="loadedPages.checkout.addTour();" />
      <select id="stour" name="stour" class="form-control" style="margin-left:20px;margin-top:-5px;">
         <option value="-1">Select tour</option>
-        <option value="021100">Tourleaders/guides/drivers</option>
-        <option value="021200">VIP Educationals = staff</option>
+      <!--  <option value="021100">Tourleaders/guides/drivers</option>
+        <option value="021200">VIP Educationals</option>
         <option value="021300">Champagne tours</option>
         <option value="021400">Relations</option>
-        <option value="021500">Internet</option>
+        <option value="021500">Internet</option> -->
      </select>
      <span>&nbsp;(<span id="tnmbup">No Tour selected</span>)</span>
      <div id="dfs1" style="border:1px solid black;position:absolute;top:35px;right:40px;min-width: 450px;min-height: 36px;height: 36px;background: white;float:right;border-radius: 9px;background-image:url(/images/magnifying_glass.svg);background-repeat:no-repeat;background-position:20px 8px;padding-left:55px;">
@@ -146,7 +146,8 @@
                     <option value="-1">Select</option>
                     <option value="Mr.">Mr.</option>
                     <option value="Ms.">Ms.</option>
-                        <option value="Mr. & Ms.">Mr. & Ms.</option>
+                    <option value="Mx.">Mx.</option>
+                    <option value="Mr. & Ms.">Mr. & Ms.</option>
                   </select>
                 </div>
                 <div class="col-xs-3 col-lg-3">
@@ -262,15 +263,15 @@
 
          <tbody>
            <tr>
-             <td>Total Amount:</td>
+             <td>Total Invoice Amount:</td>
              <td id="toPay">€145,159.00</td>
            </tr>
            <tr style="border-bottom:2px solid black;">
-             <td>Total Amount Paid: </td>
+             <td>Total Payment Methods: </td>
              <td id="paid">€145,159.00</td>
            </tr>
            <tr>
-             <td>Amount Due:</td>
+             <td>Balance:</td>
              <td id="due">€0.00</td>
            </tr>
          </tbody>
@@ -437,7 +438,7 @@
 
      </td>
      <td style="text-align: right;width:190px;min-width:190px;">
-        <input type="text" class="form-control" onchange="loadedPages.checkout.changeCurrency($(this).closest('tr').find('select').eq(1),$(this).val());"/>
+        <input type="text" class="form-control" />
      </td>
      <td style="text-align: left;width:160px;min-width:300px;">
         <input  type="text" class="form-control" />
@@ -557,8 +558,7 @@
 <table id="iit" tableborder="0" style="width:400px;min-width:400px;font-size:6pt;position:absolute;bottom:110px;">
    <tr>
       <td style="width: 45%;min-width:45%;text-align:left;vertical-align:bottom;">
-         <img src="" id="customerSignature" style="margin-left:44px;width:100px;" /><br />
-         <img src="/images/signature.png" style="margin-top:-12px;width:150px;float:left" /><br />
+         <img src="https://costercatalog.com/images/signature.png" style="margin-top:-12px;width:150px;float:left" /><br />
          <p refund style="display:none;font-size: 5pt;color:#323232;text-align:left;line-height:5.5pt;width:150px;">
             Important to non-EU visitors: If you do not comply with EU regulations concerning VAT refunds,
             we have the right to charge you within 3 months: <span id="dfamount"></span>.

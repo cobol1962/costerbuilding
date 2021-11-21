@@ -433,6 +433,7 @@ function continueReady() {
     }, 1);
     var td = [];
     api.call("getSalespersons", function(res) {
+    
         spersons = [];
         td = [];
         $.each(res.data, function() {
@@ -1136,7 +1137,7 @@ function scan() {
                 if (res[0].image != "" && res[0].image != null) {
                     var img = $("<img src='https://costercatalog.com/catalog/images/" + res[0].image + "' style='width:100px;' />");
                 } else {
-                    var img = $("<img src='https://costercatalog.com/coster/www/images/crown.png' style='width:100px;' />");
+                    var img = $("<img src='/images/crown.png' style='width:100px;' />");
                 }
                 var exr = $("#currency").find("option:selected").attr("rate");
                 html = img[0].outerHTML;
@@ -1237,7 +1238,7 @@ function getSerial(search = false, notavailable = false) {
                         }
 
                         var exr = $("#currency").find("option:selected").attr("rate");
-                        html = ((res[0].imageURL != null) ? img[0].outerHTML : "<img style='width:150px;' src='https://costercatalog.com/coster/www/images/crown.png' />");
+                        html = ((res[0].imageURL != null) ? img[0].outerHTML : "<img style='width:150px;' src='/images/crown.png' />");
                         html += "<div style='position:absolute;top:10px;left:155px;color:#ADADAD;'>" + res[0].SerialNo + "<br />"
                         html += "<span style='color:black;font-size:17px;'><b>" + res[0].SerialName + "</b></span></div>";
 
@@ -2366,7 +2367,7 @@ showModal = function(options = {}) {
     }
     if (options.type === undefined) {
         $("#m_header").css({
-            backgroundImage: "url(https://costercatalog.com/catalog/images/crown.png)"
+            backgroundImage: "url(/images/crown.png)"
         })
     }
     if (options.type == "error") {

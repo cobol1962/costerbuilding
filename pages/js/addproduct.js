@@ -38,11 +38,11 @@ loadedPages.addproduct = {
         }
 
         var obj = {
-            imageURL: "<img style='width:100px;height:auto;' src='https://costercatalog.com/catalog/images/" + "crown.png" + "' />",
-            img: "<img style='width:250px;height:auto;' src='https://costercatalog.com/catalog/images/" + "crown.png" + "' />",
+            imageURL: "<img style='width:100px;height:auto;' src='/images/" + "crown.png" + "' />",
+            img: "<img style='width:250px;height:auto;' src='/images/" + "crown.png" + "' />",
             SerialNo: "99990000",
             CompName: $("#description").val().replace(/(?:\r\n|\r|\n)/g, '<br>'),
-            productName:  $("#category").select2("data")[0].text + "<br />" + $("#productname").val(),
+            productName:  $("#category").select2("data")[0].text + "<br>" + $("#productname").val(),
             SalesPrice: $("#price").val() * m,
             realPrice: $("#price").val(),
             startRealPrice: $("#price").val(),
@@ -52,7 +52,7 @@ loadedPages.addproduct = {
         }
         try {
           console.log(obj);
-        
+
           showModal({
             title: "ADD ITEM " + obj.CompName + " TO BAG?",
             allowBackdrop: false,

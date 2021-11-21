@@ -58,7 +58,7 @@ loadedPages.search = {
           if (this.ImageName != "") {
             dv.find("img").attr("src", "https://costercatalog.com/catalog/images/" + this.ImageName)
           } else {
-            dv.find("img").attr("src", "https://costercatalog.com/coster/www/images/crown.png");
+            dv.find("img").attr("src", "/images/crown.png");
             dv.find("img").css({
               maxHeight: 80
             })

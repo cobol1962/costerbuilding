@@ -175,6 +175,7 @@ loadedPages.shoppingCart = {
         width: 200
       });
       cntrs = [];
+
       api.call("getSalespersons", function(respo) {
         var obj = {
           id: "-1",
@@ -267,7 +268,9 @@ loadedPages.shoppingCart = {
           if (localStorage.isEu == "0") {
            $("[refundcontainer]").show();
            $("#directRefund")[0].checked = true;
+           localStorage.directRefund1 = "1";
           } else {
+            localStorage.directRefund1 = "0";
             $("#dRefund").removeClass("refund");
             $("#dRefund").html("VAT refund");
             $("[refundcontainer]").hide();
@@ -350,6 +353,7 @@ loadedPages.shoppingCart = {
 
   },
   checkCode1: function() {
+    localStorage.directRefund1 = ($("#directRefund")[0].checked ? "1" : "0");
     if (!$("#directRefund")[0].checked) {
       $("#directRefundToggle")[0].checked = false;
       $("#directRefundToggle").trigger("change");
@@ -500,7 +504,7 @@ loadedPages.shoppingCart = {
       var html = "<div root style='display: block;font-size:12px;border-bottom:1px solid rgba(0, 0, 0, 0.1);'>";
       html += "<div id='" + obj.SerialNo + "' serial='" + obj.SerialNo + "' style='font-size: 18px;padding:10px;padding-bottom:20px;'>";
       html += "<table id='ttt' style='width:100%;'><tr>";
-      html += "<td style='max-width:120px;width:120px;'>" + ((obj.imageURL != "") ? obj.imageURL : "<img style='width:100px;' src='https://costercatalog.com/coster/www/images/crown.png' /></td>");
+      html += "<td style='max-width:120px;width:120px;'>" + ((obj.imageURL != "") ? obj.imageURL : "<img style='width:100px;' src='/images/crown.png' /></td>");
       html += "<td style='text-align: left;width:50%;'><div pdata style='position: relative;top:10px;right:0px;color:#ADADAD;display:inline-block;padding-bottom: 10px;'>" + obj.SerialNo + "<br />";
 if (obj.CompName === undefined) {
   obj.CompName = "";
@@ -777,7 +781,7 @@ if (obj.CompName === undefined) {
   },
   checkCode: function(first = false) {
     //    return;
-    //  $("#directRefund")[0].checked = (localStorage.directRefund == "1");
+      $("#directRefund")[0].checked = (localStorage.directRefund1 == "1");
   //  localStorage.directRefund = ($("#directRefund")[0].checked) ? "1" : "0";
 
     if (!$("#directRefundToggle")[0].checked) {

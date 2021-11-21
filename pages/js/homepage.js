@@ -1,16 +1,19 @@
 loadedPages.homepage = {
   sps: null,
   initialize: function() {
+    
     $("#content").css({
       marginLeft: ($(window).width() - $("#content").width()) / 2,
       paddingTop: 165
     })
+    localStorage.salesPerson;
     if (localStorage.salesPerson !== undefined) {
       loadPage("mainpage");
       return;
     }
     if (Object.keys(shoppingCartContent).length > 0) {
       loadPage('shoppingCart');
+      return;
     }
 setTimeout(function() {
   $(".navbar").hide();
@@ -32,6 +35,7 @@ setTimeout(function() {
    fillEmployees: function() {
      if (loadedPages.homepage.sps == null) {
          api.call("getSalespersons", function(res) {
+           alert("????")
            $("#employees").html("");
            var sorted = _.sortBy(res.data, 'Employee');
            loadedPages.homepage.sps = sorted;
@@ -126,7 +130,7 @@ setTimeout(function() {
          maxWidth: "unset"
        })
      } else {
-      
+
        $(".salesperson").css({
          maxWidth: "92%",
 
