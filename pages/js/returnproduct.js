@@ -8,7 +8,7 @@ loadedPages.returnproduct = {
       return (sid != "-1");
     }, "This field is mandatory");
     api.call("getMainGroups", function(res) {
-        $("<option value='upgrade'>Trade in items</option>").appendTo($("#rcategory"));
+    //    $("<option value='upgrade'>Trade in items</option>").appendTo($("#rcategory"));
       $.each(res, function() {
 
         if (this.MainGroup != "null" && this.MainGroup != null) {

@@ -507,7 +507,7 @@ loadedPages.checkout = {
                 style: 'currency',
                 currency: 'EUR'
             }));
-            console.log(payments)
+
             if (Object.keys(payments).length == 0) {
 
                 var tr = $("#master").clone();
@@ -524,7 +524,7 @@ loadedPages.checkout = {
                 var thenum = tpp.toString().replace(/^\D+/g, '');
                 var n = thenum.replace(/\./g, "");
                 n = n.replace(/\,/g, ".");
-                tpp = n * m;
+                tpp = Math.round(n * m);
                 tr.find("input").eq(0).unbind("focus");
                 tr.find("input").eq(0).bind("focus", function() {
                   $(this).attr("vv",$(this).val());
@@ -571,7 +571,7 @@ loadedPages.checkout = {
                           }
                         });
                         tr.find("input").eq(0).attr("realvalue", ths.amount);
-                        tr.find("input").eq(0).attr("euro", ths.original);
+                        tr.find("input").eq(0).attr("euro", Math.ceil(ths.original));
                         if (ths.date !== undefined) {
                             tr.find("td").eq(3).find("input")[0].id = "date_" + key;
                             tr.find("td").eq(3).find("input").val(moment(ths.date).format("DD-MM-YYYY"));
@@ -606,14 +606,14 @@ loadedPages.checkout = {
                           $(this).val("");
                         });
                         tr.find("input").eq(0).attr("realvalue", ths.amount);
-                        tr.find("input").eq(0).attr("euro", ths.original);
+                        tr.find("input").eq(0).attr("euro", Math.ceil(ths.original));
 
                         tr.find("input").eq(2).val(parseFloat(ths.original).toLocaleString("nl-NL", {
                             style: 'currency',
                             currency: "EUR"
                         }));
                         tr.find("input").eq(2).attr("realvalue", ths.original);
-                        tr.find("input").eq(2).attr("euro", ths.original);
+                        tr.find("input").eq(2).attr("euro", Math.ceil(ths.original));
 
                         tr.find("input").prop("disabled", true);
                         tr.find("input").eq(0).prop("disabled", false);
@@ -641,7 +641,7 @@ loadedPages.checkout = {
 
                     var slct = $(this).closest("tr").find("td").eq(1).find("select");
                     var rate = slct.find("option:selected").attr("rate");
-                    $(this).attr("euro", parseFloat(n / rate));
+                    $(this).attr("euro", Math.ceil(parseFloat(n / rate)));
                     $(this).attr("realvalue", n);
                     var er = $(this).attr("euro");
 
@@ -938,7 +938,7 @@ loadedPages.checkout = {
           var ths = this;
           $(ths).find("input").eq(0).unbind("focus");
           $(ths).find("input").eq(0).bind("focus", function() {
-              $(this).attr("vv",$(this).val());
+            $(this).attr("vv",$(this).val());
             $(this).val("");
           });
           if ($(ths).find("select").eq(0).val() == "7") {
@@ -955,15 +955,15 @@ loadedPages.checkout = {
             var thenum = $(this).val().replace(/^\D+/g, '');
             var n = thenum.replace(/\./g, "");
             n = n.replace(/\,/g, ".");
-            n = parseFloat(n) * m;
+            n = Math.ceil(parseFloat(n) * m);
 
             var slct = $(this).closest("tr").find("td").eq(1).find("select");
             var rate = slct.find("option:selected").attr("rate");
-            $(this).attr("euro", parseFloat(n / rate));
+            $(this).attr("euro", Math.ceil(parseFloat(n / rate)));
             $(this).attr("realvalue", n);
             var er = $(this).attr("euro");
 
-            $(this).val(n.toLocaleString("nl-NL", {
+            $(this).val(Math.ceil(n).toLocaleString("nl-NL", {
                 style: 'currency',
                 currency: $(this).closest("tr").find("td").find("select").eq(1).val()
             }));
@@ -1001,7 +1001,7 @@ loadedPages.checkout = {
                             var thenum = $(this).find("input").eq(0).val().replace(/^\D+/g, '');
                             var n = thenum.replace(/\./g, "");
                             n = parseFloat(n) / (parseFloat($(this).closest("tr").find("td").eq(1).find("select").find("option:selected").attr("rate")));
-                            tp += parseFloat(n) * m;
+                            tp += Math.ceil(parseFloat(n) * m);
 
 
                         }
@@ -1565,7 +1565,7 @@ loadedPages.checkout = {
             cache += parseFloat(pay.original);
           }
       }
-      if (cache > 10000) {
+      if (cache > 9999) {
         showModal({
           type: "error",
           cancelButtonText: "CANCEL",
@@ -1917,7 +1917,7 @@ loadedPages.checkout = {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     }) + "</td></tr>";
-                    h += "<tr><td></td><td></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'></td><td style='text-align:right;font-size: 5pt;'></td><td style='text-align:right;font-size: 4pt;'>("  + "€" + " " + parseFloat(pay.original).toLocaleString("nl-NL", {
+                    h += "<tr><td></td><td></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'></td><td style='text-align:right;font-size: 5pt;'></td><td style='text-align:right;font-size: 4pt;'>("  + "€" + " " + parseFloat(Math.floor(pay.original)).toLocaleString("nl-NL", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     }) + ")</td></tr>";
@@ -1951,7 +1951,7 @@ loadedPages.checkout = {
               h += "<td style='width:100px;text-align:right;font-size: 5pt;'></td>";
               h += "</tr>";*/
             $(h).appendTo($("#mTableBody"));
-            h = "<tr><td></td><td></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;color:black;'>Change: </td><td style='text-align:right;font-size: 5pt;'>€</td><td style='text-align:right;font-size: 5pt;'>" + parseInt(tpaid - tobepaid).toLocaleString("nl-NL", {
+            h = "<tr><td></td><td></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;color:black;'>Change: </td><td style='text-align:right;font-size: 5pt;'>€</td><td style='text-align:right;font-size: 5pt;'>" + parseInt(Math.floor(tpaid - tobepaid)).toLocaleString("nl-NL", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }) + "</td></tr>";
@@ -1979,7 +1979,7 @@ loadedPages.checkout = {
             h += "</tr>";*/
         $(h).appendTo($("#mTableBody"));
 
-        if (parseFloat(cache) > 10000) {
+        if (parseFloat(cache) > 9999) {
 
               $("#cacheover").show();
         }

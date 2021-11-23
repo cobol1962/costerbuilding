@@ -422,7 +422,7 @@ loadedPages.shoppingCart = {
      loadedPages.shoppingCart.total = 0;
      var ii = 0;
      var ttl1 = 0;
-    shoppingCartToLocalStorage();
+    loadedPages.shoppingCart.shoppingCartToLocalStorage();
 
     for (var key in shoppingCartContent) {
       var obj = shoppingCartContent[key];
@@ -876,7 +876,7 @@ if (obj.CompName === undefined) {
     shoppingCartContent[id].toPay = parseInt($(obj).val()) * parseFloat(shoppingCartContent[id].realPrice);
 
     shoppingCartContent[id]["toPay"] = parseInt($(obj).val()) * parseFloat(shoppingCartContent[id].realPrice);
-    shoppingCartToLocalStorage();
+    loadedPages.shoppingCart.shoppingCartToLocalStorage();
   //  loadedPages.shoppingCart.drawCart();
   },
   recalculateDiscount: function() {
@@ -889,7 +889,7 @@ if (obj.CompName === undefined) {
   removeItem: function(obj) {
 
         delete shoppingCartContent[$(obj).closest("[serial]").attr("serial")];
-        shoppingCartToLocalStorage();
+        loadedPages.shoppingCart.shoppingCartToLocalStorage();
         loadedPages.shoppingCart.drawCart();
 
   },
@@ -903,7 +903,7 @@ if (obj.CompName === undefined) {
     if (shoppingCartContent[id].Discount == "") {
       return;
     }
-    shoppingCartToLocalStorage();
+    loadedPages.shoppingCart.shoppingCartToLocalStorage();
   //  loadedPages.shoppingCart.firstDC = false;
   //  loadedPages.shoppingCart.drawCart();
   },
@@ -1054,7 +1054,7 @@ switchPercent: function(obj) {
       dfield.val(dfield.val().replace("%", ""));
     }
     shoppingCartContent[sno]["Discount"] = dfield.val();
-    shoppingCartToLocalStorage();
+    loadedPages.shoppingCart.shoppingCartToLocalStorage();
   //  loadedPages.shoppingCart.discounts(dfield[0]);
 },
 checkDApproved: function() {
@@ -1072,7 +1072,7 @@ applyDiscount: function(obj) {
        shoppingCartContent[$(obj).closest("[serial]").attr("serial")].Discount = "";
        shoppingCartContent[$(obj).closest("[serial]").attr("serial")].realPrice = shoppingCartContent[$(obj).closest("[serial]").attr("serial")].SalesPrice;
        shoppingCartContent[$(obj).closest("[serial]").attr("serial")].toPay = shoppingCartContent[$(obj).closest("[serial]").attr("serial")].quantity * shoppingCartContent[$(obj).closest("[serial]").attr("serial")].realPrice;
-      shoppingCartToLocalStorage();
+      loadedPages.shoppingCart.shoppingCartToLocalStorage();
 //       loadedPages.shoppingCart.drawCart();
        return;
      }
@@ -1160,5 +1160,14 @@ applyDiscount: function(obj) {
       $("#masterdiscount").val($("#masterdiscount").val().replace(/%/g,""));
     }
     localStorage.generalDiscount = $("#masterdiscount").val();
+  },
+ shoppingCartToLocalStorage: function() {
+      delete localStorage.shoppingCartContent;
+      var scc = {};
+      for (var key in shoppingCartContent) {
+          scc[key] = shoppingCartContent[key];
+          console.log(shoppingCartContent[key])
+      }
+      localStorage.shoppingCartContent = JSON.stringify(scc);
   }
 }

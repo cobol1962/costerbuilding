@@ -619,6 +619,9 @@ function loadPage(page, addToPages = true, backtocart = false, search = {}) {
     po.backtocart = backtocart;
     po.search = search;
     fromFunc = true;
+    if (page == "shoppingCart") {
+      window.location.hash = "";
+    }
     window.location.hash = pageUrls[page];
 }
 
@@ -646,6 +649,7 @@ function loadPage1(page, addToPages = true, backtocart = false, search = {}) {
   for (var key in loadedPages) {
     delete loadedPages[key];
   }
+
   $("#tn").find("li").removeClass("active");
   $("[" + page + "]").addClass("active");
   $('.navbar-collapse').collapse('hide');
