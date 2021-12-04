@@ -12,6 +12,7 @@ loadedPages.checkout = {
     iid: "",
     csid: "",
     sps: null,
+    onaccount: "",
     initialize: function() {
         $("[parts]").css({
             position: "fixed",
@@ -34,6 +35,10 @@ loadedPages.checkout = {
                   allowClear: true,
                   dropdownAutoWidth : true
               });
+              var tour = $.parseJSON(localStorage.tour);
+          //    $("#stour").val(tour.ProjId);
+              $('#stour').val(tour.ProjId).trigger("change");
+
           }, 2000);
         },{}, {});
 
@@ -102,7 +107,7 @@ loadedPages.checkout = {
         })
 
         $("#saledate").datepicker({
-            dateFormat: "dd/mm/yy"
+            dateFormat: "dd-mm-yy"
         });
 
         $("#additionalInfo").find("[f]").bind("change", function() {
@@ -112,10 +117,23 @@ loadedPages.checkout = {
             localStorage.isproform = $("#proforma").val();
             localStorage.remark = $("#remark").val().replace(/\n/g, "<br />");
         })
+        $.each($("#additionalInfo").find("input,textarea"), function(ind) {
+          $(this).attr("order1", ind);
+        })
+        $('#additionalInfo').on('keydown', 'input', function (event) {
+
+           if (event.which == 13) {
+             var el = event.target;
+             var or = $(el).attr("order1");
+             var nxt = parseInt(or) + 1;
+             $("[order1=" + nxt.toString() + "]").focus();
+
+           }
+         });
         if (localStorage.saledate !== undefined) {
             var myDate = new Date(localStorage.saledate);
             $('#saledate').datepicker('setDate', myDate);
-            $("#saledate").val(moment(new Date(localStorage.saledate)).format("DD/MM/YYYY"));
+            $("#saledate").val(moment(new Date(localStorage.saledate)).format("DD-MM-YYYY"));
         } else {
             $("#saledate").datepicker("setDate", new Date());
         }
@@ -227,7 +245,7 @@ loadedPages.checkout = {
                 }
                 $('#' + data.DT_RowId).addClass("selected");
                 $("#tdiv").animate({
-                    scrollTop: $('#' + data.DT_RowId).offset().top - 200
+                    scrollTop: $('#' + data.DT_RowId).offset().top - 500
                 }, 500);
                 $("#tours_div").addClass("checked");
             }
@@ -242,6 +260,10 @@ loadedPages.checkout = {
                 $("#tours_div").removeClass("checked");
                 $("#tnmbup").html("No Tour selected")
                 delete localStorage.tour;
+                $("#tdiv").animate({
+                    scrollTop: 0
+                }, 500);
+
             } else {
 
                 loadedPages.checkout.table.$('tr.selected').removeClass('selected');
@@ -266,6 +288,19 @@ loadedPages.checkout = {
             })
             localStorage.customerInfo = JSON.stringify(customerInfoData);
         })
+        $.each($("#customerForm").find("input"), function(ind) {
+          $(this).attr("order", ind);
+        })
+        $('#customerForm').on('keydown', 'input', function (event) {
+
+           if (event.which == 13) {
+             var el = event.target;
+             var or = $(el).attr("order");
+             var nxt = parseInt(or) + 1;
+             $("[order=" + nxt.toString() + "]").focus();
+
+           }
+         });
         $.validator.addMethod("countrySelected", function(value, element) {
             var data = $('#countries').select2('data');
             return (data[0].id != "");
@@ -444,6 +479,9 @@ loadedPages.checkout = {
                     $("[tg]").eq(ind).addClass("done");
                     $("[tg]").eq(ind).removeClass("active");
                 } else {
+                  if (ind == 0) {
+                    ind = 1;
+                  }
                     if (!switched) {
                         loadedPages.checkout.loadPart(ind + 1);
                         switched = true;
@@ -463,6 +501,9 @@ loadedPages.checkout = {
           $("<option value='-1' iswwftcheck='-1'>" + "Select" + "</option>").appendTo($("#paymentMethods"));
 
             $.each(res, function() {
+              if (this.PaymentID == "2") {
+                loadedPages.checkout.onAccount = this.Payment + ": ";
+              }
                 if (this.IsAdminCharge == "0" && this.IsVatRefund == "0") {
                     $("<option value='" + this.PaymentID + "' iswwftcheck='" + this.IsWWFTCheck + "'>" + this.Payment + "</option>").appendTo($("#paymentMethods"));
                     $("<option value='" + this.PaymentID + "' iswwftcheck='" + this.IsWWFTCheck + "'>" + this.Payment + "</option>").appendTo($("#paymentsTable").find("tbody").find("tr").eq(1).find("select").eq(0));
@@ -581,7 +622,7 @@ loadedPages.checkout = {
                             if (crt < Object.keys(payments).length) {
                               var el = $("#date_" + key);
                               el.datepicker({
-                                  dateFormat: "dd.mm.yy",
+                                  dateFormat: "dd-mm-yy",
                                   onSelect: function(dateText) {
                                     el.attr("realdate", moment(el.datepicker("getDate")).format("YYYY-MM-DD HH:mm:ss"))
                                     loadedPages.checkout.paymentToLS();
@@ -805,6 +846,7 @@ loadedPages.checkout = {
                 $("#due").parent().find("td").eq(0).html("Change:");
             } else {
               $("#due").parent().find("td").eq(0).html("Balance:");
+
             }
             $("#due").attr("realvalue",parseInt(Math.abs(r)));
             $("#due").html(parseInt(Math.abs(r)).toLocaleString("nl-NL", {
@@ -860,7 +902,7 @@ loadedPages.checkout = {
         var ii = $("#paymentsTable").find("tbody").find("tr").length;
         var el = $("#date_" + ii);
         el.datepicker({
-            dateFormat: "dd.mm.yy",
+            dateFormat: "dd-mm-yy",
             onSelect: function(dateText) {
               el.attr("realdate", moment(el.datepicker("getDate")).format("YYYY-MM-DD HH:mm:ss"))
               loadedPages.checkout.paymentToLS();
@@ -1099,7 +1141,7 @@ loadedPages.checkout = {
     paymentToLS: function() {
         payments = {};
         $.each($("#paymentsTable").find("tbody").find("tr"), function(ind) {
-            if ($(this).is(":visible")) {
+            if (true) {
                 var ths = this;
             //    alert(moment($(ths).find("input").eq(1).datepicker('getDate').format("YYYY-MM-DD HH:mm:ss")));
                 if ($(ths).find("select").eq(0).val() != "7") {
@@ -1187,7 +1229,8 @@ loadedPages.checkout = {
       if (parseFloat($("#due").attr("realvalue")) != 0) {
         showModal({
             type: "error",
-            title: "Invoice balance must be 0. if payments not complete done, please add remaining amount as 'On account' payment.",
+            showCancelButton: false,
+            title: "Balance must be 0. If not paid in full, add new line and use 'On account' for remaining amount.",
         })
         loadedPages.checkout.loadPart(4);
       } else {
@@ -1292,6 +1335,18 @@ loadedPages.checkout = {
           marginTop: 5
         })
         $("#total_div").find("tr").eq(0).remove();
+        var tt =   $("table#total_div").find("tr").eq(0).clone();
+        tt.find("td").eq(0).html("Direct Refund");
+        tt.find("td").eq(1).html((localStorage.directRefund == "1") ? "On" : "Off");
+        $("table#total_div").prepend(tt);
+
+        var tt =   $("table#total_div").find("tr").eq(0).clone();
+        tt.find("td").eq(0).html("VAT Refund");
+        tt.find("td").eq(1).html((localStorage.directRefund1 == "1") ? "On" : "Off");
+        $("table#total_div").prepend(tt);
+
+
+
         $("#total_div").find("tr:first").find("td").eq(0).css({
           padding: 0
         });
@@ -1313,7 +1368,7 @@ loadedPages.checkout = {
         }
         $("#served").html("");
         try {
-          $("<span>You have been served by <b>" + sp.Employee + "</b> in " + sr.name + "</span>").appendTo($("#served"));
+          $("<span>Served by <b>" + sp.Employee + "</b> in " + sr.name + "</span>").appendTo($("#served"));
         } catch(err) {
 
         }
@@ -1557,6 +1612,8 @@ loadedPages.checkout = {
     generateInvoice: function(mode) {
       var cache = 0;
       var fp = true;
+      loadedPages.checkout.paymentToLS();
+
       paymentss = $.parseJSON(localStorage.payments);
       for (var key in paymentss) {
           var pay = paymentss[key];
@@ -1631,7 +1688,7 @@ loadedPages.checkout = {
         $("#pTable").html("");
         $("#summary").html("");
         var spppp = $.parseJSON(localStorage.sroom);
-        $("#servedby").html("You have been served by <b>" + sp.Employee + "</b> in " + spppp.name);
+        $("#servedby").html("Served by <b>" + sp.Employee + "</b> in " + spppp.name);
         $("#consultant").html(sp.Email)
         $("#invoiceDate").html(moment(new Date()).format("DD-MM-YYYY HH:mm"));
         //  $("#invoiceDate").html("18-06-2020 16:33");
@@ -1913,7 +1970,7 @@ loadedPages.checkout = {
                     h += "</tr>";*/
 
                 if (pay.currency != "EUR") {
-                    h = "<tr><td></td><td></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'>" + pay.paymentMethod + ": </td><td style='text-align:right;font-size: 5pt;'>" + pay.currency + "&nbsp;</td><td style='text-align:right;font-size: 5pt;'>" + parseFloat(pay.amount).toLocaleString("nl-NL", {
+                    h = "<tr><td></td><td></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'>" + dte + "&nbsp;" + pay.paymentMethod + ": </td><td style='text-align:right;font-size: 5pt;'>" + pay.currency + "&nbsp;</td><td style='text-align:right;font-size: 5pt;'>" + parseFloat(pay.amount).toLocaleString("nl-NL", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     }) + "</td></tr>";
@@ -1968,16 +2025,18 @@ loadedPages.checkout = {
         } else {
             var tt = tp;
         }
-        h = "<tr><td></td><td><div style='min-height:10px;'></div></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'><b>Balance: </b></td><td style='border-top: 2px solid #e5e5e5;color:black;text-align:right;font-size: 5pt;'>&nbsp;€</td><td style='border-top: 2px solid #e5e5e5;color:black;text-align:right;font-size: 5pt;'><b>" + parseInt(tt).toLocaleString("nl-NL", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }) + "</b></td></tr>";
-
+        if (tp > 1) {
+          h = "<tr><td></td><td><div style='min-height:10px;'></div></td><td colspan='3' style='font-size:5pt;padding-left:10px;text-align:right;'><b>" + loadedPages.checkout.onAccount + "</b></td><td style='color:black;text-align:right;font-size: 5pt;'>&nbsp;€</td><td style='color:black;text-align:right;font-size: 5pt;'><b>" + parseInt(tt).toLocaleString("nl-NL", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+          }) + "</b></td></tr>";
+            $(h).appendTo($("#mTableBody"));
+        }
         /*    h = "<tr><td style='width:100%;font-size: 5pt;color:black;text-align:right;'><b>Total amount due:</b></td>";
             h += "<td style='border-top: 2px solid #e5e5e5;color:black;text-align:left;font-size: 5pt;'>"+ "<b>€</b>" + "</td>";
             h += "<td style='border-top: 2px solid #e5e5e5;color:black;text-align:right;font-size: 5pt;'><b>" + parseInt(tt).toLocaleString("nl-NL",{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "</b></td>";
             h += "</tr>";*/
-        $(h).appendTo($("#mTableBody"));
+
 
         if (parseFloat(cache) > 9999) {
 

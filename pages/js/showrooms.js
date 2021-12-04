@@ -1,9 +1,11 @@
 loadedPages.showrooms = {
   table: null,
   initialize: function() {
+    loadPage("shoppingCart");
+    return;
     this.table = $("#showrooms").DataTable({
         ajax: {
-            "url": "http://80.211.41.168:5000/?showrooms"
+            "url": "https://costercatalog.com:5000/?showrooms"
         },
         columns: [
              { "data": "showroomid" },

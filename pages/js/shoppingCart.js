@@ -21,6 +21,7 @@ loadedPages.shoppingCart = {
   initialize: function() {
 
     let code = "";
+
     let reading = false;
     document.removeEventListener("keypress", {});
     document.addEventListener('keypress', e=>{
@@ -278,7 +279,8 @@ loadedPages.shoppingCart = {
           loadedPages.shoppingCart.calculateRefund();
 
       });
-      $("#directRefund")[0].checked = (localStorage.isEu == "0");
+      $("#directRefund")[0].checked = (localStorage.isEu == "0" || localStorage.directRefund1 == "1");
+
       $("#directRefundToggle")[0].checked = (localStorage.directRefund == "1");
     //  loadedPages.shoppingCart.checkCode();
       if (localStorage.customerInfo !== undefined) {
@@ -426,19 +428,24 @@ loadedPages.shoppingCart = {
 
     for (var key in shoppingCartContent) {
       var obj = shoppingCartContent[key];
+
     //  console.log(obj)
       if (loadedPages.shoppingCart.firstDraw) {
           obj.Discount = ((obj.Discount == "0%") ? "" : (obj.Discount));
 
       }
       if (obj.Discount != "") {
+        obj.realPrice = Math.floor(parseFloat(obj.startRealPrice))
         var oo = parseInt(obj.Discount.replace("%", ""));
         if (oo <= 0) {
           obj.Discount = "";
-          obj.realPrice = obj.startRealPrice;
+          obj.realPrice = Math.floor(obj.startRealPrice);
         }
       }
       shoppingCartContent[key] = obj;
+
+
+
     //  console.log(shoppingCartContent)
     //  console.log(localStorage)
   //  shoppingCartToLocalStorage();
@@ -447,59 +454,66 @@ loadedPages.shoppingCart = {
         if (obj.Discount != "" && obj.Discount != "%") {
            hasDiscount = true;
             var sm = parseFloat(obj.SalesPrice);
+            var m = 1;
             if (obj.Discount.indexOf("%") > -1) {
-              var prc = parseFloat(obj.Discount.replace("%", ""));
+              var prc = Math.ceil(obj.Discount.replace("%", ""));
+              var kk = ((sm / 100) * prc);
+              if (kk < 0) {
+                m = -1;
+              }
+              var kkk = Math.ceil(Math.abs(kk));
               totalDiscount += prc;
-              obj.realPrice = sm - (Math.ceil((sm / 100) * prc));
+              obj.realPrice =   Math.floor(sm - (kkk * m));
             } else {
               var prc = parseFloat(obj.Discount);
               totalDiscount += prc;
-              obj.realPrice = sm - prc;
+              obj.realPrice = Math.floor(sm - prc);
             }
           } else {
             obj.realPrice = obj.SalesPrice;
           }
-          if ((obj.realPrice - parseInt(obj.realPrice)) > 0) {
-            obj.realPrice = parseInt(obj.realPrice) + 1;
+          if ((obj.realPrice - Math.floor(obj.realPrice)) > 0) {
+            obj.realPrice = Math.floor(obj.realPrice) + 1;
           } else {
-            obj.realPrice = parseInt(obj.realPrice);
+            obj.realPrice = Math.floor(obj.realPrice);
           }
 
       }
+
       if (obj.additionalDiscount != "" && obj.discountLocked) {
         if (obj.additionalDiscount != "") {
 
             var sm = parseFloat(obj.startRealPrice);
             if (obj.additionalDiscount.indexOf("%") > -1) {
-              var prc = parseFloat(obj.additionalDiscount.replace("%", ""));
+              var prc = Math.ceil(obj.additionalDiscount.replace("%", ""));
               totalDiscount += prc;
-              obj.realPrice = parseInt(sm - (Math.ceil((sm / 100) * prc)));
+              obj.realPrice = Math.floor(sm - (Math.flooer((sm / 100) * prc)));
             } else {
-              var prc = parseFloat(obj.additionalDiscount);
+              var prc = Math.floor(obj.additionalDiscount);
               totalDiscount += parseInt(prc);
-              obj.realPrice = parseInt(sm - prc);
+              obj.realPrice = Math.floor(sm - prc);
             }
 
           } else {
 
             obj.realPrice = obj.startRealPrice;
           }
-          obj.realPrice = parseInt(obj.realPrice);
-          if ((obj.realPrice - parseInt(obj.realPrice)) > 0) {
-            obj.realPrice = parseInt(obj.realPrice) + 1;
+          obj.realPrice = Math.floor(obj.realPrice);
+          if ((obj.realPrice - Math.floor(obj.realPrice)) > 0) {
+            obj.realPrice = Math.floor(obj.realPrice) + 1;
           } else {
-            obj.realPrice = parseInt(obj.realPrice);
+            obj.realPrice = Math.floor(obj.realPrice);
           }
       }
-      if ((obj.realPrice - parseInt(obj.realPrice)) > 0) {
-        obj.realPrice = parseInt(obj.realPrice) + 1;
+      if ((obj.realPrice - Math.floor(obj.realPrice)) > 0) {
+        obj.realPrice = Math.floor(obj.realPrice) + 1;
       } else {
-        obj.realPrice = parseInt(obj.realPrice);
+        obj.realPrice = Math.floor(obj.realPrice);
       }
-      obj.toPay = parseInt(obj.quantity) * parseFloat(obj.realPrice);
+      obj.toPay = Math.floor(parseInt(obj.quantity) * parseFloat(obj.realPrice));
 
-      loadedPages.shoppingCart.total +=  parseFloat(obj.toPay);
-      loadedPages.shoppingCart.fullprice += parseFloat(obj.SalesPrice);
+      loadedPages.shoppingCart.total +=  Math.floor(obj.toPay);
+      loadedPages.shoppingCart.fullprice += Math.floor(obj.SalesPrice);
       obj.imageURL = obj.imageURL.replace("50px", "100px");
       var html = "<div root style='display: block;font-size:12px;border-bottom:1px solid rgba(0, 0, 0, 0.1);'>";
       html += "<div id='" + obj.SerialNo + "' serial='" + obj.SerialNo + "' style='font-size: 18px;padding:10px;padding-bottom:20px;'>";
@@ -695,7 +709,7 @@ if (obj.CompName === undefined) {
      localStorage.total = parseFloat(ttl);
      localStorage.grandTotal = parseFloat(grandTotal);
      localStorage.invoiceDiscount = $("#masterdiscount").val();
-     localStorage.directRefund = (($("#directRefundToggle")[0].checked) ? "1" : "0");
+  //   localStorage.directRefund = (($("#directRefundToggle")[0].checked) ? "1" : "0");
     var bb = parseInt((parseFloat(localStorage.torefund) - parseFloat(localStorage.admincharge)));
 
      localStorage.payNoRefund = parseFloat(vex + vat);
@@ -730,6 +744,7 @@ if (obj.CompName === undefined) {
      if (!loadedPages.shoppingCart.approvedRequested && parseFloat(totalDiscount) > 0) {
        if (!loadedPages.shoppingCart.firstDraw) {
          $("#discountApproved").modal("show");
+         $("#dapproved").focus();
          $("[spdiscount2]").show();
         }
        loadedPages.shoppingCart.approvedRequested = true;
@@ -828,6 +843,7 @@ if (obj.CompName === undefined) {
               }
             }
         })
+        $("#ccode").focus();
       } else {
 
     /*    $("#dRefund").addClass("refund");
@@ -987,6 +1003,7 @@ if (obj.CompName === undefined) {
 
         if ($("#dapproved").val() == "") {
            $("#discountApproved").modal("show");
+           $("#dapproved").focus();
              return false;
         }
       }

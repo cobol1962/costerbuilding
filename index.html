@@ -491,7 +491,7 @@ function hideCatalog() {
               var dtt = new Date();
               var difference = dtt - dt;
 
-              if (difference > 900000) {
+              if (difference > 120000) {
                 shoppingCartContent = [];
                 localStorage.clear();
                 localStorage.changedTime = (new Date()).toString();
@@ -503,17 +503,18 @@ function hideCatalog() {
                   cancelButtonText: "Reset session and clear all data.",
                   title: "Some data are stored in session. Would you like to start new session or continue with old?",
                   cancelCallback: function() {
+
                     localStorage.clear();
                     window.location.reload();
                   },
-                  confirmCallbaxk: function() {
+                  confirmCallback: function() {
                     localStorage.changedTime = (new Date()).toString();
                   }
                 })
               }, 2000);
               }
             }
-            setInterval(function() {
+            var wwwi = setInterval(function() {
               console.log(localStorage.changedTime);
               var tls = localStorage;
               if (localStorage.changedTime === undefined) {
@@ -524,20 +525,20 @@ function hideCatalog() {
               var dt = new Date(localStorage.changedTime);
               var dtt = new Date();
               var difference = dtt - dt;
-              if (difference > 900000) {
+              if (difference > 120000) {
                 showModal({
                   type: "error",
                   confirmButtonText: "Continue work with saved data.",
                   cancelButtonText: "Reset session and clear all data.",
                   title: "Session expired. App will be reloaded. All data will be deleted and lost.",
-                  confirmCallback: function() {
+                  cancelCallback: function() {
                     localStorage.clear();
                     window.location.reload();
+
                   },
                   confirmCallback: function() {
-                    localStorage.changedTime = (new Date()).toString();
-
-                  }
+                          localStorage.changedTime = (new Date()).toString();
+                        }
                 })
               }
           //    var lll = localStorage;
