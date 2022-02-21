@@ -27,8 +27,9 @@ loadedPages.checkout = {
         api.call("getFixedProjects", function(res) {
 
           $.each(res, function() {
-            $("<option value='" + this.projid + "'>" + this.projname + "</option>").appendTo($("#stour"));
-
+            if (this.year == "2022") {
+              $("<option value='" + this.projid + "'>" + this.projname + "</option>").appendTo($("#stour"));
+            }
           })
           setTimeout(function() {
               $("#stour").select2({
@@ -63,6 +64,7 @@ loadedPages.checkout = {
                 return;
             } else {
                 if (data.id == "-2") {
+
                     loadedPages.checkout.addTour();
                 } else {
                     loadedPages.checkout.table.$('tr.selected').removeClass('selected');
@@ -1287,6 +1289,9 @@ loadedPages.checkout = {
                   $.each($("[tg]"), function(ind) {
                     if (!$(this).hasClass("done")) {
                       if (!switched) {
+                        if (ind == 0) {
+                          ind = 1;
+                        }
                         loadedPages.checkout.loadPart(ind + 1);
                         switched = true;
                       }
@@ -2657,7 +2662,7 @@ console.log(html)
 
       var cntrs = [];
 
-       api.call("getSalespersons", function(respo) {
+       api.call("getSalespersonsActive", function(respo) {
          var obj = {
            id: "-1",
            text: "Select sales person",
@@ -2800,13 +2805,14 @@ console.log(html)
         }
     },
     drawItems: function() {
+
         var totalDiscount = 0;
         for (var key in shoppingCartContent) {
 
             var obj = shoppingCartContent[key];
             //  console.log(obj)
 
-            if (obj.Discount != "") {
+          /*  if (obj.Discount != "") {
                 var oo = parseInt(obj.Discount.replace("%", ""));
                 if (oo <= 0) {
                     obj.Discount = "";
@@ -2871,7 +2877,7 @@ console.log(html)
             } else {
                 obj.realPrice = parseInt(obj.realPrice);
             }
-            obj.toPay = parseInt(obj.quantity) * parseFloat(obj.realPrice);
+            obj.toPay = parseInt(obj.quantity) * parseFloat(obj.realPrice);*/
 
             obj.imageURL = obj.imageURL.replace("50px", "100px");
             var html = "<div root style='display: block;font-size:12px;border-bottom:1px solid rgba(0, 0, 0, 0.1);'>";
@@ -2928,11 +2934,11 @@ console.log(html)
 
                 //  html += '</div>';
             } else {
-                obj.toPay = parseInt(obj.quantity) * parseFloat(obj.realPrice);
+                //obj.toPay = parseInt(obj.quantity) * parseFloat(obj.realPrice);
 
             }
             if (obj.Discount == "" || obj.Discount == "%") {
-                html += "<td style='position:relative;vertical-align: top;text-align: right;'><div style='float:right;color:black;'>" + obj.quantity + " X&nbsp;" + "<span realvalue='" + parseInt(obj.realPrice) + "'>" + (parseInt(obj.realPrice) * 1).toLocaleString("nl-NL", {
+                html += "<td style='position:relative;vertical-align: top;text-align: right;'><div style='float:right;color:black;'>" + obj.quantity + " X&nbsp;" + "<span realvalue='" + parseInt(obj.toPay) + "'>" + (parseInt(obj.toPay) * 1).toLocaleString("nl-NL", {
                     style: 'currency',
                     currency: "EUR"
                 }) + "</span></div>";

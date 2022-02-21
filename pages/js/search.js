@@ -1,37 +1,46 @@
 loadedPages.search = {
   master: "",
   initialize: function() {
+
     $("#productDetailS").on('show.bs.modal', function(){
       setTimeout(function() {
         $(".modal-content").scrollTop(0);
       }, 2);
     });
     loadedPages.search.master = $("#master")[0].outerHTML;
-    if ($("#search").val() != "") {
+/*    if ($("#search").val() != "") {
       loadedPages.search.doSearch();
-    }
+    }*/
 
   },
   doSearch: function() {
     api.call("search", function(res) {
 
       if (res.found == "fail") {
+
         showModal({
           type: "error",
           title: "No Search Results.",
           confirmButtonText: "CONTINUE",
-          showCloseButton: true
+          showCancelButton: false,
+          confirmCallback: function() {
+            loadPage(localStorage.currentPage);
+          }
         })
-        return;
+      //  return;
       }
       if (res.length == 0) {
+
        showModal({
          type: "error",
          title: "No Search Results.",
          confirmButtonText: "CONTINUE",
-         showCloseButton: true
+        showCancelButton: false,
+        confirmCallback: function() {
+          loadPage(localStorage.currentPage);
+        }
        })
-       return;
+      // return;
      } else {
        loadedPages.search.drawSearch(res);
      }

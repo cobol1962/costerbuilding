@@ -1,5 +1,39 @@
 <script type="text/javascript">
 var catalog = null;
+$(document).ready(function() {
+
+  setTimeout(function() {
+
+      var srch = $.parseJSON(localStorage.searchString);
+
+      if (Object.keys(srch).length > 0) {
+          var ww = setInterval(function() {
+            if (catalogTable !== undefined) {
+              clearInterval(ww);
+              var crt = [];
+              var cccc = [];
+              var cc = srch.type.split(",");
+              $.each(cc, function() {
+                crt.push(this + "`");
+                cccc.push(this);
+              })
+              var str = crt.join(",");
+             yadcf.exResetAllFilters(catalogTable);
+              yadcf.exFilterColumn(catalogTable, [
+                  [4, crt]
+              ]);
+              $("#mainGroupSelected").html(cccc.join(","));
+
+          /*      setTimeout(function() {
+                  $("#items_div").show();
+                    selectedFilters();
+                }, 1500);*/
+
+            }
+          }, 100);
+        }
+  }, 3000);
+})
 
 $("#mainNavigation").css({
   visibility: "visible"

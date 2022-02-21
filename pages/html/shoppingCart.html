@@ -222,8 +222,8 @@
                      <div id="btns1">
                      <div style="position:relative;">
                        <img style="margin-top: 5px;width:100%;" checkoutenabled src="/images/topay.svg" /><br />
-                       <input nrfnd id="cartToPay" style="display:none;float:right;font-size:18px;font-weight:bold;position:relative;top:-35px;" class="norefund" type="text" style="text-align:center;" />
-                         <input rfnd id="cartToPay" style="display:none;float:right;font-size:18px;font-weight:bold;position:relative;top:-35px;display:none;float:right;" class="refund"  type="text" style="text-align:center;" />
+                       <input onchange="loadedPages.shoppingCart.setToPay(this);" nrfnd id="cartToPay" style="display:none;float:right;font-size:18px;font-weight:bold;position:relative;top:-35px;" class="norefund" type="text" style="text-align:center;" />
+                         <input onchange="loadedPages.shoppingCart.setToPay(this);"  rfnd id="cartToPay" style="display:none;float:right;font-size:18px;font-weight:bold;position:relative;top:-35px;display:none;float:right;" class="refund"  type="text" style="text-align:center;" />
                      </div>
                       <img onclick="loadedPages.shoppingCart.checkIsLogged();" style="margin-top: 5px;;width:100%;" checkoutenabled src="/images/continuecheckout.svg" /><br />
 

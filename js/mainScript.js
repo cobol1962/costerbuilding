@@ -340,13 +340,13 @@ function continueReady() {
         height: $(window).height() - 60,
         maxHeight: $(window).height() - 60
     })
-    document.getElementById("search").onkeydown = function(evt) {
+  /*  document.getElementById("search").onkeydown = function(evt) {
         evt = evt || window.event;
 
         if (evt.keyCode == 27) {
             escapeClicked = true;
         }
-    };
+    };*/
     document.getElementById("search").addEventListener("keyup", function(event) {
         // Number 13 is the "Enter" key on the keyboard
         if (event.keyCode === 13) {
@@ -653,6 +653,10 @@ function loadPage1(page, addToPages = true, backtocart = false, search = {}) {
   $("#tn").find("li").removeClass("active");
   $("[" + page + "]").addClass("active");
   $('.navbar-collapse').collapse('hide');
+  if (page == "invoice" || page == "diamonds") {
+      localStorage.searchString = JSON.stringify(search);
+
+  }
   $.ajax({
     url: "pages/html/" + page + ".html",
     type: "GET",
@@ -661,8 +665,10 @@ function loadPage1(page, addToPages = true, backtocart = false, search = {}) {
       $("#content").html(res);
 
             $.getScript("pages/js/" + page + ".js", function() {
+
             if (page == "invoice" || page == "diamonds") {
-              loadedPages[page].initialize(search);
+
+                  loadedPages[page].initialize(search);
             } else {
               loadedPages[page].initialize(backtocart);
             }
@@ -821,7 +827,6 @@ function toDataURL(url, callback) {
 }
 
 function addToInvoice(row) {
-
     if (shoppingCartContent[row["SerialNo"]] !== undefined && !row["SerialNo"].indexOf("9999") == 0) {
         showModal({
             title: "Item with serial " + row["SerialNo"] + " already in cart.",
@@ -831,13 +836,16 @@ function addToInvoice(row) {
         return;
     }
     if (row["SerialNo"].indexOf("9999") == 0) {
-        while (shoppingCartContent[row["SerialNo"]] !== undefined) {
-            row["SerialNo"] = (parseInt(row["SerialNo"]) + 1).toString();
-
+      for (i=0;i<1000;i++) {
+        var nn = "9999" + i.toString().padStart(4,"0");
+        if (shoppingCartContent[nn] === undefined) {
+          row["SerialNo"] = nn;
+          break;
         }
+      }
     }
     if (row["invoiceno"] !== undefined) {
-        row["SerialNo"] = (parseInt(row["SerialNo"]) + 1).toString();
+        row["SerialNo"] = (parseInt(row["SerialNo"])).toString();
       //  row["SerialNo"] += " (invoice no/date: " + row["invoiceno"] + ")";
     }
     //alert(row["Discount"])
@@ -847,12 +855,15 @@ function addToInvoice(row) {
     if (row["Discount"] == "0%") {
         var realPrice = row["SalesPrice"];
         row["discountLocked"] = false;
+        row["originalDiscount"] = "";
     } else {
         var pr = parseFloat(row["SalesPrice"]);
         var ds = parseFloat(row["Discount"]);
         var realPrice = pr - ((pr / 100) * ds);
         row["discountLocked"] = true;
+          row["originalDiscount"] = row["Discount"];
         row["Discount"] += "%";
+
     }
     if (row["quantity"] === undefined) {
         row["quantity"] = 1;
@@ -2213,27 +2224,15 @@ function noPinCode() {
 }
 
 function doSearch() {
-    if (escapeClicked) {
-        $("#search_div").hide();
-        $("#addproducticon").show();
-        return;
-    }
-    if ($("#search").val() == "Escape") {
-        $('#searchbackdrop').hide();
-        $("#search_div").hide();
-        loadPage("addproduct");
-        return;
-    }
-    if ($("#search").val() == "Return") {
-        $('#searchbackdrop').hide();
-        $("#search_div").hide();
-        loadPage("addrefund");
-        return;
-    }
     if (currentPage == "search" && currentPage == "search") {
         loadedPages.search.doSearch();
     } else {
+      localStorage.currentPage = currentPage;
+
         loadPage("search");
+        setTimeout(function() {
+          loadedPages.search.doSearch();
+        }, 2000)
     }
 }
 $("#mainModal").on("hidden.bs.modal", function() {

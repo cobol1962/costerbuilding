@@ -15,10 +15,12 @@ loadedPages.invoice = {
     $(".container").css({
       padding: 30
     })
+
     loadedPages.invoice.search = search;
     $("#content").css({
       marginTop: 0
     })
+
 $(".container").css({
   top: -20
 })

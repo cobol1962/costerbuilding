@@ -19,49 +19,30 @@
         <span onclick="window.open('https://costercatalog.com/admin','_blank');" class="leftcol_1">My Invoices</span>
         <img id="arght" onclick="window.open('https://costercatalog.com/admin','_blank');" src="/images/arrowRight.svg" style="margin-top:10px;float:right;" />
         <br />
-        <div style="width:100%;position:absolute;top:50%;">
-          <table style="width:90%;">
-            <tr>
-              <td>
-                <span class="leftcol_1" id="mynmb" style="float:left;"></span>
-              </td>
-              <td>
-                <span class="leftcol_1" id="mydue" style="float:left;"></span>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <span class="ctext"  style="float:left;">INVOICES</span><br />
-              </td>
-              <td>
-                <span class="ctext"  style="float:left;">OUTSTANDING</span><br />
-              </td>
-            </tr>
-            </table>
-        </div>
+
       </div>
     </div>
-    <div style="padding:10px;" class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+<!--    <div style="padding:10px;" class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
       <button class="btn btn-background" style="background-image:url(/images/profile.svg);"><span>MY PROFILE</span></button>
       <button class="btn btn-background" style="margin-top:10px;background-image:url(/images/customers.svg);"><span>MY CUSTOMERS</span></button>
       <button class="btn btn-background" style="margin-top:10px;background-image:url(/images/stats.svg);"><span>MY STATS</span></button>
       <button class="btn btn-background" style="margin-top:10px;background-image:url(/images/schedule.svg);"><span>MY SCHEDULE</span></button>
 
-    </div>
+    </div>-->
   </div>
   <div class="row">
       <div style="padding:10px;" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <div style="width:100%;">
+        <div style="width:100%;" onclick="loadPage('invoice');" >
           <span class="leftcol_1">Catalog</span>
           <img id="arght" src="/images/arrowRight.svg" style="margin-top:10px;float:right;" />
         </div>
       </div>
   </div>
   <div class="row">
-      <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 catalog diamonds"><div><span class="cat" style="color:black;">DIAMONDS</span></div></div>
-      <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 catalog jewelry"><div><span class="cat">JEWELRY</span></div></div>
-      <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 catalog watches"><div><span class="cat">WATCHES</span></div></div>
-      <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 catalog engagement"><div></div></div>
+      <div onclick="loadPage('diamonds');" class="col-lg-3 col-md-3 col-sm-6 col-xs-6 catalog diamonds"><div><span class="cat" style="color:black;">DIAMONDS</span></div></div>
+      <div onclick="loadPage('invoice',true,false,{type: 'Rings,Earrings,Pendants,Necklaces,Bracelets'});" class="col-lg-3 col-md-3 col-sm-6 col-xs-6 catalog jewelry"><div><span class="cat">JEWELRY</span></div></div>
+      <div onclick="loadPage('invoice',true,false,{type: 'Watches'});" class="col-lg-3 col-md-3 col-sm-6 col-xs-6 catalog watches"><div><span class="cat">WATCHES</span></div></div>
+      <div onclick="loadPage('invoice',true,false,{type: 'Rings'});" class="col-lg-3 col-md-3 col-sm-6 col-xs-6 catalog engagement"><div></div></div>
   </div>
 </div>
 <style>

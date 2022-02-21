@@ -98,6 +98,7 @@ function hideCatalog() {
 
                         <td style="vertical-align: top;background:transparent;">
                             <img onclick="localStorage.sp=localStorage.originalsp;resetLocalStorage();loadPage('mainpage')" src="/images/crown.png" style="cursor:pointer;margin-left:5px;margin-top:5px;" width="35" height="auto" alt="">
+                            <br />RESET
                         </td>
                         <td style="vertical-align: bottom;background:transparent;">
                           <button type="button" style="margin-left:10px;" class="navbar-toggle" data-toggle="collapse" data-target="#mainNavbar" onclick="$('#navbackdrop').toggle();$('#tt').toggle()">
@@ -110,6 +111,7 @@ function hideCatalog() {
                         </td>
                         <td lock id="addproducticon" style="display:none;background:transparent;">
                             <img onclick="loadPage('addproduct');" onclick="resetLocalStorage();loadPage('homepage')" src="https://costercatalog.com/costerdemo/coster/www/images/add-icon.png" style="width:28px;margin-top:12px;cursor:pointer;margin-left:5px;" alt="">
+
                         </td>
                         <td lock style="min-width:100%;width:100%;text-align:center;background-color:transparent;text-align:center;">
                             <input placeholder="Type Item ID or Serial No." id="search"  style="outline: none;position:absolute;left:calc(50% - 155px);border-radius: 15px;border: 1px solid transparent;padding-left:55px;padding-top:10px;padding-bottom:10px;width:300px;font-family:'Montserrat';font-size: 15px;margin-top:-20px;" type="text" />
@@ -480,8 +482,10 @@ function hideCatalog() {
 
         $(document).ready(function() {
           if (localStorage.changedTime === undefined) {
+            var aa = localStorage.searchString;
               localStorage.clear();
               localStorage.changedTime = (new Date()).toString();
+              localStorage.searchString = aa;
               var tls = localStorage;
               delete tls.changedTime;
               oldLocalStorage = {};
@@ -491,10 +495,12 @@ function hideCatalog() {
               var dtt = new Date();
               var difference = dtt - dt;
 
-              if (difference > 120000) {
+              if (difference > 900000) {
                 shoppingCartContent = [];
+                var aa = localStorage.searchString;
                 localStorage.clear();
                 localStorage.changedTime = (new Date()).toString();
+                localStorage.searchString = aa;
               } else {
               setTimeout(function() {
                 showModal({
@@ -518,14 +524,18 @@ function hideCatalog() {
               console.log(localStorage.changedTime);
               var tls = localStorage;
               if (localStorage.changedTime === undefined) {
+                shoppingCartContent = [];
+                var aa = localStorage.searchString;
                 localStorage.clear();
+                localStorage.changedTime = (new Date()).toString();
+                localStorage.searchString = aa;
                 localStorage.changedTime = (new Date()).toString();
 
               }
               var dt = new Date(localStorage.changedTime);
               var dtt = new Date();
               var difference = dtt - dt;
-              if (difference > 120000) {
+              if (difference > 900000) {
                 showModal({
                   type: "error",
                   confirmButtonText: "Continue work with saved data.",
