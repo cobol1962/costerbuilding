@@ -1399,12 +1399,12 @@ loadedPages.checkout = {
         if ($("#name").val() != "") {
             var nma = $("#name").val().split(" ");
             if (nma.length > 1) {
-                var pt = ($("#ptitle").val() != "Nvt.") ? $("#ptitle").val() : "";
+                var pt = ($("#ptitle").val() != "n/a" && $("#ptitle").val() != "Nvt.") ? $("#ptitle").val() : "";
                 var lname = "";
                 for (var i = 1; i < nma.length; i++) {
                     lname += (nma[i] + " ");
                 }
-                $("[firstname]").html(pt + " " + ((nma[0] !== undefined) ? nma[0].substring(0, 1).toUpperCase() : "") + ". " + lname);
+                $("[firstname]").html(pt + " " + $("#name").val());
                 $("[firstname]").parent().show();
               } else {
                 var pt = ($("#ptitle").val() != "Nvt.") ? $("#ptitle").val() : "";
@@ -1521,7 +1521,7 @@ loadedPages.checkout = {
             total += parseInt(obj.toPay);
             var html = "<div root style='font-size:14px;'><div serial='" + obj.SerialNo + "' style='border-top:1px solid #e2e2e2;min-height:115px;border-bottom:1px solid #e2e2e2;padding:10px;padding-bottom:20px;width:100%;position:relative;'>";
             html += "<div>" + ((obj.imageURL != "") ? obj.imageURL : "<img style='width:100px;' src='/images/crown.png' />");
-            html += "<div style='position:absolute;top:10px;left:120px;color:#ADADAD;'>" + obj.SerialNo + "<br />"
+            html += "<div style='position:absolute;top:10px;left:120px;color:#ADADAD;'>" + obj.SerialNo + " " + obj.reference + "<br />"
             html += "<span productname style='color:black;max-width:300px;font-size:11px;'>" + obj.productName.replace("undefined", "") + "</span></div>";
 
             html += "<div style='position:absolute;top:10px;right:0px;color:black;font-size:13px;'>";
@@ -1741,7 +1741,7 @@ loadedPages.checkout = {
               obj.productName += "<div style='font-weight:normal; max-width: 100%;white-space: pre-wrap;word-wrap: break-all;overflow-wrap: break-word;overflow:hidden;'>" + obj.CompName + "</div>";
             }
             h += "<tr class='" + rclass + "'>";
-            h += "<td style=''>" + obj.SerialNo + "</td>";
+            h += "<td style=''>" + obj.SerialNo + " " + obj.reference + "</td>";
             h += "<td style='width:50%;max-width:50%;min-width:50%;'><div style='white-space: pre-wrap;font-weight:normal; max-width: 100%;word-wrap: break-all;overflow-wrap: break-word;'>" + obj.productName.replace("undefined", "") + "</div></td>";
             h += "<td style='padding-left:3px;text-align:right;'>€&nbsp;</td>";
             h += "<td style='text-align:right;'>" + obj.quantity + " X " + parseFloat(obj.SalesPrice).toLocaleString("nl-NL", {
@@ -2884,7 +2884,7 @@ console.log(html)
             html += "<div id='" + obj.SerialNo + "' serial='" + obj.SerialNo + "' style='font-size: 18px;padding:10px;padding-bottom:20px;'>";
             html += "<table id='ttt' style='width:100%;'><tr>";
             html += "<td style='max-width:120px;width:120px;'>" + ((obj.imageURL != "") ? obj.imageURL : "<img style='width:100px;' src='/images/crown.png' /></td>");
-            html += "<td style='text-align: left;width:50%;'><div pdata style='position: relative;top:10px;right:0px;color:#ADADAD;display:inline-block;padding-bottom: 10px;'>" + obj.SerialNo + "<br />";
+            html += "<td style='text-align: left;width:50%;'><div pdata style='position: relative;top:10px;right:0px;color:#ADADAD;display:inline-block;padding-bottom: 10px;'>" + obj.SerialNo + " " + obj.reference + "<br />";
             if (obj.productName !== undefined ) {
 
                 html += "<span productname style='font-size:24px;font-weight: bold;color:black;max-width:300px;min-width:300px;'>" + obj.productName.replace("undefined", "") + "</span>";

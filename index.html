@@ -583,10 +583,20 @@ function hideCatalog() {
             }
 
             if (a[0] == "addToInvoice") {
-                addToInvoice($.parseJSON(a[1]));
+              var obj = $.parseJSON(a[1]);
+              api.call("getReferenceNo", function(res) {
+                obj["reference"] = res.reference;
+                addToInvoice(obj);
+              }, {"serial" : obj["SerialNo"]}, {}, {})
+
             }
             if (a[0] == "addToInvoiceFromSaved") {
-                addToInvoiceFromSaved($.parseJSON(a[1]));
+              var obj = $.parseJSON(a[1]);
+              api.call("getReferenceNo", function(res) {
+                obj["reference"] = res.reference;
+                addToInvoiceFromSaved(obj);
+              }, {"serial" : obj["SerialNo"]}, {}, {})
+
             }
 
             if (a[0] == "openPage") {

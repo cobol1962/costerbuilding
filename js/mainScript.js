@@ -827,6 +827,8 @@ function toDataURL(url, callback) {
 }
 
 function addToInvoice(row) {
+
+  console.log(row)
     if (shoppingCartContent[row["SerialNo"]] !== undefined && !row["SerialNo"].indexOf("9999") == 0) {
         showModal({
             title: "Item with serial " + row["SerialNo"] + " already in cart.",

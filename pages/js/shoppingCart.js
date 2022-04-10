@@ -542,7 +542,7 @@ loadedPages.shoppingCart = {
       html += "<div id='" + obj.SerialNo + "' serial='" + obj.SerialNo + "' style='font-size: 18px;padding:10px;padding-bottom:20px;'>";
       html += "<table id='ttt' style='width:100%;'><tr>";
       html += "<td style='max-width:120px;width:120px;'>" + ((obj.imageURL != "") ? obj.imageURL : "<img style='width:100px;' src='/images/crown.png' /></td>");
-      html += "<td style='text-align: left;width:50%;'><div pdata style='position: relative;top:10px;right:0px;color:#ADADAD;display:inline-block;padding-bottom: 10px;'>" + obj.SerialNo + "<br />";
+      html += "<td style='text-align: left;width:50%;'><div pdata style='position: relative;top:10px;right:0px;color:#ADADAD;display:inline-block;padding-bottom: 10px;'>" + obj.SerialNo + " " + obj.reference + "<br />";
       if (obj.CompName === undefined) {
         obj.CompName = "";
       }

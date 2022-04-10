@@ -14,6 +14,7 @@ loadedPages.search = {
 
   },
   doSearch: function() {
+  
     api.call("search", function(res) {
 
       if (res.found == "fail") {
